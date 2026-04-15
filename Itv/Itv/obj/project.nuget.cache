@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "ovTgMERRHQM=",
+  "dgSpecHash": "9tXmC3qwN1w=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Lu\\Desktop\\Git-Repository\\ProyectoFinal-Itv\\Itv\\Itv\\Itv.csproj",
+  "projectFilePath": "C:\\Users\\lucia.fuertes3\\Desktop\\Git-Repository\\ProyectoFinal-Itv\\Itv\\Itv\\Itv.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Lu\\.nuget\\packages\\csharpfunctionalextensions\\3.7.0\\csharpfunctionalextensions.3.7.0.nupkg.sha512"
+    "C:\\Users\\lucia.fuertes3\\.nuget\\packages\\csharpfunctionalextensions\\3.7.0\\csharpfunctionalextensions.3.7.0.nupkg.sha512"
   ],
   "logs": []
 }
