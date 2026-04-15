@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using CSharpFunctionalExtensions;
 using Itv.Errors;
+using Itv.Errors.Common;
 
 namespace Itv.Validator.Common;
 

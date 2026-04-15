@@ -2,6 +2,7 @@
 using CSharpFunctionalExtensions;
 using Itv.Enums;
 using Itv.Errors;
+using Itv.Errors.Common;
 using Itv.Models;
 using Itv.Validator.Common;
 
@@ -17,23 +18,23 @@ public class VehiculoValidator : IValidator<Vehiculo> {
         
         var errores = new List<string>();
 
-        if (Regex.IsMatch(entity.Matricula, regexMatricula)) {
-            errores.Add("Error - La matricula proporcionada no cumple el formato.");
+        if (!Regex.IsMatch(entity.Matricula, regexMatricula)) {
+            errores.Add("La matricula proporcionada no cumple el formato");
         }
         if (string.IsNullOrEmpty(entity.Marca)) {
-            errores.Add("Error - La marca es nula o esta vacia.");
+            errores.Add("La marca es nula o esta vacia");
         }
         if (string.IsNullOrEmpty(entity.Modelo)) {
-            errores.Add("Error - El modelo es nulo o esta vacio.");
+            errores.Add("El modelo es nulo o esta vacio");
         }
         if (entity.Cilindrada < 0) {
-            errores.Add("Error - La cilindrada no puede ser negativa.");
+            errores.Add("La cilindrada no puede ser negativa");
         }
         if (!Enum.IsDefined(typeof(Motor), entity.Motor)) {
-            errores.Add("Error - El tipo de motor no es valido.");
+            errores.Add("El tipo de motor no es valido");
         }
-        if (Regex.IsMatch(entity.DniDueño, regexDni) || ComprobarDniValido(entity.DniDueño)) {
-            errores.Add("Error - El dni del dueño no cumple el formato.");
+        if (!Regex.IsMatch(entity.DniDueño, regexDni) || !ComprobarDniValido(entity.DniDueño)) {
+            errores.Add("El dni del dueño no cumple el formato");
         }
 
         if (errores.Any()) return Result.Failure<Vehiculo, DomainError>(VehiculoErrors.Validation(errores));
@@ -54,8 +55,7 @@ public class VehiculoValidator : IValidator<Vehiculo> {
             char letraCorrecta = letrasPermitidas[indiceLetra];
 
             return letraProporcionada == letraCorrecta;
-        }
-        catch (Exception) {
+        } catch (Exception) {
             return false;
         }
     }

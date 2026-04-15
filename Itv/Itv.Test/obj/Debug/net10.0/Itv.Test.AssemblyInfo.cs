@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Itv.Test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+06d4c42acbd4cb9b1e8e49a960555252bbccc16b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+92c1d2b0b6763040de943000c341adccf0aa26db")]
 [assembly: System.Reflection.AssemblyProductAttribute("Itv.Test")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Itv.Test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
