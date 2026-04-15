@@ -45,19 +45,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Lu\\.nuget\\packages\\": {}
+    "C:\\Users\\lucia.fuertes3\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Lu\\Desktop\\Git-Repository\\ProyectoFinal-Itv\\Itv\\Itv\\Itv.csproj",
+      "projectUniqueName": "C:\\Users\\lucia.fuertes3\\Desktop\\Git-Repository\\ProyectoFinal-Itv\\Itv\\Itv\\Itv.csproj",
       "projectName": "Itv",
-      "projectPath": "C:\\Users\\Lu\\Desktop\\Git-Repository\\ProyectoFinal-Itv\\Itv\\Itv\\Itv.csproj",
-      "packagesPath": "C:\\Users\\Lu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Lu\\Desktop\\Git-Repository\\ProyectoFinal-Itv\\Itv\\Itv\\obj\\",
+      "projectPath": "C:\\Users\\lucia.fuertes3\\Desktop\\Git-Repository\\ProyectoFinal-Itv\\Itv\\Itv\\Itv.csproj",
+      "packagesPath": "C:\\Users\\lucia.fuertes3\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\lucia.fuertes3\\Desktop\\Git-Repository\\ProyectoFinal-Itv\\Itv\\Itv\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Lu\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\lucia.fuertes3\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -108,7 +108,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Users\\lucia.fuertes3\\.dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",
