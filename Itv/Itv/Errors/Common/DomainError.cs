@@ -1,4 +1,4 @@
-﻿namespace Itv.Errors;
+﻿namespace Itv.Errors.Common;
 
 /// <summary>
 ///  Clase abstracta para todos los errores del sistema.

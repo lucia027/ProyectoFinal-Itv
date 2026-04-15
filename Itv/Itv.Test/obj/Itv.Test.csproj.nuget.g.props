@@ -21,5 +21,6 @@
     <Import Project="$(NuGetPackageRoot)microsoft.testplatform.testhost\17.14.0\build\net8.0\Microsoft.TestPlatform.TestHost.props" Condition="Exists('$(NuGetPackageRoot)microsoft.testplatform.testhost\17.14.0\build\net8.0\Microsoft.TestPlatform.TestHost.props')" />
     <Import Project="$(NuGetPackageRoot)microsoft.codecoverage\17.14.0\build\netstandard2.0\Microsoft.CodeCoverage.props" Condition="Exists('$(NuGetPackageRoot)microsoft.codecoverage\17.14.0\build\netstandard2.0\Microsoft.CodeCoverage.props')" />
     <Import Project="$(NuGetPackageRoot)microsoft.net.test.sdk\17.14.0\build\net8.0\Microsoft.NET.Test.Sdk.props" Condition="Exists('$(NuGetPackageRoot)microsoft.net.test.sdk\17.14.0\build\net8.0\Microsoft.NET.Test.Sdk.props')" />
+    <Import Project="$(NuGetPackageRoot)coverlet.msbuild\8.0.1\build\net8.0\coverlet.msbuild.props" Condition="Exists('$(NuGetPackageRoot)coverlet.msbuild\8.0.1\build\net8.0\coverlet.msbuild.props')" />
   </ImportGroup>
 </Project>

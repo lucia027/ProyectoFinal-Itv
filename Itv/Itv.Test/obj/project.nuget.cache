@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "L/pKpyWOOuo=",
+  "dgSpecHash": "mMts59jXOD0=",
   "success": true,
   "projectFilePath": "C:\\Users\\Lu\\Desktop\\Git-Repository\\ProyectoFinal-Itv\\Itv\\Itv.Test\\Itv.Test.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Lu\\.nuget\\packages\\coverlet.collector\\6.0.4\\coverlet.collector.6.0.4.nupkg.sha512",
+    "C:\\Users\\Lu\\.nuget\\packages\\coverlet.collector\\8.0.1\\coverlet.collector.8.0.1.nupkg.sha512",
+    "C:\\Users\\Lu\\.nuget\\packages\\coverlet.msbuild\\8.0.1\\coverlet.msbuild.8.0.1.nupkg.sha512",
     "C:\\Users\\Lu\\.nuget\\packages\\csharpfunctionalextensions\\3.7.0\\csharpfunctionalextensions.3.7.0.nupkg.sha512",
     "C:\\Users\\Lu\\.nuget\\packages\\fluentassertions\\8.9.0\\fluentassertions.8.9.0.nupkg.sha512",
     "C:\\Users\\Lu\\.nuget\\packages\\microsoft.applicationinsights\\2.22.0\\microsoft.applicationinsights.2.22.0.nupkg.sha512",

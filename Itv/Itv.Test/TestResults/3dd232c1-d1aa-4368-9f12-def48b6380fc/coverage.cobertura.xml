@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<coverage line-rate="0.8867" branch-rate="1" version="1.9" timestamp="1776254628" lines-covered="47" lines-valid="53" branches-covered="16" branches-valid="16">
+  <sources>
+    <source>C:\Users\Lu\Desktop\Git-Repository\ProyectoFinal-Itv\Itv\Itv\</source>
+  </sources>
+  <packages>
+    <package name="Itv" line-rate="0.8867" branch-rate="1" complexity="31">
+      <classes>
+        <class name="Program" filename="Program.cs" line-rate="0" branch-rate="1" complexity="1">
+          <methods>
+            <method name="&lt;Main&gt;$" signature="(System.String[])" line-rate="0" branch-rate="1" complexity="1">
+              <lines>
+                <line number="3" hits="0" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="0" branch="False" />
+          </lines>
+        </class>
+        <class name="Itv.Validator.VehiculoValidator" filename="Validator\VehiculoValidator.cs" line-rate="0.9459000000000001" branch-rate="1" complexity="17">
+          <methods>
+            <method name="Validate" signature="(Itv.Models.Vehiculo)" line-rate="1" branch-rate="1" complexity="16">
+              <lines>
+                <line number="14" hits="19" branch="False" />
+                <line number="16" hits="19" branch="False" />
+                <line number="17" hits="19" branch="False" />
+                <line number="19" hits="19" branch="False" />
+                <line number="21" hits="23" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="36" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="22" hits="4" branch="False" />
+                <line number="23" hits="4" branch="False" />
+                <line number="24" hits="21" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="67" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="25" hits="2" branch="False" />
+                <line number="26" hits="2" branch="False" />
+                <line number="27" hits="21" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="98" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="28" hits="2" branch="False" />
+                <line number="29" hits="2" branch="False" />
+                <line number="30" hits="20" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="127" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="31" hits="1" branch="False" />
+                <line number="32" hits="1" branch="False" />
+                <line number="33" hits="20" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="176" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="34" hits="1" branch="False" />
+                <line number="35" hits="1" branch="False" />
+                <line number="36" hits="23" branch="True" condition-coverage="100% (4/4)">
+                  <conditions>
+                    <condition number="204" type="jump" coverage="100%" />
+                    <condition number="228" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="37" hits="4" branch="False" />
+                <line number="38" hits="4" branch="False" />
+                <line number="40" hits="33" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="254" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="41" hits="5" branch="False" />
+                <line number="42" hits="19" branch="False" />
+              </lines>
+            </method>
+            <method name="ComprobarDniValido" signature="(System.String)" line-rate="0.8332999999999999" branch-rate="1" complexity="1">
+              <lines>
+                <line number="44" hits="15" branch="False" />
+                <line number="45" hits="15" branch="False" />
+                <line number="47" hits="15" branch="False" />
+                <line number="48" hits="15" branch="False" />
+                <line number="49" hits="15" branch="False" />
+                <line number="51" hits="15" branch="False" />
+                <line number="53" hits="15" branch="False" />
+                <line number="55" hits="15" branch="False" />
+                <line number="57" hits="15" branch="False" />
+                <line number="59" hits="0" branch="False" />
+                <line number="60" hits="0" branch="False" />
+                <line number="62" hits="15" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="14" hits="19" branch="False" />
+            <line number="16" hits="19" branch="False" />
+            <line number="17" hits="19" branch="False" />
+            <line number="19" hits="19" branch="False" />
+            <line number="21" hits="23" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="36" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="22" hits="4" branch="False" />
+            <line number="23" hits="4" branch="False" />
+            <line number="24" hits="21" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="67" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="25" hits="2" branch="False" />
+            <line number="26" hits="2" branch="False" />
+            <line number="27" hits="21" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="98" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="28" hits="2" branch="False" />
+            <line number="29" hits="2" branch="False" />
+            <line number="30" hits="20" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="127" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="31" hits="1" branch="False" />
+            <line number="32" hits="1" branch="False" />
+            <line number="33" hits="20" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="176" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="34" hits="1" branch="False" />
+            <line number="35" hits="1" branch="False" />
+            <line number="36" hits="23" branch="True" condition-coverage="100% (4/4)">
+              <conditions>
+                <condition number="204" type="jump" coverage="100%" />
+                <condition number="228" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="37" hits="4" branch="False" />
+            <line number="38" hits="4" branch="False" />
+            <line number="40" hits="33" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="254" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="41" hits="5" branch="False" />
+            <line number="42" hits="19" branch="False" />
+            <line number="44" hits="15" branch="False" />
+            <line number="45" hits="15" branch="False" />
+            <line number="47" hits="15" branch="False" />
+            <line number="48" hits="15" branch="False" />
+            <line number="49" hits="15" branch="False" />
+            <line number="51" hits="15" branch="False" />
+            <line number="53" hits="15" branch="False" />
+            <line number="55" hits="15" branch="False" />
+            <line number="57" hits="15" branch="False" />
+            <line number="59" hits="0" branch="False" />
+            <line number="60" hits="0" branch="False" />
+            <line number="62" hits="15" branch="False" />
+          </lines>
+        </class>
+        <class name="Itv.Models.Vehiculo" filename="Models\Vehiculo.cs" line-rate="0.75" branch-rate="1" complexity="8">
+          <methods>
+            <method name="get_Id" signature="()" line-rate="0" branch-rate="1" complexity="1">
+              <lines>
+                <line number="9" hits="0" branch="False" />
+              </lines>
+            </method>
+            <method name="get_Matricula" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="10" hits="57" branch="False" />
+              </lines>
+            </method>
+            <method name="get_Marca" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="11" hits="57" branch="False" />
+              </lines>
+            </method>
+            <method name="get_Modelo" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="12" hits="57" branch="False" />
+              </lines>
+            </method>
+            <method name="get_Cilindrada" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="13" hits="38" branch="False" />
+              </lines>
+            </method>
+            <method name="get_Motor" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="14" hits="38" branch="False" />
+              </lines>
+            </method>
+            <method name="get_DniDueño" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="15" hits="72" branch="False" />
+              </lines>
+            </method>
+            <method name="get_IsDelete" signature="()" line-rate="0" branch-rate="1" complexity="1">
+              <lines>
+                <line number="16" hits="0" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="9" hits="0" branch="False" />
+            <line number="10" hits="57" branch="False" />
+            <line number="11" hits="57" branch="False" />
+            <line number="12" hits="57" branch="False" />
+            <line number="13" hits="38" branch="False" />
+            <line number="14" hits="38" branch="False" />
+            <line number="15" hits="72" branch="False" />
+            <line number="16" hits="0" branch="False" />
+          </lines>
+        </class>
+        <class name="Itv.Errors.VehiculoError" filename="Errors\VehiculoError.cs" line-rate="0" branch-rate="1" complexity="1">
+          <methods>
+            <method name=".ctor" signature="(System.String)" line-rate="0" branch-rate="1" complexity="1">
+              <lines>
+                <line number="8" hits="0" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="8" hits="0" branch="False" />
+          </lines>
+        </class>
+        <class name="Itv.Errors.VehiculoError/Validation" filename="Errors\VehiculoError.cs" line-rate="1" branch-rate="1" complexity="2">
+          <methods>
+            <method name="get_Errores" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="9" hits="14" branch="False" />
+              </lines>
+            </method>
+            <method name=".ctor" signature="(System.Collections.Generic.IEnumerable`1&lt;System.String&gt;)" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="10" hits="14" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="9" hits="14" branch="False" />
+            <line number="10" hits="14" branch="False" />
+          </lines>
+        </class>
+        <class name="Itv.Errors.VehiculoErrors" filename="Errors\VehiculoError.cs" line-rate="1" branch-rate="1" complexity="1">
+          <methods>
+            <method name="Validation" signature="(System.Collections.Generic.IEnumerable`1&lt;System.String&gt;)" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="17" hits="14" branch="False" />
+                <line number="18" hits="14" branch="False" />
+                <line number="19" hits="14" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="17" hits="14" branch="False" />
+            <line number="18" hits="14" branch="False" />
+            <line number="19" hits="14" branch="False" />
+          </lines>
+        </class>
+        <class name="Itv.Errors.Common.DomainError" filename="Errors\Common\DomainError.cs" line-rate="1" branch-rate="1" complexity="1">
+          <methods>
+            <method name="get_Message" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="7" hits="14" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="7" hits="14" branch="False" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>
