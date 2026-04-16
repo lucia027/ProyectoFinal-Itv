@@ -3,6 +3,7 @@ using Itv.Enums;
 using Itv.Errors;
 using Itv.Models;
 using Itv.Validator;
+using NUnit.Framework;
 
 namespace Itv.Test.Validator;
 
