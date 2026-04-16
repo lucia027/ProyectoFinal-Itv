@@ -39,3 +39,7 @@ BenchmarkDotNet.Artifacts/
 # Otros
 *.tmp
 *.bak
+
+/coverage
+/coverage-report
+/coverage-results
