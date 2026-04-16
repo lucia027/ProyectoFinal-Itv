@@ -11,7 +11,7 @@ public static class Configuracion {
     static Configuracion() {
         Configuration = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json",  false,  true)
+            .AddJsonFile("appsettings.json",  true,  true)
             .Build();
     }
 
@@ -48,7 +48,7 @@ public static class Configuracion {
                 "xml" => "xml",
                 "csv" => "csv",
                 "bin" => "bin",
-                _ => "json" // valor por defecto
+                _ => "json"
             };
             return Path.Combine(DataFolder, $"itv.{extension}");
         }
