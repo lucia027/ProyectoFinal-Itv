@@ -2,10 +2,13 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=666e2bca_002D6e6f_002D49f1_002Dbd18_002Def767fffebe9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Validate_VehiculoValido_RetornaSuccess" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::3793266B-DF5C-B61C-0BED-5F40186D3972::net10.0::Itv.Test.Validator.VehiculoValidatorTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::3793266B-DF5C-B61C-0BED-5F40186D3972::net10.0::Itv.Test.Mappers.VehiculoMapperTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=daed72ca_002Df9e2_002D45ea_002Dadcb_002D1d35a367494e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="VehiculoValidatorTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::3793266B-DF5C-B61C-0BED-5F40186D3972::net10.0::Itv.Test.Validator.VehiculoValidatorTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::3793266B-DF5C-B61C-0BED-5F40186D3972::net10.0::Itv.Test.Mappers.VehiculoMapperTests+CasosValidos&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::3793266B-DF5C-B61C-0BED-5F40186D3972::net10.0::Itv.Test.Mappers.VehiculoMapperTests+CasosInvalidos.ToModel_VehiculoDtoInvalido_NoConvierte&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
