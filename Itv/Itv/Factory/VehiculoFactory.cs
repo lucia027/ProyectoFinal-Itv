@@ -2,7 +2,9 @@ using Itv.Enums;
 using Itv.Models;
 
 namespace Itv.Factory;
-
+/// <summary>
+/// Clase con el metodo Seed() con los datos por defecto de carga.
+/// </summary>
 public static class VehiculoFactory {
 
     public static IEnumerable<Vehiculo> Seed() {

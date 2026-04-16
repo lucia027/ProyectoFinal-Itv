@@ -44,6 +44,11 @@ public class VehiculoValidator : IValidator<Vehiculo> {
         return Result.Success<Vehiculo, DomainError>(entity);
     }
 
+    /// <summary>
+    /// Valida que el dni proporcionado cumpla el calculo de numeros y letra.
+    /// </summary>
+    /// <param name="dni">DNi proporcionado.</param>
+    /// <returns>Verdadero en caso correcto y false en contrario.</returns>
     private bool ComprobarDniValido(string dni) {
         char[] letrasPermitidas = ['T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E'];
 
