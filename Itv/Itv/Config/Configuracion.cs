@@ -71,4 +71,9 @@ public static class Configuracion {
             };
         }
     }
+
+    public static bool DropData => Configuration.GetValue("Repository:DropData", false);
+    
+    public static bool SeedData => Configuration.GetValue("Repository:SeedData", true);
+
 }
