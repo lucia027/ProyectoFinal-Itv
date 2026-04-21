@@ -30,7 +30,7 @@ public class VehiculoJsonStorage : IVehiculoJsonStorage {
     /// <inheritdoc cref="IVehiculoJsonStorage.Cargar" />
     public Result<IEnumerable<Vehiculo>, DomainError> Cargar(string path) {
         if (!Path.Exists(path)) {
-            _logger.Debug("Intentando salvar los datos en formato json.");
+            _logger.Debug("Intentando cargar los datos en formato json.");
             return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.FileNotFound(path));
         }
 
@@ -50,7 +50,6 @@ public class VehiculoJsonStorage : IVehiculoJsonStorage {
     /// <inheritdoc cref="IVehiculoJsonStorage.Salvar" />
     public Result<bool, DomainError> Salvar(IEnumerable<Vehiculo> items, string path) {
         try {
-            using var stream = File.Create(path);
             var dtos = items
                 .Select(i => i.ToDto())
                 .ToList();
