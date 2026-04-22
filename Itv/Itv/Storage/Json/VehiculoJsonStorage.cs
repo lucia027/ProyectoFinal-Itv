@@ -39,7 +39,7 @@ public class VehiculoJsonStorage : IVehiculoJsonStorage {
             var dtos = JsonSerializer.Deserialize<List<VehiculoDto>>(json, _options);
 
             if (dtos == null) {
-                return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.InvalidFormat("Los dtos no se han poddio deserializar."));
+                return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.InvalidFormat("Los dtos no se han podido deserializar."));
             }
             return Result.Success<IEnumerable<Vehiculo>, DomainError>(dtos.Select(v => v.ToModel()));
         } catch (Exception e) {

@@ -1,32 +1,34 @@
-﻿using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Itv.Enums;
 using Itv.Models;
-using Itv.Storage.Json;
+using Itv.Storage.Binary;
 
-namespace Itv.Test.Storage.Json;
+namespace Itv.Test.Storage.Binary;
 
 [TestFixture]
-public class VehiculoJsonStorageTests {
+public class VehiculoBinStorageTests {
 
     [TestFixture]
-    public sealed class CasosValidos() {
-        [SetUp]
-        public void SetUp() {
-            _storage = new VehiculoJsonStorage();
-            _tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.json");
-        }
+    public sealed class CasosValidos {
 
         [TearDown]
         public void TearDown() {
-            if(File.Exists(_tempPath)) File.Delete(_tempPath);
+            if (File.Exists(_tempPath)) {
+                File.Delete(_tempPath);
+            }
         }
-        
-        private VehiculoJsonStorage _storage;
+
+        [SetUp]
+        public void Setup() {
+            _storage = new VehiculoBinStorage();
+            _tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.bin");
+        }
+
+        private VehiculoBinStorage _storage = null!;
         private string _tempPath;
 
         [Test]
-        public void Salvar_DatosExistentes_SalvarDatos() {
+        public void Salvar_DatosExistentes_SalvaDatos() {
             //Arrange
             var vehiculos = new List<Vehiculo>() {
                 new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
@@ -34,14 +36,13 @@ public class VehiculoJsonStorageTests {
             };
             
             //Act
-            var res = _storage.Salvar(vehiculos,  _tempPath);
+            var res = _storage.Salvar(vehiculos, _tempPath);
             
             //Assert
             res.IsSuccess.Should().BeTrue();
             File.Exists(_tempPath).Should().BeTrue();
         }
-        
-        
+
         [Test]
         public void Salvar_VehiculoValido_RetornaMismoVehiculo() {
             //Arrange
@@ -78,7 +79,7 @@ public class VehiculoJsonStorageTests {
             res.IsSuccess.Should().BeTrue();
             File.Exists(_tempPath).Should().BeTrue();
         }
-        
+
         [Test]
         public void Cargar_ListaVacia_RetornaListaVacia() {
             //Arrange
@@ -92,7 +93,7 @@ public class VehiculoJsonStorageTests {
             res.IsSuccess.Should().BeTrue();
             res.Value.Should().BeEmpty();
         }
-        
+
         [Test]
         public void Cargar_DatosValidos_CargarDatos() {
             //Arrange
@@ -111,74 +112,48 @@ public class VehiculoJsonStorageTests {
             res.Value.First().Should().BeOfType<Vehiculo>();
         }
     }
-    
 
     [TestFixture]
-    public sealed class CasosInvalidos {
+    public sealed class CasosInvaidos {
+        
+        [TearDown]
+        public void TearDown() {}
+
         [SetUp]
         public void SetUp() {
-            _storage = new VehiculoJsonStorage();
-            _tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.json");
-        }
-
-        [TearDown]
-        public void TearDown() {
-            if(File.Exists(_tempPath)) File.Delete(_tempPath);
+            _storage = new VehiculoBinStorage();
+            _tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.bin");
         }
         
-        private VehiculoJsonStorage _storage;
+        private VehiculoBinStorage _storage;
         private string _tempPath;
 
         [Test]
-        public void Salvar_PathInvalida_RetornaFallo() {
+        public void Salvar_PathInvalido_RetornaFallo() {
             //Arrange
-            var vehiculos = new List<Vehiculo>();
-            var rutaMala = "ruta/invalida/x/y/aa";
+            var vehiculos = new List<Vehiculo>() {
+                new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
+                new Vehiculo { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
+            };
+            var pathInvalido = "/ruta/invalida/va/a/dar/falllo";
             
             //Act
-            var res = _storage.Salvar(vehiculos, rutaMala);
+            var res = _storage.Salvar(vehiculos, pathInvalido);
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            File.Exists(rutaMala).Should().BeFalse();
-        }
-
-        [Test]
-        public void Cargar_JsonInvalido_RetornaFallo() {
-            //Assert
-            using var writer = new StreamWriter(_tempPath, false, Encoding.UTF8);
-            writer.Write("fallando..");
-            
-            //Act
-            var res = _storage.Cargar(_tempPath);
-            
-            //Assert
-            res.IsFailure.Should().BeTrue();
-        }
-        
-        [Test]
-        public void Cargar_DatosNulos_RetornaFallo() {
-            //Assert
-            using var writer = new StreamWriter(_tempPath, false, Encoding.UTF8);
-            writer.Write("null");
-            
-            //Act
-            var res = _storage.Cargar(_tempPath);
-            
-            //Assert
-            res.IsFailure.Should().BeTrue();
-            res.Error.Message.Contains("Los dtos no se han podido deserializar.");
+            File.Exists(_tempPath).Should().BeFalse();
         }
         
         [Test]
         public void Cargar_ArchivoInexistente_RetornaFallo() {
-            //Arrange
+            //Assert
             var vehiculos = new List<Vehiculo>();
-            var rutaMala = "ruta/invalida/x/y/aa";
-            _storage.Salvar(vehiculos, rutaMala);
+            var rutaInvalida = "hola/soy/una/ruta/invalida/doy/fallo";
+            _storage.Salvar(vehiculos, rutaInvalida);
             
             //Act
-            var res = _storage.Cargar(rutaMala);
+            var res = _storage.Cargar(rutaInvalida);
             
             //Assert
             res.IsFailure.Should().BeTrue();

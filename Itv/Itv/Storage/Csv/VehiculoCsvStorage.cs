@@ -21,7 +21,7 @@ public class VehiculoCsvStorage : IVehiculoCsvStorage {
     public Result<IEnumerable<Vehiculo>, DomainError> Cargar(string path) {
 
         if (!Path.Exists(path)) {
-            throw new FileNotFoundException($"El archivo con la ruta: {path} no existe");
+            return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.FileNotFound(path));
         }
 
         try { 
@@ -51,11 +51,11 @@ public class VehiculoCsvStorage : IVehiculoCsvStorage {
         try {
             _logger.Debug("Intentando salvar los datos en formato csv.");
             using var writer = new StreamWriter(path, false, Encoding.UTF8);
-            writer.WriteLine("Id;Matricula;Marca;Modelo;Cilindrada;Motor;DniDueño;IsDelete");
+            writer.WriteLine("Id;Matricula;Marca;Modelo;Cilindrada;Motor;DniDueño;CreateAt;UpdateAt;IsDelete");
 
             foreach (var v in items) {
                 var dto = v.ToDto();
-                writer.WriteLine($"{dto.Id};{dto.Matricula};{dto.Marca};{dto.Modelo};{dto.Cilindrada};{dto.Motor};{dto.DniDueño};{dto.IsDelete}");
+                writer.WriteLine($"{dto.Id};{dto.Matricula};{dto.Marca};{dto.Modelo};{dto.Cilindrada};{dto.Motor};{dto.DniDueño};;{dto.CreateAt};{dto.UpdateAt}{dto.IsDelete}");
             }
 
             return Result.Success<bool, DomainError>(true);
