@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using Itv.Dto;
 using Itv.Enums;
@@ -11,6 +12,7 @@ namespace Itv.Mappers;
 public static class VehiculoMapper {
     
     private const string DateTimeFormat = "s";
+    private static readonly CultureInfo InvariantCulture = CultureInfo.InvariantCulture;
 
     /// <summary>
     /// Convierte un VehiculoDto a un Vehículo.
@@ -26,8 +28,8 @@ public static class VehiculoMapper {
             Cilindrada = (dto.Cilindrada < 0) ? 0 : dto.Cilindrada,
             Motor = Enum.TryParse(dto.Motor, out Motor motor) ? motor : Motor.Diesel,
             DniDueño = dto.DniDueño,
-            CreateAt = DateTime.Parse(dto.CreateAt),
-            UpdateAt = DateTime.Parse(dto.UpdateAt),
+            CreateAt = DateTime.TryParse(dto.CreateAt, InvariantCulture, out var c) ? c : DateTime.Now,
+            UpdateAt = DateTime.TryParse(dto.UpdateAt, InvariantCulture, out var u) ? u : DateTime.Now,
             IsDelete = dto.IsDelete
         };
     }
