@@ -211,6 +211,7 @@ public class VehiculoValidatorTests {
             //Assert
             res.IsFailure.Should().BeTrue();
             res.Error.Should().BeOfType<VehiculoError.Validation>();
+            
             var validationError = res.Error as VehiculoError.Validation;
             validationError!.Errores.Should().Contain("El dni del dueño no cumple el formato");
         }

@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 
 namespace Itv.Config;
@@ -11,7 +13,7 @@ public static class Configuracion {
     static Configuracion() {
         Configuration = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json",  true,  true)
+            .AddJsonFile("appsettings.json",  false,  true)
             .Build();
     }
 
@@ -35,6 +37,8 @@ public static class Configuracion {
                 "memory" => "memory",
                 "binary" => "binary",
                 "json" => "json",  
+                "dapper" => "dapper",  
+                "ado" => "ado",  
                 "efcore" => "efcore",
                 _ => "memory"
             };
@@ -56,13 +60,12 @@ public static class Configuracion {
     
     public static int CacheSize => Configuration.GetValue("Cache:Size", 10);
     
-    public static string BackupDirectory => Path.Combine(AppContext.BaseDirectory, Configuration.GetValue<string>("Backup:Directory") ?? "backup");
+    public static string BackupDirectory => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Configuration.GetValue<string>("Backup:Directory") ?? "backup");
     
     public static string BackupFormat {
         get {
             var format = Configuration.GetValue<string>("Backup:Format") ?? "json";
-            return format.ToLower() switch
-            {
+            return format.ToLower() switch {
                 "json" => "json",
                 "xml" => "xml",
                 "csv" => "csv",

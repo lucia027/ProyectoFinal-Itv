@@ -1,7 +1,11 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using FluentAssertions;
 using Itv.Enums;
 using Itv.Models;
 using Itv.Storage.Xml;
+using NUnit.Framework;
 
 namespace Itv.Test.Storage.Xml;
 
@@ -167,6 +171,19 @@ public class VehiculoXmlStorageTests {
             
             //Act
             var res =  _storage.Cargar(_tempPath);
+            
+            //Assert
+            res.IsFailure.Should().BeTrue();
+        }
+        
+        [Test]
+        public void Cargar_ContenidoPathNulo_RetornaFallo() {
+            //Assert
+            using var  writer = new StreamWriter(_tempPath);
+            writer.Write("null");
+            
+            //Act
+            var res = _storage.Cargar(_tempPath);
             
             //Assert
             res.IsFailure.Should().BeTrue();
