@@ -1,13 +1,11 @@
-﻿namespace Itv.Repository.Common;
+﻿using CSharpFunctionalExtensions;
+using Itv.Errors.Common;
 
+namespace Itv.Repository.Memory;
 
-/// <summary>
-/// Contrato genérico para todos los repositorios.
-/// </summary>
-/// <typeparam name="TKey"></typeparam>
-/// <typeparam name="TEntity"></typeparam>
-public interface ICrudRepository<in TKey, TEntity> where TEntity : class {
- 
+public interface IVehiculoRepository<in TKey, TEntity> where TEntity : class {
+    
+     
     /// <summary>
     /// Devuelve todas las entidades del almacen.
     /// </summary>
@@ -19,14 +17,14 @@ public interface ICrudRepository<in TKey, TEntity> where TEntity : class {
     /// </summary>
     /// <param name="id">Id de la entidad</param>
     /// <returns>En caso de existir la entidad y en caso contrario nulo.</returns>
-    TEntity? GetById(TKey id);
+    Result<TEntity, DomainError> GetById(TKey id);
     
     /// <summary>
     /// Crea y guarda en el almacen una nueva entidad.
     /// </summary>
     /// <param name="entity">Entidad nueva.</param>
     /// <returns>En caso de ser correcta la entidad y en caso contrario nulo.</returns>
-    TEntity? Create(TEntity entity);
+    Result<TEntity, DomainError> Create(TEntity entity);
     
     /// <summary>
     /// Actualiza una entidad ya existente en el almacen.
@@ -34,12 +32,25 @@ public interface ICrudRepository<in TKey, TEntity> where TEntity : class {
     /// <param name="id">Id de la entidad existente.</param>
     /// <param name="entity">Entidad existente actualizada.</param>
     /// <returns>En caso de ser correcta la entidad y en caso contrario nulo.</returns>
-    TEntity? Update(TKey id, TEntity entity);
+    Result<TEntity, DomainError> Update(TKey id, TEntity entity);
     
     /// <summary>
     /// ELimina la entidad del almacen.
     /// </summary>
     /// <param name="id">Id de la entidad existente.</param>
     /// <returns>En caso de ser correcta la entidad eliminada y nulo en caso contrario.</returns>
-    TEntity? Delete(TKey id);
+    Result<TEntity, DomainError> Delete(TKey id);
+    
+    /// <summary>
+    /// Elimina permanentemente un vehiculo del almacen.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Result<TEntity, DomainError> DeleteHard(int id);
+
+    /// <summary>
+    /// Elimina todos los vehiculos del alamcen;
+    /// </summary>
+    /// <returns>Verdadero al eliminarlos.</returns>
+    bool DeleteAll();
 }

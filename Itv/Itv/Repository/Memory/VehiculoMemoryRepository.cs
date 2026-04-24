@@ -1,12 +1,13 @@
-﻿using System.Runtime.CompilerServices;
-using Itv.Config;
+﻿using CSharpFunctionalExtensions;
+using Itv.Errors;
+using Itv.Errors.Common;
 using Itv.Factory;
 using Itv.Models;
 using Serilog;
 
 namespace Itv.Repository.Memory;
 
-public class VehiculoMemoryRepository : IVehiculoRepository {
+public class VehiculoMemoryRepository : IVehiculoMemoryRepository {
     private readonly ILogger _logger = Log.ForContext<VehiculoMemoryRepository>();
 
     
@@ -14,28 +15,27 @@ public class VehiculoMemoryRepository : IVehiculoRepository {
     private Dictionary<string, int> _almacenMatricula = new();
     private int _idCount;
     
-    private VehiculoMemoryRepository() : this(Configuracion.DropData, Configuracion.SeedData) {}
-
     private VehiculoMemoryRepository(bool dropData, bool seedData) {
         if (dropData) DeleteAll();
         if(seedData) foreach (var v in VehiculoFactory.Seed()) Create(v);
     }
 
-    /// <inheritdoc cref="IVehiculoRepository.GetAll" />
+    /// <inheritdoc cref="IVehiculoMemoryRepository.GetAll" />
     public IEnumerable<Vehiculo> GetAll() {
         return _almacenId.Values;
     }
 
-    /// <inheritdoc cref="IVehiculoRepository.GetById" />
-    public Vehiculo? GetById(int id) {
-        return _almacenId.GetValueOrDefault(id);
+    /// <inheritdoc cref="IVehiculoMemoryRepository.GetById" />
+    public Result<Vehiculo, DomainError> GetById(int id) {
+        if (_almacenId.GetValueOrDefault(id) == null) return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.IdNotFound(id));
+        return Result.Success<Vehiculo, DomainError>(_almacenId[id]);
     }
 
-    /// <inheritdoc cref="IVehiculoRepository.Create" />
-    public Vehiculo? Create(Vehiculo entity) {
+    /// <inheritdoc cref="IVehiculoMemoryRepository.Create" />
+    public Result<Vehiculo, DomainError> Create(Vehiculo entity) {
         if (_almacenMatricula.ContainsKey(entity.Matricula) || _almacenId.Values.Count(v => v.DniDueño == entity.DniDueño) >= 3) {
             _logger.Debug("No se ha podido crear el vehiculo.");
-            return null;
+            return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.MatriculaNotFound(entity));
         }
 
         var vehiculo = entity with { Id = GetNewId(), IsDelete = false};
@@ -43,20 +43,20 @@ public class VehiculoMemoryRepository : IVehiculoRepository {
         _almacenId.Add(vehiculo.Id, vehiculo);
         _almacenMatricula.Add(vehiculo.Matricula, vehiculo.Id);
         _logger.Debug("Vehiculo creado correctamente.");
-        return vehiculo;
+        return Result.Success<Vehiculo, DomainError>(vehiculo);
     }
 
-    /// <inheritdoc cref="IVehiculoRepository.Update" />
-    public Vehiculo? Update(int id, Vehiculo entity) {
+    /// <inheritdoc cref="IVehiculoMemoryRepository.Update" />
+    public Result<Vehiculo, DomainError> Update(int id, Vehiculo entity) {
         if (!_almacenId.TryGetValue(id, out var viejo)) {
             _logger.Debug("No se ha podido actualizar el vehiculo el id no existe.");
-            return null;
+            return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.IdNotFound(id));
         }
         // Si la matrícula que nos dan es diferente de la que teniamos hay que mirar si la matrícula nueva ya la tiene otro coche que ya existe
         // y el coche que ya existe con esa matrícula tiene el mismo id que el vehículo proporcionado.
         if (entity.Matricula != viejo.Matricula && _almacenMatricula.TryGetValue(entity.Matricula, out var idExistente) && idExistente != id) {
             _logger.Debug("No se ha podido actualizar el vehiculo, fallo con las matriculas.");
-            return null;
+            return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.InvalidMatricula(id));
         }
 
         var vehiculoNuevo = entity with { Id = id, IsDelete = false};
@@ -69,36 +69,36 @@ public class VehiculoMemoryRepository : IVehiculoRepository {
             _logger.Debug("Se ha actualizado la lista de matriculas correctamente..");
         }
 
-        return vehiculoNuevo;
+        return Result.Success<Vehiculo, DomainError>(vehiculoNuevo);
     }
 
-    /// <inheritdoc cref="IVehiculoRepository.Delete" />
-    public Vehiculo? Delete(int id) {
+    /// <inheritdoc cref="IVehiculoMemoryRepository.Delete" />
+    public Result<Vehiculo, DomainError> Delete(int id) {
         if (!_almacenId.TryGetValue(id, out var eliminado)) {
             _logger.Debug("No se ha podido eliminar el vehiculo, el id no existe.");
-            return null;
+            return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.IdNotFound(id));
         }
 
         eliminado = eliminado with { IsDelete = true };
         _almacenId[id] = eliminado;
         
-        return eliminado;
+        return Result.Success<Vehiculo, DomainError>(eliminado);
     }
     
-    /// <inheritdoc cref="IVehiculoRepository.DeleteHard" />
-    public Vehiculo? DeleteHard(int id) {
+    /// <inheritdoc cref="IVehiculoMemoryRepository.DeleteHard" />
+    public Result<Vehiculo, DomainError> DeleteHard(int id) {
         if (!_almacenId.TryGetValue(id, out var eliminado)) {
             _logger.Debug("No se ha podido eliminar el vehiculo, el id no existe.");
-            return null;
+            return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.IdNotFound(id));
         }
 
         _almacenMatricula.Remove(eliminado.Matricula);
         _almacenId.Remove(id);
 
-        return eliminado;
+        return Result.Success<Vehiculo, DomainError>(eliminado);
     }
 
-    /// <inheritdoc cref="IVehiculoRepository.DeleteAll" />
+    /// <inheritdoc cref="IVehiculoMemoryRepository.DeleteAll" />
     public bool DeleteAll() {
         _almacenId.Clear();
         _almacenMatricula.Clear();
