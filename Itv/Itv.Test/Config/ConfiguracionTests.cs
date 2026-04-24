@@ -1,5 +1,7 @@
-﻿using FluentAssertions;
+﻿using System.IO;
+using FluentAssertions;
 using Itv.Config;
+using NUnit.Framework;
 
 namespace Itv.Test.Config;
 
@@ -7,7 +9,7 @@ namespace Itv.Test.Config;
 public class ConfiguracionTests {
 
     [TestFixture]
-    public sealed class Propiedades() {
+    public sealed class Propiedades {
 
         [Test]
         public void Locale_RetornaEspanya() {
@@ -36,7 +38,7 @@ public class ConfiguracionTests {
             
             //Assert
             tipoRepo.Should().NotBeNull();
-            tipoRepo.Should().BeOneOf("json", "memory", "efcore", "binary");
+            tipoRepo.Should().BeOneOf("json", "memory", "efcore", "binary", "dapper", "ado");
         }
 
         [Test]
@@ -70,7 +72,7 @@ public class ConfiguracionTests {
     }
 
     [TestFixture]
-    public sealed class DirectoriosArchivos() {
+    public sealed class DirectoriosArchivos {
 
         [Test]
         public void DataFolder_RetornaRutaValida() {
