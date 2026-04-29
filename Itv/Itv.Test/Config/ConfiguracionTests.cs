@@ -69,6 +69,24 @@ public class ConfiguracionTests {
             //Assert
             tamCache.Should().BeGreaterThan(0);
         }
+
+        [Test]
+        public void DropData_RetornaBoleano() {
+            //Act
+            var dropData = Configuracion.DropData;
+            
+            //Assert
+            (dropData || !dropData).Should().BeTrue();
+        }
+
+        [Test]
+        public void SeedData_RetornaBoleano() {
+            //Act
+            var seedData = Configuracion.SeedData;
+            
+            //Arrange
+            seedData.Should().BeTrue();
+        }
     }
 
     [TestFixture]

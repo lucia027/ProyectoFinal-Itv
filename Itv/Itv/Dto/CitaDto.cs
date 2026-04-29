@@ -3,11 +3,11 @@
 namespace Itv.Dto;
 
 /// <summary>
-/// Objeto de transferencia de datos creado para los vehículos.
+/// Objeto de transferencia de datos creado para las citas.
 /// </summary>
 [XmlRoot("Itv")]
-[XmlType("Vehiculo")]
-public record VehiculoDto(
+[XmlType("Cita")]
+public record CitaDto(
     [property: XmlAttribute("id")] int Id,
     [property: XmlAttribute("matricula")] string Matricula,
     [property: XmlAttribute("marca")] string Marca,
@@ -15,9 +15,11 @@ public record VehiculoDto(
     [property: XmlAttribute("cilindrada")] int Cilindrada,
     [property: XmlAttribute("motor")] string Motor,
     [property: XmlAttribute("dniDueño")] string DniDueño,
+    [property: XmlAttribute("FechaMatriculacion")] string FechaMatriculacion,
+    [property: XmlAttribute("FechaInspeccion")] string FechaInspeccion,
     [property: XmlAttribute("CreateAt")] string CreateAt,
     [property: XmlAttribute("UpdateAt")] string UpdateAt,
     [property: XmlAttribute("isDelete")] bool IsDelete
 ) {
-    public VehiculoDto() : this (0, "", "", "", 0 ,"", "", "", "", false) { }
+    public CitaDto() : this (0, "", "", "", 0 ,"", "", "", "", "", "", false) { }
 }

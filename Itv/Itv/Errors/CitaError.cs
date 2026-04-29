@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using Itv.Errors.Common;
+﻿using Itv.Errors.Common;
 
 namespace Itv.Errors;
 
 /// <summary>
-///  Clase especifica para los errores de vehiculos.
+///  Clase especifica para los errores de citas.
 /// </summary>
-public abstract record VehiculoError(string Message) : DomainError(Message) {
+public abstract record CitaError(string Message) : DomainError(Message) {
     public sealed record Validation(IEnumerable<string> Errores)
         : DomainError($"Han surgido errores en el intento de validación de la nueva entidad:{Environment.NewLine}• {string.Join($"{Environment.NewLine}• ", Errores)}");
 }
 
 /// <summary>
-///  Clase estatica para crear los errores de los vehiculos.
+///  Clase estatica para crear los errores de las citas.
 /// </summary>
-public static class VehiculoErrors {
+public static class CitaErrors {
     public static DomainError Validation(IEnumerable<string> errores) {
-        return new VehiculoError.Validation(errores);
+        return new CitaError.Validation(errores);
     }
 }

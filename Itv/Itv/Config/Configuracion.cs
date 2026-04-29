@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
+﻿using System.Globalization;
 using Microsoft.Extensions.Configuration;
 
 namespace Itv.Config;
@@ -74,4 +72,8 @@ public static class Configuracion {
             };
         }
     }
+
+    public static bool DropData => Configuration.GetValue("Repository:DropData", false);
+    
+    public static bool SeedData => Configuration.GetValue("Repository:SeedData", true);
 }

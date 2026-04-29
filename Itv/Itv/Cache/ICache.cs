@@ -1,7 +1,7 @@
 namespace Itv.Cache;
 
 /// <summary>
-/// Contrato generico para la cache.
+/// Contrato genérico para la cache.
 /// </summary>
 /// <typeparam name="TKey">Clave proporcionada.</typeparam>
 /// <typeparam name="TValue">Valor proporcionado.</typeparam>

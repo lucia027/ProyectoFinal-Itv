@@ -1,22 +1,20 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Itv.Dto;
 using Itv.Enums;
 using Itv.Mappers;
 using Itv.Models;
-using NUnit.Framework;
 
 namespace Itv.Test.Mappers;
 
 [TestFixture]
-public class VehiculoMapperTests {
+public class CitaMapperTests {
     
     [TestFixture]
-    public sealed class CasosValidos() {
+    public sealed class CasosValidos {
 
         [SetUp]
         public void Setup() {
-            _vehiculo = new Vehiculo {
+            _cita = new Cita {
                 Id= 1,
                 Matricula = "1234BBB",
                 Marca = "Toyota",
@@ -29,7 +27,7 @@ public class VehiculoMapperTests {
                 IsDelete = false
             };
 
-            _vehiculoDto = new VehiculoDto {
+            _citaDto = new CitaDto {
                 Id= 2,
                 Matricula = "1234BBB",
                 Marca = "Toyota",
@@ -43,13 +41,13 @@ public class VehiculoMapperTests {
             };
         }
 
-        private Vehiculo _vehiculo = null!;
-        private VehiculoDto _vehiculoDto = null!;
+        private Cita _cita = null!;
+        private CitaDto _citaDto = null!;
 
         [Test]
-        public void ToModel_VehiculoDto_ConvierteCorrectamente() {
+        public void ToModel_CitaDto_ConvierteCorrectamente() {
             //Act
-            var res = _vehiculoDto.ToModel();
+            var res = _citaDto.ToModel();
             
             //Assert
             res.Should().NotBeNull();
@@ -63,9 +61,9 @@ public class VehiculoMapperTests {
         }
 
         [Test]
-        public void ToDto_Vehiculo_ConvierteCorrectamente() {
+        public void ToDto_Cita_ConvierteCorrectamente() {
             //Act
-            var res = _vehiculo.ToDto();
+            var res = _cita.ToDto();
             
             //Arrange
             res.Should().NotBeNull();
@@ -80,12 +78,12 @@ public class VehiculoMapperTests {
     }
 
     [TestFixture]
-    public sealed class CasosInvalidos() {
+    public sealed class CasosInvalidos {
 
         [Test]
-        public void ToModel_VehiculoDtoInvalido_ConvierteValoresPorDefecto() {
+        public void ToModel_CitaDtoInvalido_ConvierteValoresPorDefecto() {
             //Arrange
-            var vehiculoDto = new VehiculoDto {
+            var citaDto = new CitaDto {
                 Id = 1,
                 Matricula = "1234BBB",
                 Marca = "Toyota",
@@ -99,7 +97,7 @@ public class VehiculoMapperTests {
             };
             
             //Act
-            var res = vehiculoDto.ToModel();
+            var res = citaDto.ToModel();
             
             //Assert
             res.Should().NotBeNull();

@@ -9,19 +9,22 @@ using Serilog;
 
 namespace Itv.Storage.Binary;
 
-public class VehiculoBinStorage : IVehiculoBinStorage {
+/// <summary>
+/// Almacenamiento de los datos en binario secuencial para las citas.
+/// </summary>
+public class CitaBinStorage : ICitaBinStorage {
 
-    private readonly ILogger _logger = Log.ForContext<VehiculoBinStorage>();
+    private readonly ILogger _logger = Log.ForContext<CitaBinStorage>();
 
-    public VehiculoBinStorage() {
+    public CitaBinStorage() {
         InitStorage();
     }
 
-    /// <inheritdoc cref="IVehiculoBinStorage.Cargar" />
-    public Result<IEnumerable<Vehiculo>, DomainError> Cargar(string path) {
+    /// <inheritdoc cref="ICitaBinStorage.Cargar" />
+    public Result<IEnumerable<Cita>, DomainError> Cargar(string path) {
         if (!File.Exists(path)) {
             _logger.Debug("Intentando salvar los datos en formato bin.");
-            return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.FileNotFound(path));
+            return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.FileNotFound(path));
         }
 
         try {
@@ -29,10 +32,10 @@ public class VehiculoBinStorage : IVehiculoBinStorage {
             using var reader = new BinaryReader(stream, Encoding.UTF8);
 
             var count = reader.ReadInt32();
-            var vehiculos = new List<Vehiculo>();
+            var citas = new List<Cita>();
 
             for (int i = 0; i < count; i++) {
-                var v = new VehiculoDto(
+                var v = new CitaDto(
                     reader.ReadInt32(),
                     reader.ReadString(),
                     reader.ReadString(),
@@ -42,19 +45,21 @@ public class VehiculoBinStorage : IVehiculoBinStorage {
                     reader.ReadString(),
                     reader.ReadString(),
                     reader.ReadString(),
+                    reader.ReadString(),
+                    reader.ReadString(), 
                     reader.ReadBoolean()
                 ).ToModel();
-                vehiculos.Add(v);
+                citas.Add(v);
             }
 
-            return Result.Success<IEnumerable<Vehiculo>, DomainError>(vehiculos);
+            return Result.Success<IEnumerable<Cita>, DomainError>(citas);
         } catch (Exception e) {
-            return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.ReadError(e.Message));
+            return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.ReadError(e.Message));
         }
     }
 
-    /// <inheritdoc cref="IVehiculoBinStorage.Salvar" />
-    public Result<bool, DomainError> Salvar(IEnumerable<Vehiculo> items, string path) {
+    /// <inheritdoc cref="ICitaBinStorage.Salvar" />
+    public Result<bool, DomainError> Salvar(IEnumerable<Cita> items, string path) {
         try {
             using var stream = File.Create(path);
             using var writer = new BinaryWriter(stream, Encoding.UTF8);
@@ -70,6 +75,8 @@ public class VehiculoBinStorage : IVehiculoBinStorage {
                 writer.Write(v.Cilindrada);
                 writer.Write(v.Motor);
                 writer.Write(v.DniDueño);
+                writer.Write(v.FechaMatriculacion);
+                writer.Write(v.FechaInspeccion);
                 writer.Write(v.CreateAt);
                 writer.Write(v.UpdateAt);
                 writer.Write(v.IsDelete);
