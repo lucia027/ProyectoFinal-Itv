@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Itv.Errors.Common;
 
-namespace Itv.Repository.Memory;
+namespace Itv.Repository.Common;
 
 public interface IVehiculoRepository<in TKey, TEntity> where TEntity : class {
     

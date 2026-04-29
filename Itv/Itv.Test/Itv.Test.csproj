@@ -37,8 +37,4 @@
         <ProjectReference Include="..\Itv\Itv.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Repository\" />
-    </ItemGroup>
-
 </Project>

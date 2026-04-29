@@ -10,8 +10,12 @@ public abstract record RepositoryError(string Message) : DomainError(Message) {
     public sealed record IdNotFound(int id)
         : RepositoryError($"No se puede encontrar el vehiculo con el id: {id}");
 
-    public sealed record InvalidMatricula(int id)
-        : RepositoryError($"No se actualizar la matricula del vehiculo con el id: {id}, por que ya existe.");
+    public sealed record InvalidMatricula(string matricula)
+        : RepositoryError($"La matricula: {matricula} no es valida por que ya existe.");
+    
+    public sealed record DniDueñoError(Vehiculo Vehiculo)
+        : RepositoryError($"El vehiculo no se puede crear, el dueño con el dni: {Vehiculo.DniDueño} ha superado el maximo de vehiculos.");
+
 }
 
 public static class RepositoryErrors {
@@ -22,7 +26,11 @@ public static class RepositoryErrors {
         return new RepositoryError.IdNotFound(id);
     }
     
-    public static DomainError InvalidMatricula(int id) {
-        return new RepositoryError.InvalidMatricula(id);
+    public static DomainError InvalidMatricula(string matricula) {
+        return new RepositoryError.InvalidMatricula(matricula);
+    }
+    
+    public static DomainError DniDueñoError(Vehiculo vehiculo) {
+        return new RepositoryError.DniDueñoError(vehiculo);
     }
 }

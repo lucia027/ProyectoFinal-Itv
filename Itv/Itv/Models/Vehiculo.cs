@@ -15,6 +15,6 @@ public record Vehiculo {
     public Motor Motor { get; set; }
     public string DniDueño { get; set; } = string.Empty;
     public DateTime CreateAt { get; set; }
-    public DateTime UpdateAt { get; set; }
+    public DateTime? UpdateAt { get; set; }
     public bool IsDelete { get; set; }
 }

@@ -48,8 +48,8 @@ public static class VehiculoMapper {
             vehiculo.Cilindrada,
             vehiculo.Motor.ToString(),
             vehiculo.DniDueño,
-            vehiculo.CreateAt.ToString(DateTimeFormat),
-            vehiculo.UpdateAt.ToString(DateTimeFormat),
+            vehiculo.CreateAt.ToString(DateTimeFormat, InvariantCulture),
+            vehiculo.UpdateAt?.ToString(DateTimeFormat, InvariantCulture) ?? "No se ha actualizado",
             vehiculo.IsDelete
         );
     }

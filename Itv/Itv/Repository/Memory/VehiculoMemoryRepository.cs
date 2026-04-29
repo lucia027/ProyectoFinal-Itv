@@ -11,18 +11,29 @@ public class VehiculoMemoryRepository : IVehiculoMemoryRepository {
     private readonly ILogger _logger = Log.ForContext<VehiculoMemoryRepository>();
 
     
-    private Dictionary<int, Vehiculo> _almacenId = new();
-    private Dictionary<string, int> _almacenMatricula = new();
+    private readonly Dictionary<int, Vehiculo> _almacenId = new();
+    private readonly Dictionary<string, int> _almacenMatricula = new();
     private int _idCount;
     
-    private VehiculoMemoryRepository(bool dropData, bool seedData) {
+    public VehiculoMemoryRepository(bool dropData, bool seedData) {
         if (dropData) DeleteAll();
-        if(seedData) foreach (var v in VehiculoFactory.Seed()) Create(v);
+        if (seedData) foreach (var v in VehiculoFactory.Seed()) Create(v);
     }
 
     /// <inheritdoc cref="IVehiculoMemoryRepository.GetAll" />
-    public IEnumerable<Vehiculo> GetAll() {
-        return _almacenId.Values;
+    public IEnumerable<Vehiculo> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true) {
+        if (!isDeleteInclude) {
+            return _almacenId.Values
+                .OrderBy(v => v.Id)
+                .Where(v => v.IsDelete == false)
+                .Skip((pagina -1) * tamPagina)
+                .Take(tamPagina);
+        }
+
+        return _almacenId.Values                
+            .OrderBy(v => v.Id)
+            .Skip((pagina -1) * tamPagina)
+            .Take(tamPagina);
     }
 
     /// <inheritdoc cref="IVehiculoMemoryRepository.GetById" />
@@ -33,12 +44,16 @@ public class VehiculoMemoryRepository : IVehiculoMemoryRepository {
 
     /// <inheritdoc cref="IVehiculoMemoryRepository.Create" />
     public Result<Vehiculo, DomainError> Create(Vehiculo entity) {
-        if (_almacenMatricula.ContainsKey(entity.Matricula) || _almacenId.Values.Count(v => v.DniDueño == entity.DniDueño) >= 3) {
+        if (_almacenMatricula.ContainsKey(entity.Matricula)) {
             _logger.Debug("No se ha podido crear el vehiculo.");
-            return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.MatriculaNotFound(entity));
+            return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.InvalidMatricula(entity.Matricula));
+        }
+        if (_almacenId.Values.Count(v => v.DniDueño == entity.DniDueño) >= 3) {
+            _logger.Debug("No se ha podido crear el vehiculo.");
+            return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.DniDueñoError(entity));
         }
 
-        var vehiculo = entity with { Id = GetNewId(), IsDelete = false};
+        var vehiculo = entity with { Id = GetNewId(), CreateAt = DateTime.Today, UpdateAt = null, IsDelete = false};
         
         _almacenId.Add(vehiculo.Id, vehiculo);
         _almacenMatricula.Add(vehiculo.Matricula, vehiculo.Id);
@@ -56,10 +71,10 @@ public class VehiculoMemoryRepository : IVehiculoMemoryRepository {
         // y el coche que ya existe con esa matrícula tiene el mismo id que el vehículo proporcionado.
         if (entity.Matricula != viejo.Matricula && _almacenMatricula.TryGetValue(entity.Matricula, out var idExistente) && idExistente != id) {
             _logger.Debug("No se ha podido actualizar el vehiculo, fallo con las matriculas.");
-            return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.InvalidMatricula(id));
+            return Result.Failure<Vehiculo, DomainError>(RepositoryErrors.InvalidMatricula(entity.Matricula));
         }
 
-        var vehiculoNuevo = entity with { Id = id, IsDelete = false};
+        var vehiculoNuevo = entity with { Id = id, UpdateAt = DateTime.Today ,IsDelete = false};
 
         _almacenId[id] = vehiculoNuevo;
         // Si al final la matrícula la han cambiado solo tenemos que eliminar la que había y añadir la nueva.
