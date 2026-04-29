@@ -11,6 +11,9 @@ using Serilog;
 
 namespace Itv.Storage.Xml;
 
+/// <summary>
+/// Almacenamiento de los datos en xml para las citas.
+/// </summary>
 public class CitaXmlStorage : ICitaXmlStorage{
     
     private readonly ILogger _logger = Log.ForContext<CitaXmlStorage>();
@@ -38,7 +41,7 @@ public class CitaXmlStorage : ICitaXmlStorage{
             var dtos = serializer.Deserialize(stream) as List<CitaDto>;
             var citas =  dtos?.Select(dto => dto.ToModel());
 
-            return Result.Success<IEnumerable<Cita>, DomainError>(citas);
+            return Result.Success<IEnumerable<Cita>, DomainError>(citas!);
         }
         catch (Exception e)
         {

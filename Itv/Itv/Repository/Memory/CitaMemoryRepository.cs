@@ -7,6 +7,9 @@ using Serilog;
 
 namespace Itv.Repository.Memory;
 
+/// <summary>
+/// Repositorio en memoria para gestionar las citas.
+/// </summary>
 public class CitaMemoryRepository : ICitaMemoryRepository {
     private readonly ILogger _logger = Log.ForContext<CitaMemoryRepository>();
 

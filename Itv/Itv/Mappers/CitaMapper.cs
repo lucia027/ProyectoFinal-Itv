@@ -26,10 +26,10 @@ public static class CitaMapper {
             Cilindrada = (dto.Cilindrada < 0) ? 0 : dto.Cilindrada,
             Motor = Enum.TryParse(dto.Motor, out Motor motor) ? motor : Motor.Diesel,
             DniDueño = dto.DniDueño,
-            FechaMatriculacion = DateTime.TryParse(dto.CreateAt, InvariantCulture, out var m) ? m : DateTime.Now,
-            FechaInspeccion = DateTime.TryParse(dto.CreateAt, InvariantCulture, out var i) ? i : DateTime.Now,
+            FechaMatriculacion = DateTime.TryParse(dto.FechaMatriculacion, InvariantCulture, out var m) ? m : DateTime.Now,
+            FechaInspeccion = DateTime.TryParse(dto.FechaInspeccion, InvariantCulture, out var i) ? i : DateTime.Now,
             CreateAt = DateTime.TryParse(dto.CreateAt, InvariantCulture, out var c) ? c : DateTime.Now,
-            UpdateAt = DateTime.TryParse(dto.UpdateAt, InvariantCulture, out var u) ? u : DateTime.Now,
+            UpdateAt = DateTime.TryParse(dto.UpdateAt, InvariantCulture, out var u) ? u : null,
             IsDelete = dto.IsDelete
         };
     }

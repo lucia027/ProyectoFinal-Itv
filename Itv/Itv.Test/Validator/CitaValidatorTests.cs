@@ -3,7 +3,6 @@ using Itv.Enums;
 using Itv.Errors;
 using Itv.Models;
 using Itv.Validator;
-using NUnit.Framework;
 
 namespace Itv.Test.Validator;
 
@@ -21,9 +20,9 @@ public class CitaValidatorTests {
         private CitaValidator _validator = null!;
 
         [Test]
-        public void Validate_VehiculoValido_RetornaSuccess() {
+        public void Validate_CitaValida_RetornaSuccess() {
             //Arrange
-            var vehiculo = new Cita {
+            var cita = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -33,7 +32,7 @@ public class CitaValidatorTests {
             };
             
             //Act
-            var res = _validator.Validate(vehiculo);
+            var res = _validator.Validate(cita);
             
             //Assert
             res.IsSuccess.Should().BeTrue(); 
@@ -45,7 +44,7 @@ public class CitaValidatorTests {
         [TestCase(Motor.Gasolina)]
         public void Validate_TodosMotores_RetornaSuccess(Motor motor) {
             //Arrange
-            var vehiculo = new Cita {
+            var cita = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -55,7 +54,91 @@ public class CitaValidatorTests {
             };
             
             //Act
-            var res = _validator.Validate(vehiculo);
+            var res = _validator.Validate(cita);
+            
+            //Assert
+            res.IsSuccess.Should().BeTrue();
+        }
+
+        [Test]
+        public void Validate_FechaMatriculacionActualValida_RetornaSuccess() {
+            //Arrange
+            var cita = new Cita {
+                Matricula = "1234BBB",
+                Marca = "Toyota",
+                Modelo = "Corolla",
+                Cilindrada = 1800,
+                Motor = Motor.Diesel,
+                DniDueño = "12345678Z",
+                FechaMatriculacion = DateTime.Today,
+                FechaInspeccion = DateTime.Today
+            };
+            
+            //Act
+            var res = _validator.Validate(cita);
+            
+            //Assert
+            res.IsSuccess.Should().BeTrue();
+        }
+        
+        [Test]
+        public void Validate_FechaMatriculacionPasadaValida_RetornaSuccess() {
+            //Arrange
+            var cita = new Cita {
+                Matricula = "1234BBB",
+                Marca = "Toyota",
+                Modelo = "Corolla",
+                Cilindrada = 1800,
+                Motor = Motor.Diesel,
+                DniDueño = "12345678Z",
+                FechaMatriculacion = DateTime.Today.AddDays(-25),
+                FechaInspeccion = DateTime.Today
+            };
+            
+            //Act
+            var res = _validator.Validate(cita);
+            
+            //Assert
+            res.IsSuccess.Should().BeTrue();
+        }
+
+        [Test]
+        public void Validate_FechaInspeccionActualValida_RetornaSucces() {
+            //Arrange
+            var cita = new Cita {
+                Matricula = "1234BBB",
+                Marca = "Toyota",
+                Modelo = "Corolla",
+                Cilindrada = 1800,
+                Motor = Motor.Diesel,
+                DniDueño = "12345678Z",
+                FechaMatriculacion = DateTime.Today,
+                FechaInspeccion = DateTime.Today
+            };
+            
+            //Act
+            var res = _validator.Validate(cita);
+            
+            //Assert
+            res.IsSuccess.Should().BeTrue();
+        }
+        
+        [Test]
+        public void Validate_FechaInspeccion30DiasValida_RetornaSucces() {
+            //Arrange
+            var cita = new Cita {
+                Matricula = "1234BBB",
+                Marca = "Toyota",
+                Modelo = "Corolla",
+                Cilindrada = 1800,
+                Motor = Motor.Diesel,
+                DniDueño = "12345678Z",
+                FechaMatriculacion = DateTime.Today,
+                FechaInspeccion = DateTime.Today.AddDays(30)
+            };
+            
+            //Act
+            var res = _validator.Validate(cita);
             
             //Assert
             res.IsSuccess.Should().BeTrue();
@@ -79,7 +162,7 @@ public class CitaValidatorTests {
         [TestCase("XX1111X")]
         public void Validate_MatriculaErronea_RetornaInvalid(string matricula) {
             //Arrange
-            var vehiculo = new Cita {
+            var cita = new Cita {
                 Matricula = matricula,
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -89,11 +172,12 @@ public class CitaValidatorTests {
             };
             
             //Act
-            var res = _validator.Validate(vehiculo);
+            var res = _validator.Validate(cita);
             
             //Assert
             res.IsFailure.Should().BeTrue();
             res.Error.Should().BeOfType<CitaError.Validation>();
+            
             var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("La matricula proporcionada no cumple el formato");
         }
@@ -103,7 +187,7 @@ public class CitaValidatorTests {
         [TestCase("")]
         public void Validate_MarcaVaciaONula_RetornaInvalid(string? marca) {
             //Arrange
-            var vehiculo = new Cita {
+            var cita = new Cita {
                 Matricula = "1234BBB",
                 Marca = marca!,
                 Modelo = "Corolla",
@@ -113,11 +197,12 @@ public class CitaValidatorTests {
             };
             
             //Act
-            var res = _validator.Validate(vehiculo);
+            var res = _validator.Validate(cita);
             
             //Assert
             res.IsFailure.Should().BeTrue();
             res.Error.Should().BeOfType<CitaError.Validation>();
+            
             var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("La marca es nula o esta vacia");
         }
@@ -126,7 +211,7 @@ public class CitaValidatorTests {
         [TestCase("")]
         public void Validate_ModeloVacioONulo_RetornaInvalid(string? modelo) {
             //Arrange
-            var vehiculo = new Cita {
+            var cita = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = modelo!,
@@ -136,11 +221,12 @@ public class CitaValidatorTests {
             };
             
             //Act
-            var res = _validator.Validate(vehiculo);
+            var res = _validator.Validate(cita);
             
             //Assert
             res.IsFailure.Should().BeTrue();
             res.Error.Should().BeOfType<CitaError.Validation>();
+            
             var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("El modelo es nulo o esta vacio");
         }
@@ -148,7 +234,7 @@ public class CitaValidatorTests {
         [Test]
         public void Validate_CilindradaNegativa_RetornaInvalid() {
             //Arrange
-            var vehiculo = new Cita {
+            var cita = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -158,11 +244,12 @@ public class CitaValidatorTests {
             };
             
             //Act
-            var res = _validator.Validate(vehiculo);
+            var res = _validator.Validate(cita);
             
             //Assert
             res.IsFailure.Should().BeTrue();
             res.Error.Should().BeOfType<CitaError.Validation>();
+            
             var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("La cilindrada no puede ser negativa");
             
@@ -171,7 +258,7 @@ public class CitaValidatorTests {
         [Test]
         public void Validate_MotorInvalido_RetornaInvalid() {
             //Arrange
-            var vehiculo = new Cita {
+            var cita = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -181,11 +268,12 @@ public class CitaValidatorTests {
             };
             
             //Act
-            var res = _validator.Validate(vehiculo);
+            var res = _validator.Validate(cita);
             
             //Assert
             res.IsFailure.Should().BeTrue();
             res.Error.Should().BeOfType<CitaError.Validation>();
+            
             var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("El tipo de motor no es valido");
         }
@@ -196,7 +284,7 @@ public class CitaValidatorTests {
         [TestCase("1234567Z")]
         public void Validate_DniInvalido_RetornaInvalid(string dni) {
             //Arrange
-            var vehiculo = new Cita {
+            var cita = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -206,7 +294,7 @@ public class CitaValidatorTests {
             };
             
             //Act
-            var res = _validator.Validate(vehiculo);
+            var res = _validator.Validate(cita);
             
             //Assert
             res.IsFailure.Should().BeTrue();
@@ -214,6 +302,56 @@ public class CitaValidatorTests {
             
             var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("El dni del dueño no cumple el formato");
+        }
+        
+        [Test]
+        public void Validate_FechaMatriculacionFutura_RetornaFallo() {
+            //Arrange
+            var cita = new Cita {
+                Matricula = "1234BBB",
+                Marca = "Toyota",
+                Modelo = "Corolla",
+                Cilindrada = 1800,
+                Motor = Motor.Diesel,
+                DniDueño = "12345678Z",
+                FechaMatriculacion = DateTime.Today.AddDays(1),
+                FechaInspeccion = DateTime.Today
+            };
+            
+            //Act
+            var res = _validator.Validate(cita);
+            
+            //Assert
+            res.IsFailure.Should().BeTrue();
+            res.Error.Should().BeOfType<CitaError.Validation>();
+
+            var validationError = res.Error as CitaError.Validation;
+            validationError!.Errores.Should().Contain("La fecha de matriculacion no puede estar en futuro.");
+        }
+        
+        [Test]
+        public void Validate_FechaInspeccionMas30Dias_RetornaFallo() {
+            //Arrange
+            var cita = new Cita {
+                Matricula = "1234BBB",
+                Marca = "Toyota",
+                Modelo = "Corolla",
+                Cilindrada = 1800,
+                Motor = Motor.Diesel,
+                DniDueño = "12345678Z",
+                FechaMatriculacion = DateTime.Today,
+                FechaInspeccion = DateTime.Today.AddDays(31)
+            };
+            
+            //Act
+            var res = _validator.Validate(cita);
+            
+            //Assert
+            res.IsFailure.Should().BeTrue();
+            res.Error.Should().BeOfType<CitaError.Validation>();
+
+            var validationError = res.Error as CitaError.Validation;
+            validationError!.Errores.Should().Contain("La fecha de inspeccion no puede ser superior a 30 dias.");
         }
     }
 }

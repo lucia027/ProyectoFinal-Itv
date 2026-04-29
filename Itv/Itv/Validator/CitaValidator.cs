@@ -38,6 +38,12 @@ public class
         if (!Regex.IsMatch(entity.DniDueño, regexDni) || !ComprobarDniValido(entity.DniDueño)) {
             errores.Add("El dni del dueño no cumple el formato");
         }
+        if (entity.FechaMatriculacion > DateTime.Today) {
+            errores.Add("La fecha de matriculacion no puede estar en futuro.");
+        }
+        if (entity.FechaInspeccion > DateTime.Today.AddDays(30)) {
+            errores.Add("La fecha de inspeccion no puede ser superior a 30 dias.");
+        }
 
         if (errores.Any()) return Result.Failure<Cita, DomainError>(CitaErrors.Validation(errores));
         return Result.Success<Cita, DomainError>(entity);

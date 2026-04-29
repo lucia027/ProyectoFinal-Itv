@@ -15,8 +15,8 @@ public record CitaDto(
     [property: XmlAttribute("cilindrada")] int Cilindrada,
     [property: XmlAttribute("motor")] string Motor,
     [property: XmlAttribute("dniDueño")] string DniDueño,
-    [property: XmlAttribute("CreateAt")] string FechaMatriculacion,
-    [property: XmlAttribute("CreateAt")] string FechaInspeccion,
+    [property: XmlAttribute("FechaMatriculacion")] string FechaMatriculacion,
+    [property: XmlAttribute("FechaInspeccion")] string FechaInspeccion,
     [property: XmlAttribute("CreateAt")] string CreateAt,
     [property: XmlAttribute("UpdateAt")] string UpdateAt,
     [property: XmlAttribute("isDelete")] bool IsDelete

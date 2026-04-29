@@ -1,10 +1,8 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Itv.Dto;
 using Itv.Enums;
 using Itv.Mappers;
 using Itv.Models;
-using NUnit.Framework;
 
 namespace Itv.Test.Mappers;
 
@@ -12,7 +10,7 @@ namespace Itv.Test.Mappers;
 public class CitaMapperTests {
     
     [TestFixture]
-    public sealed class CasosValidos() {
+    public sealed class CasosValidos {
 
         [SetUp]
         public void Setup() {
@@ -47,7 +45,7 @@ public class CitaMapperTests {
         private CitaDto _citaDto = null!;
 
         [Test]
-        public void ToModel_VehiculoDto_ConvierteCorrectamente() {
+        public void ToModel_CitaDto_ConvierteCorrectamente() {
             //Act
             var res = _citaDto.ToModel();
             
@@ -63,7 +61,7 @@ public class CitaMapperTests {
         }
 
         [Test]
-        public void ToDto_Vehiculo_ConvierteCorrectamente() {
+        public void ToDto_Cita_ConvierteCorrectamente() {
             //Act
             var res = _cita.ToDto();
             
@@ -80,12 +78,12 @@ public class CitaMapperTests {
     }
 
     [TestFixture]
-    public sealed class CasosInvalidos() {
+    public sealed class CasosInvalidos {
 
         [Test]
-        public void ToModel_VehiculoDtoInvalido_ConvierteValoresPorDefecto() {
+        public void ToModel_CitaDtoInvalido_ConvierteValoresPorDefecto() {
             //Arrange
-            var vehiculoDto = new CitaDto {
+            var citaDto = new CitaDto {
                 Id = 1,
                 Matricula = "1234BBB",
                 Marca = "Toyota",
@@ -99,7 +97,7 @@ public class CitaMapperTests {
             };
             
             //Act
-            var res = vehiculoDto.ToModel();
+            var res = citaDto.ToModel();
             
             //Assert
             res.Should().NotBeNull();

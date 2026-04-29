@@ -12,6 +12,9 @@ using Serilog;
 
 namespace Itv.Storage.Json;
 
+/// <summary>
+/// Almacenamiento de los datos en json para las citas.
+/// </summary>
 public class CitaJsonStorage : ICitaJsonStorage {
     private readonly ILogger _logger = Log.ForContext<CitaJsonStorage>();
 

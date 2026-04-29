@@ -10,6 +10,9 @@ using Serilog;
 
 namespace Itv.Storage.Csv;
 
+/// <summary>
+/// Almacenamiento de los datos en csv para las citas.
+/// </summary>
 public class CitaCsvStorage : ICitaCsvStorage {
     
     private ILogger _logger = Log.Logger.ForContext<CitaCsvStorage>();
@@ -18,6 +21,7 @@ public class CitaCsvStorage : ICitaCsvStorage {
         InitStorage();
     }
 
+    /// <inheritdoc cref="ICitaCsvStorage.Cargar" />
     public Result<IEnumerable<Cita>, DomainError> Cargar(string path) {
 
         if (!Path.Exists(path)) {
@@ -49,15 +53,16 @@ public class CitaCsvStorage : ICitaCsvStorage {
         }    
     }
 
+    /// <inheritdoc cref="ICitaCsvStorage.Salvar" />
     public Result<bool, DomainError> Salvar(IEnumerable<Cita> items, string path) {
         try {
             _logger.Debug("Intentando salvar los datos en formato csv.");
             using var writer = new StreamWriter(path, false, Encoding.UTF8);
-            writer.WriteLine("Id;Matricula;Marca;Modelo;Cilindrada;Motor;DniDueño;CreateAt;UpdateAt;IsDelete");
+            writer.WriteLine("Id;Matricula;Marca;Modelo;Cilindrada;Motor;DniDueño;FechaMatriculacion;FechaInspeccion;CreateAt;UpdateAt;IsDelete");
 
             foreach (var v in items) {
                 var dto = v.ToDto();
-                writer.WriteLine($"{dto.Id};{dto.Matricula};{dto.Marca};{dto.Modelo};{dto.Cilindrada};{dto.Motor};{dto.DniDueño};;{dto.CreateAt};{dto.UpdateAt}{dto.IsDelete}");
+                writer.WriteLine($"{dto.Id};{dto.Matricula};{dto.Marca};{dto.Modelo};{dto.Cilindrada};{dto.Motor};{dto.DniDueño};{dto.FechaMatriculacion};{dto.FechaInspeccion};{dto.CreateAt};{dto.UpdateAt};{dto.IsDelete}");
             }
 
             return Result.Success<bool, DomainError>(true);
@@ -66,7 +71,11 @@ public class CitaCsvStorage : ICitaCsvStorage {
             return Result.Failure<bool, DomainError>(StorageErrors.WriteError(e.Message));
         }        
     }
-
+    
+    /// <summary>
+    /// Comprueba que exista el directorio donde almacenar el archivo de datos,
+    /// en caso de que no exista lo crea.
+    /// </summary>
     private void InitStorage() {
         if (Directory.Exists(Configuracion.DataFolder)) return;
         Directory.CreateDirectory(Configuracion.DataFolder);

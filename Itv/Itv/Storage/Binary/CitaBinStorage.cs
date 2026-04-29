@@ -9,6 +9,9 @@ using Serilog;
 
 namespace Itv.Storage.Binary;
 
+/// <summary>
+/// Almacenamiento de los datos en binario secuencial para las citas.
+/// </summary>
 public class CitaBinStorage : ICitaBinStorage {
 
     private readonly ILogger _logger = Log.ForContext<CitaBinStorage>();
@@ -72,6 +75,8 @@ public class CitaBinStorage : ICitaBinStorage {
                 writer.Write(v.Cilindrada);
                 writer.Write(v.Motor);
                 writer.Write(v.DniDueño);
+                writer.Write(v.FechaMatriculacion);
+                writer.Write(v.FechaInspeccion);
                 writer.Write(v.CreateAt);
                 writer.Write(v.UpdateAt);
                 writer.Write(v.IsDelete);
