@@ -3,4 +3,4 @@ using Itv.Repository.Common;
 
 namespace Itv.Repository.Memory;
 
-public interface IVehiculoMemoryRepository : IVehiculoRepository<int, Vehiculo> { }
+public interface ICitaMemoryRepository : ICitaRepository<int, Cita> { }

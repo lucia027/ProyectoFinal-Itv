@@ -8,22 +8,22 @@ using NUnit.Framework;
 namespace Itv.Test.Validator;
 
 [TestFixture]
-public class VehiculoValidatorTests {
+public class CitaValidatorTests {
 
     [TestFixture]
     public sealed class CasosValidos {
 
         [SetUp]
         public void SetUp() {
-            _validator = new VehiculoValidator();
+            _validator = new CitaValidator();
         }
 
-        private VehiculoValidator _validator = null!;
+        private CitaValidator _validator = null!;
 
         [Test]
         public void Validate_VehiculoValido_RetornaSuccess() {
             //Arrange
-            var vehiculo = new Vehiculo {
+            var vehiculo = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -45,7 +45,7 @@ public class VehiculoValidatorTests {
         [TestCase(Motor.Gasolina)]
         public void Validate_TodosMotores_RetornaSuccess(Motor motor) {
             //Arrange
-            var vehiculo = new Vehiculo {
+            var vehiculo = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -67,10 +67,10 @@ public class VehiculoValidatorTests {
         
         [SetUp]
         public void SetUp() {
-            _validator = new VehiculoValidator();
+            _validator = new CitaValidator();
         }
 
-        private VehiculoValidator _validator = null!;
+        private CitaValidator _validator = null!;
 
 
         [TestCase("XXXXXXX")]
@@ -79,7 +79,7 @@ public class VehiculoValidatorTests {
         [TestCase("XX1111X")]
         public void Validate_MatriculaErronea_RetornaInvalid(string matricula) {
             //Arrange
-            var vehiculo = new Vehiculo {
+            var vehiculo = new Cita {
                 Matricula = matricula,
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -93,8 +93,8 @@ public class VehiculoValidatorTests {
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Should().BeOfType<VehiculoError.Validation>();
-            var validationError = res.Error as VehiculoError.Validation;
+            res.Error.Should().BeOfType<CitaError.Validation>();
+            var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("La matricula proporcionada no cumple el formato");
         }
 
@@ -103,7 +103,7 @@ public class VehiculoValidatorTests {
         [TestCase("")]
         public void Validate_MarcaVaciaONula_RetornaInvalid(string? marca) {
             //Arrange
-            var vehiculo = new Vehiculo {
+            var vehiculo = new Cita {
                 Matricula = "1234BBB",
                 Marca = marca!,
                 Modelo = "Corolla",
@@ -117,8 +117,8 @@ public class VehiculoValidatorTests {
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Should().BeOfType<VehiculoError.Validation>();
-            var validationError = res.Error as VehiculoError.Validation;
+            res.Error.Should().BeOfType<CitaError.Validation>();
+            var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("La marca es nula o esta vacia");
         }
         
@@ -126,7 +126,7 @@ public class VehiculoValidatorTests {
         [TestCase("")]
         public void Validate_ModeloVacioONulo_RetornaInvalid(string? modelo) {
             //Arrange
-            var vehiculo = new Vehiculo {
+            var vehiculo = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = modelo!,
@@ -140,15 +140,15 @@ public class VehiculoValidatorTests {
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Should().BeOfType<VehiculoError.Validation>();
-            var validationError = res.Error as VehiculoError.Validation;
+            res.Error.Should().BeOfType<CitaError.Validation>();
+            var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("El modelo es nulo o esta vacio");
         }
 
         [Test]
         public void Validate_CilindradaNegativa_RetornaInvalid() {
             //Arrange
-            var vehiculo = new Vehiculo {
+            var vehiculo = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -162,8 +162,8 @@ public class VehiculoValidatorTests {
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Should().BeOfType<VehiculoError.Validation>();
-            var validationError = res.Error as VehiculoError.Validation;
+            res.Error.Should().BeOfType<CitaError.Validation>();
+            var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("La cilindrada no puede ser negativa");
             
         }
@@ -171,7 +171,7 @@ public class VehiculoValidatorTests {
         [Test]
         public void Validate_MotorInvalido_RetornaInvalid() {
             //Arrange
-            var vehiculo = new Vehiculo {
+            var vehiculo = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -185,8 +185,8 @@ public class VehiculoValidatorTests {
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Should().BeOfType<VehiculoError.Validation>();
-            var validationError = res.Error as VehiculoError.Validation;
+            res.Error.Should().BeOfType<CitaError.Validation>();
+            var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("El tipo de motor no es valido");
         }
 
@@ -196,7 +196,7 @@ public class VehiculoValidatorTests {
         [TestCase("1234567Z")]
         public void Validate_DniInvalido_RetornaInvalid(string dni) {
             //Arrange
-            var vehiculo = new Vehiculo {
+            var vehiculo = new Cita {
                 Matricula = "1234BBB",
                 Marca = "Toyota",
                 Modelo = "Corolla",
@@ -210,9 +210,9 @@ public class VehiculoValidatorTests {
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Should().BeOfType<VehiculoError.Validation>();
+            res.Error.Should().BeOfType<CitaError.Validation>();
             
-            var validationError = res.Error as VehiculoError.Validation;
+            var validationError = res.Error as CitaError.Validation;
             validationError!.Errores.Should().Contain("El dni del dueño no cumple el formato");
         }
     }

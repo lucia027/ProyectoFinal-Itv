@@ -303,7 +303,7 @@ var assemblies = [
       { "name": "Itv.Errors.VehiculoErrors", "rp": "Itv_VehiculoErrors.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 22, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Factory.VehiculoFactory", "rp": "Itv_VehiculoFactory.html", "cl": 0, "ucl": 57, "cal": 57, "tl": 66, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Mappers.VehiculoMapper", "rp": "Itv_VehiculoMapper.html", "cl": 29, "ucl": 0, "cal": 29, "tl": 56, "cb": 10, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "Itv.Models.Vehiculo", "rp": "Itv_Vehiculo.html", "cl": 10, "ucl": 0, "cal": 10, "tl": 20, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "Itv.Models.Cita", "rp": "Itv_Cita.html", "cl": 10, "ucl": 0, "cal": 10, "tl": 20, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Repository.Memory.VehiculoMemoryRepository", "rp": "Itv_VehiculoMemoryRepository.html", "cl": 92, "ucl": 19, "cal": 111, "tl": 130, "cb": 36, "tb": 66, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Storage.Binary.VehiculoBinStorage", "rp": "Itv_VehiculoBinStorage.html", "cl": 56, "ucl": 3, "cal": 59, "tl": 95, "cb": 7, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Storage.Csv.VehiculoCsvStorage", "rp": "Itv_VehiculoCsvStorage.html", "cl": 42, "ucl": 3, "cal": 45, "tl": 72, "cb": 5, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -325,13 +325,13 @@ var riskHotspotMetrics = [
 
 var riskHotspots = [
   {
-    "assembly": "Itv", "class": "Itv.Repository.Memory.VehiculoMemoryRepository", "reportPath": "Itv_VehiculoMemoryRepository.html", "methodName": "Update(System.Int32,Itv.Models.Vehiculo)", "methodShortName": "Update(...)", "fileIndex": 0, "line": 59,
+    "assembly": "Itv", "class": "Itv.Repository.Memory.VehiculoMemoryRepository", "reportPath": "Itv_VehiculoMemoryRepository.html", "methodName": "Update(System.Int32,Itv.Models.Cita)", "methodShortName": "Update(...)", "fileIndex": 0, "line": 59,
     "metrics": [
       { "value": 110, "exceeded": true },
       { "value": 10, "exceeded": false },
     ]},
   {
-    "assembly": "Itv", "class": "Itv.Validator.VehiculoValidator", "reportPath": "Itv_VehiculoValidator.html", "methodName": "Validate(Itv.Models.Vehiculo)", "methodShortName": "Validate(...)", "fileIndex": 0, "line": 17,
+    "assembly": "Itv", "class": "Itv.Validator.VehiculoValidator", "reportPath": "Itv_VehiculoValidator.html", "methodName": "Validate(Itv.Models.Cita)", "methodShortName": "Validate(...)", "fileIndex": 0, "line": 17,
     "metrics": [
       { "value": 16, "exceeded": false },
       { "value": 16, "exceeded": true },

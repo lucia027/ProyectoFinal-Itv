@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using Itv.Enums;
 using Itv.Errors;
@@ -11,10 +8,12 @@ using Itv.Validator.Common;
 
 namespace Itv.Validator;
 
-public class VehiculoValidator : IValidator<Vehiculo> {
+public class 
+    
+    CitaValidator : IValidator<Cita> {
     
     /// <inheritdoc cref="IValidator.Validate" />
-    public Result<Vehiculo, DomainError> Validate(Vehiculo entity) {
+    public Result<Cita, DomainError> Validate(Cita entity) {
         
         var regexMatricula = @"^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$";
         var regexDni = @"^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$";
@@ -40,12 +39,12 @@ public class VehiculoValidator : IValidator<Vehiculo> {
             errores.Add("El dni del dueño no cumple el formato");
         }
 
-        if (errores.Any()) return Result.Failure<Vehiculo, DomainError>(VehiculoErrors.Validation(errores));
-        return Result.Success<Vehiculo, DomainError>(entity);
+        if (errores.Any()) return Result.Failure<Cita, DomainError>(CitaErrors.Validation(errores));
+        return Result.Success<Cita, DomainError>(entity);
     }
 
     /// <summary>
-    /// Valida que el dni proporcionado cumpla el calculo de numeros y letra.
+    /// Válida que el dni proporcionado cumpla el cálculo de numeros y letra.
     /// </summary>
     /// <param name="dni">DNi proporcionado.</param>
     /// <returns>Verdadero en caso correcto y false en contrario.</returns>

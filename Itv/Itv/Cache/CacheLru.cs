@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Serilog;
 
 namespace Itv.Cache;
@@ -52,7 +50,7 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
     /// <inheritdoc cref="ICache{TKey,TValue}.Get" />
     public TValue? Get(TKey key) {
         if (!_datos.TryGetValue(key, out var value)) {
-            _logger.Debug($"No se ha enconctrado la clave: {key} en la cache.");
+            _logger.Debug($"No se ha encontrado la clave: {key} en la cache.");
             return default;
         }
 
@@ -65,7 +63,7 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
     /// <inheritdoc cref="ICache{TKey,TValue}.Remove" />
     public bool Remove(TKey key) {
         if (!_datos.Remove(key)) {
-            _logger.Debug($"No se ha enconctrado la clave: {key} en la cache.");
+            _logger.Debug($"No se ha encontrado la clave: {key} en la cache.");
             return false;
         }
 

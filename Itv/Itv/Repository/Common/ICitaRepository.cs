@@ -3,9 +3,11 @@ using Itv.Errors.Common;
 
 namespace Itv.Repository.Common;
 
-public interface IVehiculoRepository<in TKey, TEntity> where TEntity : class {
+/// <summary>
+/// Contrato generico con las operaciones CRUD.
+/// </summary>
+public interface ICitaRepository<in TKey, TEntity> where TEntity : class {
     
-     
     /// <summary>
     /// Devuelve todas las entidades del almacen.
     /// </summary>
@@ -42,14 +44,14 @@ public interface IVehiculoRepository<in TKey, TEntity> where TEntity : class {
     Result<TEntity, DomainError> Delete(TKey id);
     
     /// <summary>
-    /// Elimina permanentemente un vehiculo del almacen.
+    /// Elimina permanentemente una cita del almacen.
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
     Result<TEntity, DomainError> DeleteHard(int id);
 
     /// <summary>
-    /// Elimina todos los vehiculos del alamcen;
+    /// Elimina todas las citas del almacen;
     /// </summary>
     /// <returns>Verdadero al eliminarlos.</returns>
     bool DeleteAll();

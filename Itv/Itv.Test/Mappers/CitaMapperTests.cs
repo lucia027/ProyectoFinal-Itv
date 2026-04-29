@@ -9,14 +9,14 @@ using NUnit.Framework;
 namespace Itv.Test.Mappers;
 
 [TestFixture]
-public class VehiculoMapperTests {
+public class CitaMapperTests {
     
     [TestFixture]
     public sealed class CasosValidos() {
 
         [SetUp]
         public void Setup() {
-            _vehiculo = new Vehiculo {
+            _cita = new Cita {
                 Id= 1,
                 Matricula = "1234BBB",
                 Marca = "Toyota",
@@ -29,7 +29,7 @@ public class VehiculoMapperTests {
                 IsDelete = false
             };
 
-            _vehiculoDto = new VehiculoDto {
+            _citaDto = new CitaDto {
                 Id= 2,
                 Matricula = "1234BBB",
                 Marca = "Toyota",
@@ -43,13 +43,13 @@ public class VehiculoMapperTests {
             };
         }
 
-        private Vehiculo _vehiculo = null!;
-        private VehiculoDto _vehiculoDto = null!;
+        private Cita _cita = null!;
+        private CitaDto _citaDto = null!;
 
         [Test]
         public void ToModel_VehiculoDto_ConvierteCorrectamente() {
             //Act
-            var res = _vehiculoDto.ToModel();
+            var res = _citaDto.ToModel();
             
             //Assert
             res.Should().NotBeNull();
@@ -65,7 +65,7 @@ public class VehiculoMapperTests {
         [Test]
         public void ToDto_Vehiculo_ConvierteCorrectamente() {
             //Act
-            var res = _vehiculo.ToDto();
+            var res = _cita.ToDto();
             
             //Arrange
             res.Should().NotBeNull();
@@ -85,7 +85,7 @@ public class VehiculoMapperTests {
         [Test]
         public void ToModel_VehiculoDtoInvalido_ConvierteValoresPorDefecto() {
             //Arrange
-            var vehiculoDto = new VehiculoDto {
+            var vehiculoDto = new CitaDto {
                 Id = 1,
                 Matricula = "1234BBB",
                 Marca = "Toyota",

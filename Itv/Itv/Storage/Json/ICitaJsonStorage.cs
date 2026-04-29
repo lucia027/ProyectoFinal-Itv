@@ -3,4 +3,4 @@ using Itv.Storage.Common;
 
 namespace Itv.Storage.Json;
 
-public interface IVehiculoJsonStorage : IStorage<Vehiculo> { }
+public interface ICitaJsonStorage : IStorage<Cita> { }

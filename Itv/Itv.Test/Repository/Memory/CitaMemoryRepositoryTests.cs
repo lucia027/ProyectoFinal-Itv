@@ -6,23 +6,23 @@ using Itv.Repository.Memory;
 namespace Itv.Test.Repository.Memory;
 
 [TestFixture]
-public class VehiculoMemoryRepositoryTests {
+public class CitaMemoryRepositoryTests {
 
     [TestFixture]
     public class CasosValidos {
         [SetUp]
         public void SetUp() {
-            _repository = new VehiculoMemoryRepository(true, false);
+            _repository = new CitaMemoryRepository(true, false);
         }
 
-        private VehiculoMemoryRepository _repository = null!;
+        private CitaMemoryRepository _repository = null!;
 
         [Test]
         public void GetAll_ConEliminados_RetornaListadoEliminados() {
             //Arrange
-            var v = _repository.Create(new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
+            var v = _repository.Create(new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
             _repository.Delete(v.Value.Id);
-            _repository.Create(new Vehiculo { Id = 2, Matricula = "5432BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
+            _repository.Create(new Cita { Id = 2, Matricula = "5432BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
             
             //Act
             var res = _repository.GetAll();
@@ -37,9 +37,9 @@ public class VehiculoMemoryRepositoryTests {
         [Test]
         public void GetAll_SinEliminados_RetornaNoEliminados() {
             //Arrange
-            var vehiculo = _repository.Create(new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
+            var vehiculo = _repository.Create(new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
             _repository.Delete(vehiculo.Value.Id);
-            _repository.Create(new Vehiculo { Id = 2, Matricula = "5432BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
+            _repository.Create(new Cita { Id = 2, Matricula = "5432BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
             
             //Act
             var res = _repository.GetAll(1, 1, false);
@@ -53,7 +53,7 @@ public class VehiculoMemoryRepositoryTests {
         [Test]
         public void GetById_VehiculoYaCreado_RetornaVehiculo() {
             //Arrange
-            var vehiculo = new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = true };
+            var vehiculo = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = true };
             vehiculo = _repository.Create(vehiculo).Value;
             
             //Act
@@ -68,7 +68,7 @@ public class VehiculoMemoryRepositoryTests {
         [Test]
         public void Create_VehiculoValido_CreaElVehiculo() {
             //Arrange
-            var vehiculo = new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = true };
+            var vehiculo = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = true };
             
             //Act
             var res = _repository.Create(vehiculo);
@@ -85,9 +85,9 @@ public class VehiculoMemoryRepositoryTests {
         [Test]
         public void Update_VehiculoValido_ActualizaVehiculo() {
             //Arrange
-            var vehiculo = new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
+            var vehiculo = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
             vehiculo  = _repository.Create(vehiculo).Value;
-            var vehiculoNuevo = new Vehiculo { Id = 1, Matricula = "4321BBB", Marca = "nuevo", Modelo = "nuevo", Cilindrada = 500, Motor = Motor.Hibrido, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
+            var vehiculoNuevo = new Cita { Id = 1, Matricula = "4321BBB", Marca = "nuevo", Modelo = "nuevo", Cilindrada = 500, Motor = Motor.Hibrido, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
 
 
             //Act
@@ -104,7 +104,7 @@ public class VehiculoMemoryRepositoryTests {
 
         [Test]
         public void Delete_VehiculoValido_MarcaVehiculoEliminado() {
-            var vehiculo = new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
+            var vehiculo = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
             vehiculo  = _repository.Create(vehiculo).Value;
             
             //Act
@@ -121,7 +121,7 @@ public class VehiculoMemoryRepositoryTests {
         
         [Test]
         public void Delete_VehiculoValido_EliminaVehiculo() {
-            var vehiculo = new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
+            var vehiculo = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
             vehiculo  = _repository.Create(vehiculo).Value;
             
             //Act
@@ -138,8 +138,8 @@ public class VehiculoMemoryRepositoryTests {
         [Test]
         public void DeleteAll_VehiculosValidos_EliminaTodos() {
             //Arrange
-            var vehiculo1 = new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
-            var vehiculo2 = new Vehiculo { Id = 2, Matricula = "4321BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var vehiculo1 = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var vehiculo2 = new Cita { Id = 2, Matricula = "4321BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
             _repository.Create(vehiculo1);
             _repository.Create(vehiculo2);
 
@@ -157,10 +157,10 @@ public class VehiculoMemoryRepositoryTests {
     public class CasosInvalidos {
         [SetUp]
         public void SetUp() {
-            _repository = new VehiculoMemoryRepository(true, false);
+            _repository = new CitaMemoryRepository(true, false);
         }
 
-        private VehiculoMemoryRepository _repository;
+        private CitaMemoryRepository _repository;
 
         [Test]
         public void GetAll_AlmacenVacio_RetornaVacio() {
@@ -178,13 +178,13 @@ public class VehiculoMemoryRepositoryTests {
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Message.Contains("No se puede encontrar el vehiculo con el id").Should().BeTrue();
+            res.Error.Message.Contains("No se puede encontrar el cita con el id").Should().BeTrue();
         }
 
         [Test]
         public void Create_MatriculaInvalida_RetornaFallo() {
             //Arrange
-            var vehiculo = new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var vehiculo = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
             _repository.Create(vehiculo);
             
             //Act
@@ -198,10 +198,10 @@ public class VehiculoMemoryRepositoryTests {
         [Test]
         public void Create_DniDueñoRepetido_RetornaFallo() {
             //Assert
-            var vehiculo1 = new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
-            var vehiculo2 = new Vehiculo { Id = 1, Matricula = "4321BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
-            var vehiculo3 = new Vehiculo { Id = 1, Matricula = "1324BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
-            var vehiculoFallo = new Vehiculo { Id = 1, Matricula = "2413BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var vehiculo1 = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var vehiculo2 = new Cita { Id = 1, Matricula = "4321BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var vehiculo3 = new Cita { Id = 1, Matricula = "1324BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var vehiculoFallo = new Cita { Id = 1, Matricula = "2413BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
             _repository.Create(vehiculo1);
             _repository.Create(vehiculo2);
             _repository.Create(vehiculo3);
@@ -218,21 +218,21 @@ public class VehiculoMemoryRepositoryTests {
         [Test]
         public void Update_VehiculoInexistente_RetornaFallo() {
             //Arrange
-            var vehiculo = new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var vehiculo = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
             
             //Act
             var res = _repository.Update(66, vehiculo);
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Message.Contains("No se puede encontrar el vehiculo con el id").Should().BeTrue();
+            res.Error.Message.Contains("No se puede encontrar el cita con el id").Should().BeTrue();
         }
         
         [Test]
         public void Update_VehiculoMatriculaRepetida_RetornaFallo() {
             //Arrange
-            var vehiculo1 = new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
-            var vehiculo2 = new Vehiculo { Id = 1, Matricula = "4321BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var vehiculo1 = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var vehiculo2 = new Cita { Id = 1, Matricula = "4321BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
             _repository.Create(vehiculo1);
             vehiculo2 = _repository.Create(vehiculo2).Value;
             
@@ -251,7 +251,7 @@ public class VehiculoMemoryRepositoryTests {
             var res = _repository.Delete(66);
 
             res.IsFailure.Should().BeTrue();
-            res.Error.Message.Contains("No se puede encontrar el vehiculo con el id").Should().BeTrue();
+            res.Error.Message.Contains("No se puede encontrar el cita con el id").Should().BeTrue();
         }
         
         [Test]
@@ -260,7 +260,7 @@ public class VehiculoMemoryRepositoryTests {
             var res = _repository.DeleteHard(66);
 
             res.IsFailure.Should().BeTrue();
-            res.Error.Message.Contains("No se puede encontrar el vehiculo con el id").Should().BeTrue();
+            res.Error.Message.Contains("No se puede encontrar el cita con el id").Should().BeTrue();
         }
     }
 }

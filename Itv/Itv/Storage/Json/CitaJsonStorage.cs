@@ -12,8 +12,8 @@ using Serilog;
 
 namespace Itv.Storage.Json;
 
-public class VehiculoJsonStorage : IVehiculoJsonStorage {
-    private readonly ILogger _logger = Log.ForContext<VehiculoJsonStorage>();
+public class CitaJsonStorage : ICitaJsonStorage {
+    private readonly ILogger _logger = Log.ForContext<CitaJsonStorage>();
 
     private readonly JsonSerializerOptions _options = new() {
         WriteIndented = true,
@@ -23,32 +23,32 @@ public class VehiculoJsonStorage : IVehiculoJsonStorage {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping 
     };
     
-    public VehiculoJsonStorage() {
+    public CitaJsonStorage() {
         InitStorage();
     }
     
-    /// <inheritdoc cref="IVehiculoJsonStorage.Cargar" />
-    public Result<IEnumerable<Vehiculo>, DomainError> Cargar(string path) {
+    /// <inheritdoc cref="ICitaJsonStorage.Cargar" />
+    public Result<IEnumerable<Cita>, DomainError> Cargar(string path) {
         if (!Path.Exists(path)) {
             _logger.Debug("Intentando cargar los datos en formato json.");
-            return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.FileNotFound(path));
+            return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.FileNotFound(path));
         }
 
         try {
             var json = File.ReadAllText(path, Encoding.UTF8);
-            var dtos = JsonSerializer.Deserialize<List<VehiculoDto>>(json, _options);
+            var dtos = JsonSerializer.Deserialize<List<CitaDto>>(json, _options);
 
             if (dtos == null) {
-                return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.InvalidFormat("Los dtos no se han podido deserializar."));
+                return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.InvalidFormat("Los dtos no se han podido deserializar."));
             }
-            return Result.Success<IEnumerable<Vehiculo>, DomainError>(dtos.Select(v => v.ToModel()));
+            return Result.Success<IEnumerable<Cita>, DomainError>(dtos.Select(v => v.ToModel()));
         } catch (Exception e) {
-            return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.ReadError(e.Message));
+            return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.ReadError(e.Message));
         }
     }
 
-    /// <inheritdoc cref="IVehiculoJsonStorage.Salvar" />
-    public Result<bool, DomainError> Salvar(IEnumerable<Vehiculo> items, string path) {
+    /// <inheritdoc cref="ICitaJsonStorage.Salvar" />
+    public Result<bool, DomainError> Salvar(IEnumerable<Cita> items, string path) {
         try {
             var dtos = items
                 .Select(i => i.ToDto())

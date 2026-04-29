@@ -3,4 +3,4 @@ using Itv.Storage.Common;
 
 namespace Itv.Storage.Xml;
 
-public interface IVehiculoXmlStorage : IStorage<Vehiculo> { }
+public interface ICitaXmlStorage : IStorage<Cita> { }

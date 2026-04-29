@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using FluentAssertions;
 using Itv.Enums;
 using Itv.Models;
-using Itv.Storage.Csv;
+using Itv.Storage.Xml;
 using NUnit.Framework;
 
-namespace Itv.Test.Storage.Csv;
+namespace Itv.Test.Storage.Xml;
 
 [TestFixture]
-public class VehiculoCsvStorageTests {
+public class CitaXmlStorageTests {
 
     [TestFixture]
     public sealed class CasosValidos {
@@ -25,19 +24,19 @@ public class VehiculoCsvStorageTests {
 
         [SetUp]
         public void Setup() {
-            _storage = new VehiculoCsvStorage();
-            _tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.csv");
+            _storage = new CitaXmlStorage();
+            _tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.xml");
         }
 
-        private VehiculoCsvStorage _storage = null!;
+        private CitaXmlStorage _storage = null!;
         private string _tempPath;
 
         [Test]
         public void Salvar_DatosExistentes_SalvaDatos() {
             //Arrange
-            var vehiculos = new List<Vehiculo>() {
-                new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
-                new Vehiculo { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
+            var vehiculos = new List<Cita>() {
+                new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
+                new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
             };
             
             //Act
@@ -51,8 +50,8 @@ public class VehiculoCsvStorageTests {
         [Test]
         public void Salvar_VehiculoValido_RetornaMismoVehiculo() {
             //Arrange
-            var vehiculos = new List<Vehiculo>() {
-                new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
+            var vehiculos = new List<Cita>() {
+                new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
             };
             _storage.Salvar(vehiculos, _tempPath);
             
@@ -61,7 +60,7 @@ public class VehiculoCsvStorageTests {
             
             //Assert
             res.IsSuccess.Should().BeTrue();
-            res.Value.First().Should().BeOfType<Vehiculo>();
+            res.Value.First().Should().BeOfType<Cita>();
             res.Value.First().Id.Should().Be(1);
             res.Value.First().Matricula.Should().Be("1234BBB");
             res.Value.First().Marca.Should().Be("Toyota");
@@ -75,7 +74,7 @@ public class VehiculoCsvStorageTests {
         [Test]
         public void Salvar_ListaVacia_SalvaListaVacia() {
             //Assert
-            var vehiculos = new List<Vehiculo>();
+            var vehiculos = new List<Cita>();
             
             //Act
             var res = _storage.Salvar(vehiculos, _tempPath);
@@ -88,7 +87,7 @@ public class VehiculoCsvStorageTests {
         [Test]
         public void Cargar_ListaVacia_RetornaListaVacia() {
             //Arrange
-            var vehiculos = new List<Vehiculo>();
+            var vehiculos = new List<Cita>();
             _storage.Salvar(vehiculos, _tempPath);
             
             //Act
@@ -102,9 +101,9 @@ public class VehiculoCsvStorageTests {
         [Test]
         public void Cargar_DatosValidos_CargarDatos() {
             //Arrange
-            var vehiculos = new List<Vehiculo>() {
-                new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
-                new Vehiculo { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
+            var vehiculos = new List<Cita>() {
+                new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
+                new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
             };
             _storage.Salvar(vehiculos, _tempPath);
             
@@ -114,7 +113,7 @@ public class VehiculoCsvStorageTests {
             //Assert
             res.IsSuccess.Should().BeTrue();
             res.Value.Should().HaveCount(vehiculos.Count);
-            res.Value.First().Should().BeOfType<Vehiculo>();
+            res.Value.First().Should().BeOfType<Cita>();
         }
     }
 
@@ -126,19 +125,19 @@ public class VehiculoCsvStorageTests {
 
         [SetUp]
         public void SetUp() {
-            _storage = new VehiculoCsvStorage();
-            _tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.csv");
+            _storage = new CitaXmlStorage();
+            _tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.xml");
         }
         
-        private VehiculoCsvStorage _storage;
+        private CitaXmlStorage _storage;
         private string _tempPath;
 
         [Test]
         public void Salvar_PathInvalido_RetornaFallo() {
             //Arrange
-            var vehiculos = new List<Vehiculo>() {
-                new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
-                new Vehiculo { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
+            var vehiculos = new List<Cita>() {
+                new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
+                new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
             };
             var pathInvalido = "/ruta/invalida/va/a/dar/falllo";
             
@@ -153,12 +152,38 @@ public class VehiculoCsvStorageTests {
         [Test]
         public void Cargar_ArchivoInexistente_RetornaFallo() {
             //Assert
-            var vehiculos = new List<Vehiculo>();
+            var vehiculos = new List<Cita>();
             var rutaInvalida = "hola/soy/una/ruta/invalida/doy/fallo";
             _storage.Salvar(vehiculos, rutaInvalida);
             
             //Act
             var res = _storage.Cargar(rutaInvalida);
+            
+            //Assert
+            res.IsFailure.Should().BeTrue();
+        }
+
+        [Test]
+        public void Cargar_XmlInvalido_RetornaFallo() {
+            //Arrange
+            using var writer = new StreamWriter(_tempPath);
+            writer.Write("<Perro><Nombre>Rex</Nombre></Perro>");
+            
+            //Act
+            var res =  _storage.Cargar(_tempPath);
+            
+            //Assert
+            res.IsFailure.Should().BeTrue();
+        }
+        
+        [Test]
+        public void Cargar_ContenidoPathNulo_RetornaFallo() {
+            //Assert
+            using var  writer = new StreamWriter(_tempPath);
+            writer.Write("null");
+            
+            //Act
+            var res = _storage.Cargar(_tempPath);
             
             //Assert
             res.IsFailure.Should().BeTrue();

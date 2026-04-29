@@ -3,7 +3,7 @@
 namespace Itv.Errors;
 
 /// <summary>
-///  Clase especifica para los errores de vehiculos en el storage.
+///  Clase especifica para los errores de las citas en el storage.
 /// </summary>
 public abstract record StorageError(string Message) : DomainError(Message) {
     public sealed record FileNotFound(string FilePath)
@@ -19,7 +19,7 @@ public abstract record StorageError(string Message) : DomainError(Message) {
 }
 
 /// <summary>
-///  Clase estatica para crear los errores del storage de vehiculos.
+///  Clase estatica para crear los errores del storage de las citas.
 /// </summary>
 public static class StorageErrors {
     public static DomainError FileNotFound(string FilePaths) {

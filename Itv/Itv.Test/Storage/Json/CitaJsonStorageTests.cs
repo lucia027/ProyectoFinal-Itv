@@ -11,13 +11,13 @@ using NUnit.Framework;
 namespace Itv.Test.Storage.Json;
 
 [TestFixture]
-public class VehiculoJsonStorageTests {
+public class CitaJsonStorageTests {
 
     [TestFixture]
     public sealed class CasosValidos() {
         [SetUp]
         public void SetUp() {
-            _storage = new VehiculoJsonStorage();
+            _storage = new CitaJsonStorage();
             _tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.json");
         }
 
@@ -26,15 +26,15 @@ public class VehiculoJsonStorageTests {
             if(File.Exists(_tempPath)) File.Delete(_tempPath);
         }
         
-        private VehiculoJsonStorage _storage;
+        private CitaJsonStorage _storage;
         private string _tempPath;
 
         [Test]
         public void Salvar_DatosExistentes_SalvarDatos() {
             //Arrange
-            var vehiculos = new List<Vehiculo>() {
-                new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
-                new Vehiculo { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
+            var vehiculos = new List<Cita>() {
+                new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
+                new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
             };
             
             //Act
@@ -49,8 +49,8 @@ public class VehiculoJsonStorageTests {
         [Test]
         public void Salvar_VehiculoValido_RetornaMismoVehiculo() {
             //Arrange
-            var vehiculos = new List<Vehiculo>() {
-                new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
+            var vehiculos = new List<Cita>() {
+                new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
             };
             _storage.Salvar(vehiculos, _tempPath);
             
@@ -59,7 +59,7 @@ public class VehiculoJsonStorageTests {
             
             //Assert
             res.IsSuccess.Should().BeTrue();
-            res.Value.First().Should().BeOfType<Vehiculo>();
+            res.Value.First().Should().BeOfType<Cita>();
             res.Value.First().Id.Should().Be(1);
             res.Value.First().Matricula.Should().Be("1234BBB");
             res.Value.First().Marca.Should().Be("Toyota");
@@ -73,7 +73,7 @@ public class VehiculoJsonStorageTests {
         [Test]
         public void Salvar_ListaVacia_SalvaListaVacia() {
             //Assert
-            var vehiculos = new List<Vehiculo>();
+            var vehiculos = new List<Cita>();
             
             //Act
             var res = _storage.Salvar(vehiculos, _tempPath);
@@ -86,7 +86,7 @@ public class VehiculoJsonStorageTests {
         [Test]
         public void Cargar_ListaVacia_RetornaListaVacia() {
             //Arrange
-            var vehiculos = new List<Vehiculo>();
+            var vehiculos = new List<Cita>();
             _storage.Salvar(vehiculos, _tempPath);
             
             //Act
@@ -100,9 +100,9 @@ public class VehiculoJsonStorageTests {
         [Test]
         public void Cargar_DatosValidos_CargarDatos() {
             //Arrange
-            var vehiculos = new List<Vehiculo>() {
-                new Vehiculo { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
-                new Vehiculo { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
+            var vehiculos = new List<Cita>() {
+                new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false },
+                new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }
             };
             _storage.Salvar(vehiculos, _tempPath);
             
@@ -112,7 +112,7 @@ public class VehiculoJsonStorageTests {
             //Assert
             res.IsSuccess.Should().BeTrue();
             res.Value.Should().HaveCount(vehiculos.Count);
-            res.Value.First().Should().BeOfType<Vehiculo>();
+            res.Value.First().Should().BeOfType<Cita>();
         }
     }
     
@@ -121,7 +121,7 @@ public class VehiculoJsonStorageTests {
     public sealed class CasosInvalidos {
         [SetUp]
         public void SetUp() {
-            _storage = new VehiculoJsonStorage();
+            _storage = new CitaJsonStorage();
             _tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.json");
         }
 
@@ -130,13 +130,13 @@ public class VehiculoJsonStorageTests {
             if(File.Exists(_tempPath)) File.Delete(_tempPath);
         }
         
-        private VehiculoJsonStorage _storage;
+        private CitaJsonStorage _storage;
         private string _tempPath;
 
         [Test]
         public void Salvar_PathInvalida_RetornaFallo() {
             //Arrange
-            var vehiculos = new List<Vehiculo>();
+            var vehiculos = new List<Cita>();
             var rutaMala = "ruta/invalida/x/y/aa";
             
             //Act
@@ -177,7 +177,7 @@ public class VehiculoJsonStorageTests {
         [Test]
         public void Cargar_ArchivoInexistente_RetornaFallo() {
             //Arrange
-            var vehiculos = new List<Vehiculo>();
+            var vehiculos = new List<Cita>();
             var rutaMala = "ruta/invalida/x/y/aa";
             _storage.Salvar(vehiculos, rutaMala);
             

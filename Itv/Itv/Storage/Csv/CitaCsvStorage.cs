@@ -10,25 +10,25 @@ using Serilog;
 
 namespace Itv.Storage.Csv;
 
-public class VehiculoCsvStorage : IVehiculoCsvStorage {
+public class CitaCsvStorage : ICitaCsvStorage {
     
-    private ILogger _logger = Log.Logger.ForContext<VehiculoCsvStorage>();
+    private ILogger _logger = Log.Logger.ForContext<CitaCsvStorage>();
 
-    public VehiculoCsvStorage() {
+    public CitaCsvStorage() {
         InitStorage();
     }
 
-    public Result<IEnumerable<Vehiculo>, DomainError> Cargar(string path) {
+    public Result<IEnumerable<Cita>, DomainError> Cargar(string path) {
 
         if (!Path.Exists(path)) {
-            return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.FileNotFound(path));
+            return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.FileNotFound(path));
         }
 
         try { 
-            var vehiculos = File.ReadLines(path, Encoding.UTF8)
+            var citas = File.ReadLines(path, Encoding.UTF8)
                 .Skip(1)
                 .Select(l => l.Split(";"))
-                .Select(campos => new VehiculoDto(
+                .Select(campos => new CitaDto(
                         int.Parse(campos[0]),
                         campos[1],
                         campos[2],
@@ -38,16 +38,18 @@ public class VehiculoCsvStorage : IVehiculoCsvStorage {
                         campos[6],
                         campos[7],
                         campos[8],
-                        bool.TryParse(campos[9], out var d) && d
+                        campos[9],
+                        campos[10],
+                        bool.TryParse(campos[11], out var d) && d
                         ).ToModel()
                 );
-            return Result.Success<IEnumerable<Vehiculo>, DomainError>(vehiculos);
+            return Result.Success<IEnumerable<Cita>, DomainError>(citas);
         } catch (Exception e) {
-            return Result.Failure<IEnumerable<Vehiculo>, DomainError>(StorageErrors.InvalidFormat(e.Message));
+            return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.InvalidFormat(e.Message));
         }    
     }
 
-    public Result<bool, DomainError> Salvar(IEnumerable<Vehiculo> items, string path) {
+    public Result<bool, DomainError> Salvar(IEnumerable<Cita> items, string path) {
         try {
             _logger.Debug("Intentando salvar los datos en formato csv.");
             using var writer = new StreamWriter(path, false, Encoding.UTF8);
