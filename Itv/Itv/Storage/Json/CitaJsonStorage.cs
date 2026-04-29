@@ -27,13 +27,16 @@ public class CitaJsonStorage : ICitaJsonStorage {
     };
     
     public CitaJsonStorage() {
+        _logger.Debug("Se esta iniciando el almacenamiento en json.");
         InitStorage();
     }
     
     /// <inheritdoc cref="ICitaJsonStorage.Cargar" />
     public Result<IEnumerable<Cita>, DomainError> Cargar(string path) {
+        _logger.Debug("Intentando cargar los datos en formato json.");
+
         if (!Path.Exists(path)) {
-            _logger.Debug("Intentando cargar los datos en formato json.");
+            _logger.Warning("El fichero para los datos en formato json no existe.");
             return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.FileNotFound(path));
         }
 
@@ -46,12 +49,15 @@ public class CitaJsonStorage : ICitaJsonStorage {
             }
             return Result.Success<IEnumerable<Cita>, DomainError>(dtos.Select(v => v.ToModel()));
         } catch (Exception e) {
+            _logger.Error($"Error al intentar cargar los datos en formato json, mensaje error: {e.Message}");
             return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.ReadError(e.Message));
         }
     }
 
     /// <inheritdoc cref="ICitaJsonStorage.Salvar" />
     public Result<bool, DomainError> Salvar(IEnumerable<Cita> items, string path) {
+        _logger.Debug("Intentando salvar los datos en formato json.");
+
         try {
             var dtos = items
                 .Select(i => i.ToDto())
@@ -60,6 +66,7 @@ public class CitaJsonStorage : ICitaJsonStorage {
             File.WriteAllText(path, json, new UTF8Encoding(false));
             return Result.Success<bool, DomainError>(true);
         } catch (Exception e) {
+            _logger.Error($"Error al salvar los datos en formato json, mensaje de error: {e.Message}");
             return Result.Failure<bool, DomainError>(StorageErrors.WriteError(e.Message));
         }
     }
@@ -70,6 +77,7 @@ public class CitaJsonStorage : ICitaJsonStorage {
     /// </summary>
     private void InitStorage() {
         if (Directory.Exists(Config.Configuracion.DataFolder)) {
+            _logger.Warning("No existe el directorio data, creando..");
             return;
         }
         Directory.CreateDirectory("data");

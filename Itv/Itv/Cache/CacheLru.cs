@@ -24,6 +24,8 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
     
     /// <inheritdoc cref="ICache{TKey,TValue}.Add" />
     public void Add(TKey key, TValue value) {
+        _logger.Debug("Se esta intentando añadir un nuevo elemento en la cache.");
+        
         if (_datos.TryGetValue(key, out var valor)) {
             _logger.Debug($"La clave proporcionada ya existe, se actualizara el valor para la clave: {key}");
             
@@ -49,6 +51,8 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
 
     /// <inheritdoc cref="ICache{TKey,TValue}.Get" />
     public TValue? Get(TKey key) {
+        _logger.Debug("Se esta intentando acceder un elemento en la cache.");
+
         if (!_datos.TryGetValue(key, out var value)) {
             _logger.Debug($"No se ha encontrado la clave: {key} en la cache.");
             return default;
@@ -62,6 +66,8 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
 
     /// <inheritdoc cref="ICache{TKey,TValue}.Remove" />
     public bool Remove(TKey key) {
+        _logger.Debug("Se esta intentando eliminar un elemento en la cache.");
+
         if (!_datos.Remove(key)) {
             _logger.Debug($"No se ha encontrado la clave: {key} en la cache.");
             return false;
@@ -83,7 +89,7 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
     /// </summary>
     /// <param name="key">Clave del elemento.</param>
     private void RefreshUsage(TKey key) {
-        _logger.Verbose($"Moviendo la clave: {key} al final de la lista.");
+        _logger.Verbose($"Se esta moeviendo la entidad con la clave: {key} al final de la lista.");
         _ordenUso.Remove(key);
         _ordenUso.AddLast(key);
     }
