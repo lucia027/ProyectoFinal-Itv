@@ -33,8 +33,6 @@ public static class Configuracion {
 
             return type.ToLower() switch {
                 "memory" => "memory",
-                "binary" => "binary",
-                "json" => "json",  
                 "dapper" => "dapper",  
                 "ado" => "ado",  
                 "efcore" => "efcore",

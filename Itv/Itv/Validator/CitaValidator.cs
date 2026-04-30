@@ -5,15 +5,17 @@ using Itv.Errors;
 using Itv.Errors.Common;
 using Itv.Models;
 using Itv.Validator.Common;
+using Serilog;
 
 namespace Itv.Validator;
 
-public class 
-    
-    CitaValidator : IValidator<Cita> {
+public class CitaValidator : IValidator<Cita> {
+    private readonly ILogger _logger = Log.ForContext<CitaValidator>();
     
     /// <inheritdoc cref="IValidator.Validate" />
     public Result<Cita, DomainError> Validate(Cita entity) {
+        _logger.Debug("Intentando validar la entidad: {Entity}",
+            entity);
         
         var regexMatricula = @"^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$";
         var regexDni = @"^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$";
@@ -45,7 +47,11 @@ public class
             errores.Add("La fecha de inspeccion no puede ser superior a 30 dias.");
         }
 
-        if (errores.Any()) return Result.Failure<Cita, DomainError>(CitaErrors.Validation(errores));
+        if (errores.Any()) {
+            _logger.Warning("No se ha podido validar la entidad: {Entity}",
+                entity);
+            return Result.Failure<Cita, DomainError>(CitaErrors.Validation(errores));
+        }
         return Result.Success<Cita, DomainError>(entity);
     }
 
@@ -55,6 +61,8 @@ public class
     /// <param name="dni">DNi proporcionado.</param>
     /// <returns>Verdadero en caso correcto y false en contrario.</returns>
     private bool ComprobarDniValido(string dni) {
+        _logger.Debug("Intentando comprobar el dni: {Dni}.",
+            dni);
         char[] letrasPermitidas = ['T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E'];
 
         try {
@@ -69,6 +77,8 @@ public class
 
             return letraProporcionada == letraCorrecta;
         } catch (Exception) {
+            _logger.Error("El dni: {Dni} no ha pasado el proceso de validacion.",
+                dni);
             return false;
         }
     }

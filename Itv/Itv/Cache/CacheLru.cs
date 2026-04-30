@@ -17,6 +17,8 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
 
     public CacheLru(int capacidad) {
         if (capacidad <= 0) {
+            _logger.Error("La capacidad de la cache no puede ser menor o igual a cero, capacidad {Capacidad}",
+                capacidad);
             throw new ArgumentException("La capacidad de la cache no puede ser menor o igual a 0.");
         }
         _capacidad = capacidad;
@@ -24,8 +26,11 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
     
     /// <inheritdoc cref="ICache{TKey,TValue}.Add" />
     public void Add(TKey key, TValue value) {
+        _logger.Debug("Se esta intentando añadir un nuevo elemento en la cache.");
+        
         if (_datos.TryGetValue(key, out var valor)) {
-            _logger.Debug($"La clave proporcionada ya existe, se actualizara el valor para la clave: {key}");
+            _logger.Debug("La clave proporcionada ya existe, se actualizara el valor para la clave: {Key}",
+                key);
             
             _datos[key] = value;
             RefreshUsage(key);
@@ -36,7 +41,8 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
             var claveVieja = _ordenUso.First!.Value;
             var valorViejo = _datos[claveVieja];
             
-            _logger.Debug($"La cache esta llena, se esta eliminando el elemento mas viejo con clave: {claveVieja} y valor: {valorViejo}");
+            _logger.Debug("La cache esta llena, se esta eliminando el elemento mas viejo con clave: {ClaveVieja} y valor: {ValorViejo}",
+                claveVieja, valorViejo);
             
             _ordenUso.RemoveFirst();
             _datos.Remove(claveVieja);
@@ -44,17 +50,22 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
 
         _datos.Add(key, value);
         _ordenUso.AddLast(key);
-        _logger.Debug($"Se ha añadido un elemento nuevo, lista de orden de uso: {_ordenUso}");
+        _logger.Debug("Se ha añadido un elemento nuevo, lista de orden de uso: {_OrdenUso}",
+            _ordenUso);
     }
 
     /// <inheritdoc cref="ICache{TKey,TValue}.Get" />
     public TValue? Get(TKey key) {
+        _logger.Debug("Se esta intentando acceder un elemento en la cache.");
+
         if (!_datos.TryGetValue(key, out var value)) {
-            _logger.Debug($"No se ha encontrado la clave: {key} en la cache.");
+            _logger.Debug("No se ha encontrado la clave: {Key} en la cache.",
+                key);
             return default;
         }
 
-        _logger.Debug($"Se ha enconctrado la clave: {key} en la cache.");
+        _logger.Debug("Se ha enconctrado la clave: {Key} en la cache.",
+            key);
         RefreshUsage(key);
 
         return value;
@@ -62,20 +73,26 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
 
     /// <inheritdoc cref="ICache{TKey,TValue}.Remove" />
     public bool Remove(TKey key) {
+        _logger.Debug("Se esta intentando eliminar un elemento en la cache.");
+
         if (!_datos.Remove(key)) {
-            _logger.Debug($"No se ha encontrado la clave: {key} en la cache.");
+            _logger.Debug("No se ha encontrado la clave: {Key} en la cache.",
+                key);
             return false;
         }
 
         _ordenUso.Remove(key);
-        _logger.Debug($"Se ha eliminado la clave: {key} correctamente de la cache.");
+        _logger.Debug("Se ha eliminado la clave: {Key} correctamente de la cache.",
+            key);
         return true;    
     }
 
     /// <inheritdoc cref="ICache{TKey,TValue}.DisplayStatus" />
     public void DisplayStatus() {
-        _logger.Information($"Capacidad disponible en la cache: {_datos.Count - _capacidad}");
-        _logger.Information($"Uso de la cache del menos reciente al mas reciente: {_ordenUso}");    
+        _logger.Information("Capacidad disponible en la cache: {_Datos.Count - _Capacidad}",
+            _datos.Count - _capacidad);
+        _logger.Information("Uso de la cache del menos reciente al mas reciente: {_OrdenUso}",
+            _ordenUso);    
     }
     
     /// <summary>
@@ -83,7 +100,8 @@ public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
     /// </summary>
     /// <param name="key">Clave del elemento.</param>
     private void RefreshUsage(TKey key) {
-        _logger.Verbose($"Moviendo la clave: {key} al final de la lista.");
+        _logger.Verbose("Se esta moviendo la entidad con la clave: {Key} al final de la lista.",
+            key);
         _ordenUso.Remove(key);
         _ordenUso.AddLast(key);
     }
