@@ -1,54 +1,22 @@
 ﻿using CSharpFunctionalExtensions;
 using Itv.Errors.Common;
+using Itv.Models;
 
 namespace Itv.Repository.Common;
 
 /// <summary>
-/// Contrato generico con las operaciones CRUD.
+/// <summary>
+/// Contrato que contextualiza la interfaz de ICitaRepository para int y Cita y que añade un borrado fisico,
+/// y un borrado total.
 /// </summary>
-public interface ICitaRepository<in TKey, TEntity> where TEntity : class {
-    
-    /// <summary>
-    /// Devuelve todas las entidades del almacen.
-    /// </summary>
-    /// <returns>Enumerable de las entidades.</returns>
-    IEnumerable<TEntity> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true);
-    
-    /// <summary>
-    /// Devuelve la entidad cuyo Id sea igual al proporcionado.
-    /// </summary>
-    /// <param name="id">Id de la entidad</param>
-    /// <returns>En caso de existir la entidad y en caso contrario nulo.</returns>
-    Result<TEntity, DomainError> GetById(TKey id);
-    
-    /// <summary>
-    /// Crea y guarda en el almacen una nueva entidad.
-    /// </summary>
-    /// <param name="entity">Entidad nueva.</param>
-    /// <returns>En caso de ser correcta la entidad y en caso contrario nulo.</returns>
-    Result<TEntity, DomainError> Create(TEntity entity);
-    
-    /// <summary>
-    /// Actualiza una entidad ya existente en el almacen.
-    /// </summary>
-    /// <param name="id">Id de la entidad existente.</param>
-    /// <param name="entity">Entidad existente actualizada.</param>
-    /// <returns>En caso de ser correcta la entidad y en caso contrario nulo.</returns>
-    Result<TEntity, DomainError> Update(TKey id, TEntity entity);
-    
-    /// <summary>
-    /// ELimina la entidad del almacen.
-    /// </summary>
-    /// <param name="id">Id de la entidad existente.</param>
-    /// <returns>En caso de ser correcta la entidad eliminada y nulo en caso contrario.</returns>
-    Result<TEntity, DomainError> Delete(TKey id);
+public interface ICitaRepository : ICrud_Repository<int, Cita> {
     
     /// <summary>
     /// Elimina permanentemente una cita del almacen.
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Result<TEntity, DomainError> DeleteHard(int id);
+    Result<Cita, DomainError> DeleteHard(int id);
 
     /// <summary>
     /// Elimina todas las citas del almacen;

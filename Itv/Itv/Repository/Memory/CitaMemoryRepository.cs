@@ -3,6 +3,7 @@ using Itv.Errors;
 using Itv.Errors.Common;
 using Itv.Factory;
 using Itv.Models;
+using Itv.Repository.Common;
 using Serilog;
 
 namespace Itv.Repository.Memory;
@@ -10,7 +11,7 @@ namespace Itv.Repository.Memory;
 /// <summary>
 /// Repositorio en memoria para gestionar las citas.
 /// </summary>
-public class CitaMemoryRepository : ICitaMemoryRepository {
+public class CitaMemoryRepository : ICitaRepository {
     private readonly ILogger _logger = Log.ForContext<CitaMemoryRepository>();
 
     
@@ -23,7 +24,7 @@ public class CitaMemoryRepository : ICitaMemoryRepository {
         if (seedData) foreach (var v in CitasFactory.Seed()) Create(v);
     }
 
-    /// <inheritdoc cref="ICitaMemoryRepository.GetAll" />
+    /// <inheritdoc cref="ICitaRepository.GetAll" />
     public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true) {
         if (!isDeleteInclude) {
             return _almacenId.Values
@@ -39,13 +40,13 @@ public class CitaMemoryRepository : ICitaMemoryRepository {
             .Take(tamPagina);
     }
 
-    /// <inheritdoc cref="ICitaMemoryRepository.GetById" />
+    /// <inheritdoc cref="ICitaRepository.GetById" />
     public Result<Cita, DomainError> GetById(int id) {
         if (_almacenId.GetValueOrDefault(id) == null) return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
         return Result.Success<Cita, DomainError>(_almacenId[id]);
     }
 
-    /// <inheritdoc cref="ICitaMemoryRepository.Create" />
+    /// <inheritdoc cref="ICitaRepository.Create" />
     public Result<Cita, DomainError> Create(Cita entity) {
         if (_almacenMatricula.ContainsKey(entity.Matricula)) {
             _logger.Debug("No se ha podido crear la cita.");
@@ -64,7 +65,7 @@ public class CitaMemoryRepository : ICitaMemoryRepository {
         return Result.Success<Cita, DomainError>(cita);
     }
 
-    /// <inheritdoc cref="ICitaMemoryRepository.Update" />
+    /// <inheritdoc cref="ICitaRepository.Update" />
     public Result<Cita, DomainError> Update(int id, Cita entity) {
         if (!_almacenId.TryGetValue(id, out var viejo)) {
             _logger.Debug("No se ha podido actualizar la cita el id no existe.");
@@ -90,7 +91,7 @@ public class CitaMemoryRepository : ICitaMemoryRepository {
         return Result.Success<Cita, DomainError>(citaNuevo);
     }
 
-    /// <inheritdoc cref="ICitaMemoryRepository.Delete" />
+    /// <inheritdoc cref="ICitaRepository.Delete" />
     public Result<Cita, DomainError> Delete(int id) {
         if (!_almacenId.TryGetValue(id, out var eliminado)) {
             _logger.Debug("No se ha podido eliminar la cita, el id no existe.");
@@ -103,7 +104,7 @@ public class CitaMemoryRepository : ICitaMemoryRepository {
         return Result.Success<Cita, DomainError>(eliminado);
     }
     
-    /// <inheritdoc cref="ICitaMemoryRepository.DeleteHard" />
+    /// <inheritdoc cref="ICitaRepository.DeleteHard" />
     public Result<Cita, DomainError> DeleteHard(int id) {
         if (!_almacenId.TryGetValue(id, out var eliminado)) {
             _logger.Debug("No se ha podido eliminar la cita, el id no existe.");
@@ -116,7 +117,7 @@ public class CitaMemoryRepository : ICitaMemoryRepository {
         return Result.Success<Cita, DomainError>(eliminado);
     }
 
-    /// <inheritdoc cref="ICitaMemoryRepository.DeleteAll" />
+    /// <inheritdoc cref="ICitaRepository.DeleteAll" />
     public bool DeleteAll() {
         _almacenId.Clear();
         _almacenMatricula.Clear();
