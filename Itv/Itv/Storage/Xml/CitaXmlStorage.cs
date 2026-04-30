@@ -25,13 +25,16 @@ public class CitaXmlStorage : ICitaXmlStorage{
     };
 
     public CitaXmlStorage() {
+        _logger.Debug("Se esta iniciando el almacenamiento en xml.");
         InitStorage();
     }
 
     /// <inheritdoc cref="ICitaXmlStorage.Cargar" />
     public Result<IEnumerable<Cita>, DomainError> Cargar(string path) {
+        _logger.Debug("Intentando cargar los datos en formato xml.");
+
         if (!Path.Exists(path)) {
-            _logger.Debug("Intentando salvar los datos en formato xml.");
+            _logger.Warning("El fichero para los datos en formato xml no existe.");
             return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.FileNotFound(path));
         }
 
@@ -43,14 +46,17 @@ public class CitaXmlStorage : ICitaXmlStorage{
 
             return Result.Success<IEnumerable<Cita>, DomainError>(citas!);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
+            _logger.Error("Error al intentar cargar los datos en formato xml, mensaje error: {e.Message}",
+                e.Message);
             return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.ReadError(e.Message));
         }    
     }
 
     /// <inheritdoc cref="ICitaXmlStorage.Salvar" />
     public Result<bool, DomainError> Salvar(IEnumerable<Cita> items, string path) {
+        _logger.Debug("Intentando salvar los datos en formato xml.");
+        
         try {
             var dtos = items.Select(v => v.ToDto()).ToList();
             var serializer = new XmlSerializer(typeof(List<CitaDto>));
@@ -61,6 +67,8 @@ public class CitaXmlStorage : ICitaXmlStorage{
             
             return Result.Success<bool, DomainError>(true);
         } catch (Exception e) {
+            _logger.Error("Error al salvar los datos en formato xml, mensaje de error: {e.Message}",
+                e.Message);
             return Result.Failure<bool, DomainError>(StorageErrors.WriteError(e.Message));
         }    
     }
@@ -71,6 +79,7 @@ public class CitaXmlStorage : ICitaXmlStorage{
     /// </summary>
     private void InitStorage() {
         if (Directory.Exists(Config.Configuracion.DataFolder)) {
+            _logger.Warning("No existe el directorio data, creando..");
             return;
         }
         Directory.CreateDirectory("data");

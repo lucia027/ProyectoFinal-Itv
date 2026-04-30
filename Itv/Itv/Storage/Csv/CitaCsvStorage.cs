@@ -18,13 +18,16 @@ public class CitaCsvStorage : ICitaCsvStorage {
     private ILogger _logger = Log.Logger.ForContext<CitaCsvStorage>();
 
     public CitaCsvStorage() {
+        _logger.Debug("Se esta iniciando el almacenamiento en csv.");
         InitStorage();
     }
 
     /// <inheritdoc cref="ICitaCsvStorage.Cargar" />
     public Result<IEnumerable<Cita>, DomainError> Cargar(string path) {
+        _logger.Debug("Intentando cargar los datos en formato csv.");
 
         if (!Path.Exists(path)) {
+            _logger.Warning("El fichero para los datos en formato csv no existe.");
             return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.FileNotFound(path));
         }
 
@@ -49,12 +52,16 @@ public class CitaCsvStorage : ICitaCsvStorage {
                 );
             return Result.Success<IEnumerable<Cita>, DomainError>(citas);
         } catch (Exception e) {
+            _logger.Error("Error al intentar cargar los datos en formato csv, mensaje error: {e.Message}",
+                e.Message);
             return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.InvalidFormat(e.Message));
         }    
     }
 
     /// <inheritdoc cref="ICitaCsvStorage.Salvar" />
     public Result<bool, DomainError> Salvar(IEnumerable<Cita> items, string path) {
+        _logger.Debug("Intentando salvar los datos en formato csv.");
+
         try {
             _logger.Debug("Intentando salvar los datos en formato csv.");
             using var writer = new StreamWriter(path, false, Encoding.UTF8);
@@ -68,6 +75,8 @@ public class CitaCsvStorage : ICitaCsvStorage {
             return Result.Success<bool, DomainError>(true);
 
         } catch (Exception e) {
+            _logger.Error("Error al salvar los datos en formato csv, mensaje de error: {e.Message}",
+                e.Message);
             return Result.Failure<bool, DomainError>(StorageErrors.WriteError(e.Message));
         }        
     }
@@ -77,7 +86,10 @@ public class CitaCsvStorage : ICitaCsvStorage {
     /// en caso de que no exista lo crea.
     /// </summary>
     private void InitStorage() {
-        if (Directory.Exists(Configuracion.DataFolder)) return;
+        if (Directory.Exists(Configuracion.DataFolder)) {
+            _logger.Warning("No existe el directorio data, creando..");
+            return;
+        }
         Directory.CreateDirectory(Configuracion.DataFolder);
     }
 }

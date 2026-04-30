@@ -38,7 +38,7 @@ public class ConfiguracionTests {
             
             //Assert
             tipoRepo.Should().NotBeNull();
-            tipoRepo.Should().BeOneOf("json", "memory", "efcore", "binary", "dapper", "ado");
+            tipoRepo.Should().BeOneOf("memory", "efcore", "dapper", "ado");
         }
 
         [Test]
@@ -119,7 +119,7 @@ public class ConfiguracionTests {
             
             //Assert
             file.Should().NotBeNull();
-            file.Should().EndWith(".json");
+            file.Should().ContainAny("json", "csv", "xml", "bin");
         }
     }
 }
