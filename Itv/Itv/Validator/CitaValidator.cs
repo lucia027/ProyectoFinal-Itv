@@ -14,7 +14,8 @@ public class CitaValidator : IValidator<Cita> {
     
     /// <inheritdoc cref="IValidator.Validate" />
     public Result<Cita, DomainError> Validate(Cita entity) {
-        _logger.Debug($"Intentando validar la entidad: {entity}");
+        _logger.Debug("Intentando validar la entidad: {Entity}",
+            entity);
         
         var regexMatricula = @"^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$";
         var regexDni = @"^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$";
@@ -47,7 +48,8 @@ public class CitaValidator : IValidator<Cita> {
         }
 
         if (errores.Any()) {
-            _logger.Warning($"No se ha podido validar la entidad: {entity}");
+            _logger.Warning("No se ha podido validar la entidad: {Entity}",
+                entity);
             return Result.Failure<Cita, DomainError>(CitaErrors.Validation(errores));
         }
         return Result.Success<Cita, DomainError>(entity);
@@ -59,7 +61,8 @@ public class CitaValidator : IValidator<Cita> {
     /// <param name="dni">DNi proporcionado.</param>
     /// <returns>Verdadero en caso correcto y false en contrario.</returns>
     private bool ComprobarDniValido(string dni) {
-        _logger.Debug($"Intentando comprobar el dni: {dni}.");
+        _logger.Debug("Intentando comprobar el dni: {Dni}.",
+            dni);
         char[] letrasPermitidas = ['T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E'];
 
         try {
@@ -74,7 +77,8 @@ public class CitaValidator : IValidator<Cita> {
 
             return letraProporcionada == letraCorrecta;
         } catch (Exception) {
-            _logger.Error($"El dni: {dni} no ha pasado el proceso de validacion.");
+            _logger.Error("El dni: {Dni} no ha pasado el proceso de validacion.",
+                dni);
             return false;
         }
     }

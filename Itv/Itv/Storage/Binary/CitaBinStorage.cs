@@ -57,7 +57,8 @@ public class CitaBinStorage : ICitaBinStorage {
 
             return Result.Success<IEnumerable<Cita>, DomainError>(citas);
         } catch (Exception e) {
-            _logger.Error($"Error al intentar cargar los datos en formato binario, mensaje error: {e.Message}");
+            _logger.Error("Error al intentar cargar los datos en formato binario, mensaje error: {e.Message}",
+                e.Message);
             return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.ReadError(e.Message));
         }
     }
@@ -91,7 +92,8 @@ public class CitaBinStorage : ICitaBinStorage {
             return Result.Success<bool, DomainError>(true);
             
         } catch (Exception e) {
-            _logger.Error($"Error al salvar los datos en formato binario, mensaje de error: {e.Message}");
+            _logger.Error("Error al salvar los datos en formato binario, mensaje de error: {e.Message}",
+                e.Message);
             return Result.Failure<bool, DomainError>(StorageErrors.WriteError(e.Message));
         }
     }
