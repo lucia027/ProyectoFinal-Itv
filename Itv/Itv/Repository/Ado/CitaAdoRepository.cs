@@ -1,6 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using Itv.Config;
 using Itv.Entity;
+using Itv.Enums;
+using Itv.Errors;
 using Itv.Errors.Common;
 using Itv.Factory;
 using Itv.Models;
@@ -40,8 +42,7 @@ public class CitaAdoRepository : ICitaRepository {
         Directory.CreateDirectory(Configuracion.DataFolder);
     }
 
-    private void EnsureTable()
-    {
+    private void EnsureTable() {
         using var connection = CreateConnection();
         connection.Open();
         using var command = connection.CreateCommand();
@@ -65,7 +66,7 @@ public class CitaAdoRepository : ICitaRepository {
     }
 
     public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true) {
-        var entidades = new List<CitaEntity>();
+        var entidades = new List<Cita>();
         
         using var connection = CreateConnection();
         connection.Open();
@@ -76,14 +77,23 @@ public class CitaAdoRepository : ICitaRepository {
         
         using var reader = command.ExecuteReader();
         while (reader.Read()) {
-            entidades.Add(new CitaEntity());
+            entidades.Add(MapCita(reader));
         }
-        
-        return entidades
+
+        return entidades;
     }
 
     public Result<Cita, DomainError> GetById(int id) {
-        throw new NotImplementedException();
+        using var connection = CreateConnection();
+        connection.Open();
+        
+        using var command = connection.CreateCommand();
+        command.CommandText = "SELECT * FROM Citas WHERE Id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        
+        using var reader = command.ExecuteReader();
+        if (!reader.Read()) return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
+        return Result.Success<Cita, DomainError>(MapCita(reader));
     }
 
     public Result<Cita, DomainError> Create(Cita entity) {
@@ -95,22 +105,65 @@ public class CitaAdoRepository : ICitaRepository {
     }
 
     public Result<Cita, DomainError> Delete(int id) {
-        throw new NotImplementedException();
+        if (GetById(id).IsFailure) {
+            _logger.Debug("No se ha podido eliminar la cita, el id no existe.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
+        }
+        
+        using var connection = CreateConnection();
+        connection.Open();
+        
+        using var command = connection.CreateCommand();
+        command.CommandText = "UPDATE Citas SET IsDelete = 1 WHERE Id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        
+        using var reader = command.ExecuteReader();
+        return Result.Success<Cita, DomainError>(MapCita(reader));
     }
 
     public Result<Cita, DomainError> DeleteHard(int id) {
-        throw new NotImplementedException();
+        if (GetById(id).IsFailure) {
+            _logger.Debug("No se ha podido eliminar la cita, el id no existe.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
+        }
+        
+        using var connection = CreateConnection();
+        connection.Open();
+        using var command = connection.CreateCommand();
+
+        using var reader = command.ExecuteReader();
+        var eliminado = MapCita(reader);
+        
+        command.CommandText = "DELETE FROM Citas WHERE Id = @id";
+        command.Parameters.AddWithValue("@id", id);
+        
+        return Result.Success<Cita, DomainError>(eliminado);    
     }
 
      public bool DeleteAll() {
-        throw new NotImplementedException();
-    }
-
-    Result<Cita, DomainError> ICrud_Repository<int, Cita>.DeleteHard(int id) {
-        throw new NotImplementedException();
-    }
-
-    bool ICrud_Repository<int, Cita>.DeleteAll() {
-        throw new NotImplementedException();
+         using var connection = CreateConnection();
+         connection.Open();
+        
+         using var command = connection.CreateCommand();
+         command.CommandText = "DELETE FROM Citas";
+         
+         return command.ExecuteNonQuery() <= 0;
+     }
+     
+    private Cita MapCita(SqliteDataReader reader) {
+        return new Cita {
+            Id = reader.GetInt32(0),
+            Matricula = reader.GetString(1),
+            Marca = reader.GetString(2),
+            Modelo = reader.GetString(3), 
+            Cilindrada = reader.GetInt32(4),
+            Motor = Enum.TryParse(reader.GetString(5), out Motor m) ? m : Motor.Diesel,
+            DniDueño = reader.GetString(6),
+            FechaMatriculacion = DateTime.Parse(reader.GetString(7)),
+            FechaInspeccion = DateTime.Parse(reader.GetString(8)),
+            CreateAt = DateTime.Parse(reader.GetString(9)),
+            UpdateAt = reader.IsDBNull(10) ? null : DateTime.Parse(reader.GetString(10)),
+            IsDelete = reader.GetInt32(11) == 1
+        };
     }
 }
