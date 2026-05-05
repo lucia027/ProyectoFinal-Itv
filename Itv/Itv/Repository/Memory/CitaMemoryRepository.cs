@@ -25,17 +25,32 @@ public class CitaMemoryRepository : ICitaRepository {
     }
 
     /// <inheritdoc cref="ICitaRepository.GetAll" />
-    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true) {
+    public IEnumerable<Cita> GetAll(int pagina, int tamPagina, bool isDeleteInclude, string campoBusqueda) {
         if (!isDeleteInclude) {
             return _almacenId.Values
                 .OrderBy(v => v.Id)
-                .Where(v => v.IsDelete == false)
+                .Where(v => v.IsDelete == false && 
+                    v.Matricula.Contains(campoBusqueda) || 
+                    v.Marca.Contains(campoBusqueda) ||
+                    v.Modelo.Contains(campoBusqueda) ||
+                    v.Cilindrada.ToString().Contains(campoBusqueda) ||
+                    v.Motor.ToString().Contains(campoBusqueda) ||
+                    v.DniDueño.Contains(campoBusqueda) ||
+                    
+                    )
                 .Skip((pagina -1) * tamPagina)
                 .Take(tamPagina);
         }
 
         return _almacenId.Values                
             .OrderBy(v => v.Id)
+            .Where(v => v.Matricula.Contains(campoBusqueda) || 
+                  v.Marca.Contains(campoBusqueda) ||
+                  v.Modelo.Contains(campoBusqueda) ||
+                  v.Cilindrada.ToString().Contains(campoBusqueda) ||
+                  v.Motor.ToString().Contains(campoBusqueda) ||
+                  v.DniDueño.Contains(campoBusqueda) ||
+                  )
             .Skip((pagina -1) * tamPagina)
             .Take(tamPagina);
     }
@@ -56,6 +71,10 @@ public class CitaMemoryRepository : ICitaRepository {
             _logger.Debug("No se ha podido crear la cita.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.DniDueñoError(entity));
         }
+        if (_almacenId.Values.Any(c => c.Matricula == entity.Matricula && c.FechaMatriculacion == entity.FechaMatriculacion)) {
+            _logger.Debug("No se ha podido crear la cita.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+        } 
 
         var cita = entity with { Id = GetNewId(), CreateAt = DateTime.Today, UpdateAt = null, IsDelete = false};
         

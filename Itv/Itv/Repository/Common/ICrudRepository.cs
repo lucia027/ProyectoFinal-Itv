@@ -12,7 +12,7 @@ public interface ICrud_Repository<in TKey, TEntity> where TEntity : class {
     /// Devuelve todas las entidades del almacen.
     /// </summary>
     /// <returns>Enumerable de las entidades.</returns>
-    IEnumerable<TEntity> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true);
+    IEnumerable<TEntity> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "");
     
     /// <summary>
     /// Devuelve la entidad cuyo Id sea igual al proporcionado.
