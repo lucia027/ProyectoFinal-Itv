@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Itv.Enums;
 using Itv.Errors;
 using Itv.Errors.Common;
 using Itv.Factory;
@@ -75,6 +76,14 @@ public class CitaMemoryRepository : ICitaRepository {
             .OrderBy(v => v.Matricula)
             .Where(v => inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin);
 
+        if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
+        return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
+    }
+
+    public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor) {
+        IEnumerable<Cita> citas = [];
+        
+        
         if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
     }

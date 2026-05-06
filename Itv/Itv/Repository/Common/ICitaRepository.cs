@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Itv.Enums;
 using Itv.Errors.Common;
 using Itv.Models;
 
@@ -25,7 +26,14 @@ public interface ICitaRepository : ICrud_Repository<int, Cita> {
     /// <param name="fin">Fin del rango.</param>
     /// <returns>Enumerable con todas las citas que cumplan la condicion.</returns>
     Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin,  bool isDeleteInclude = true);
-
+    
+    /// <summary>
+    /// Bsuca todas las citas que tenga un tipo de motor especifico.
+    /// </summary>
+    /// <param name="motor">Tipo de motor.</param>
+    /// <returns>Enumerable con todas las citas que cumplan la condicion.</returns>
+    Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor);
+    
     /// <summary>
     /// Elimina todas las citas del almacen;
     /// </summary>
