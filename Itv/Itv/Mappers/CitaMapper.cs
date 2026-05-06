@@ -74,4 +74,20 @@ public static class CitaMapper {
         };
     }
 
+    public static CitaEntity ToEntity(this Cita cita) {
+        return new CitaEntity {
+            Id = cita.Id,
+            Matricula = cita.Matricula,
+            Marca = cita.Marca,
+            Modelo = cita.Modelo,
+            Cilindrada = cita.Cilindrada,
+            Motor = cita.Motor.ToString(),
+            DniDueño = cita.DniDueño,
+            FechaMatriculacion = cita.FechaMatriculacion,
+            FechaInspeccion = cita.FechaInspeccion,
+            CreateAt = cita.CreateAt,
+            UpdateAt = cita.UpdateAt,
+            IsDelete = cita.IsDelete
+        };
+    }
 }

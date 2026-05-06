@@ -17,6 +17,14 @@ public interface ICitaRepository : ICrud_Repository<int, Cita> {
     /// <param name="id"></param>
     /// <returns></returns>
     Result<Cita, DomainError> DeleteHard(int id);
+    
+    /// <summary>
+    /// Busca todas las citas que se encuetren entre dos rangos de su fecha de matriculacion.
+    /// </summary>
+    /// <param name="inicio">Inicio del rango.</param>
+    /// <param name="fin">Fin del rango.</param>
+    /// <returns>Enumerable con todas las citas que cumplan la condicion.</returns>
+    Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin,  bool isDeleteInclude = true);
 
     /// <summary>
     /// Elimina todas las citas del almacen;

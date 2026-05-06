@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Itv.Config;
 using Itv.Entity;
-using Itv.Enums;
 using Itv.Errors;
 using Itv.Errors.Common;
 using Itv.Factory;
@@ -66,6 +65,7 @@ public class CitaAdoRepository : ICitaRepository {
         command.ExecuteNonQuery();
     }
 
+    /// <inheritdoc cref="ICitaRepository.GetAll" />
     public IEnumerable<Cita> GetAll(int pagina, int tamPagina, bool isDeleteInclude, string campoBusqueda) {
         var entidades = new List<CitaEntity>();
         
@@ -102,11 +102,12 @@ public class CitaAdoRepository : ICitaRepository {
 
         return entidades
             .Select(c => c.ToModel())
-            .OrderBy(c => c.Id)
+            .OrderBy(c => c.Matricula)
             .Skip((pagina -1) * tamPagina)
             .Take(tamPagina);
     }
 
+    /// <inheritdoc cref="ICitaRepository.GetById" />
     public Result<Cita, DomainError> GetById(int id) {
         using var connection = CreateConnection();
         connection.Open();
@@ -119,7 +120,40 @@ public class CitaAdoRepository : ICitaRepository {
         if (!reader.Read()) return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
         return Result.Success<Cita, DomainError>(MapCita(reader).ToModel());
     }
+    
+    /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
+    public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
+        if(fin == null) fin = DateTime.Now;
+        List<Cita> citas = [];
+        
+        using var connection = CreateConnection();
+        connection.Open();
+        using var command = connection.CreateCommand();
+        
+        if (!isDeleteInclude) {
+            command.CommandText = "SELECT * FROM Citas WHERE FechaMatricula BETWEEN @inicio AND @fin AND IsDelete LIKE 0";
+            command.Parameters.AddWithValue("@inicio", inicio);
+            command.Parameters.AddWithValue("@fin", fin);
+        }
+        
+        if (isDeleteInclude) {
+            command.CommandText = "SELECT * FROM Citas WHERE FechaMatricula BETWEEN @inicio AND @fin AND IsDelete LIKE 1";
+            command.Parameters.AddWithValue("@inicio", inicio);
+            command.Parameters.AddWithValue("@fin", fin);
+        }
+        
+        using var reader = command.ExecuteReader();
+        while (reader.Read()) {
+            citas.Add(MapCita(reader).ToModel());
+        }
 
+        citas = citas.OrderBy(c => c.Matricula).ToList();
+
+        if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
+        return Result.Success<IEnumerable<Cita>, DomainError>(citas);      
+    }
+
+    /// <inheritdoc cref="ICitaRepository.Create" />
     public Result<Cita, DomainError> Create(Cita entity) {
         if (!VerificacionDniDueño(entity)) {
             _logger.Debug("No se ha podido crear la cita.");
@@ -131,15 +165,73 @@ public class CitaAdoRepository : ICitaRepository {
         }
         
         using var connection = CreateConnection();
-        connection.Open();        
+        connection.Open();
+
+        var nuevaCitaEntity = entity.ToEntity();
+        nuevaCitaEntity = nuevaCitaEntity with { Id = 0, CreateAt = DateTime.Today, UpdateAt = null, IsDelete = false };
+
+        using var command = connection.CreateCommand();
+        command.CommandText = @"
+            INSERT INTO Citas (Id, Matricula, Marca, Modelo, Cilindrada, Motor, DniDueño, FechaMatriculacion, FechaInspeccion, CreateAt, UpdateAt, IsDelete)
+            VALUES (@Id, @Matricula, @Marca, @Modelo, @Cilindrada, @Motor, @DniDueño, @FechaMatriculacion, @FechaInspeccion, @CreateAt, @UpdateAt, @IsDelete)
+            Select last_insert_rowid();";
         
-
+        command.Parameters.AddWithValue("@Id", nuevaCitaEntity.Id);
+        command.Parameters.AddWithValue("@Matricula", nuevaCitaEntity.Matricula);
+        command.Parameters.AddWithValue("@Marca", nuevaCitaEntity.Marca);
+        command.Parameters.AddWithValue("@Modelo", nuevaCitaEntity.Modelo);
+        command.Parameters.AddWithValue("@Cilindrada", nuevaCitaEntity.Cilindrada);
+        command.Parameters.AddWithValue("@Motor", nuevaCitaEntity.Motor);
+        command.Parameters.AddWithValue("@DniDueño", nuevaCitaEntity.DniDueño);
+        command.Parameters.AddWithValue("@FechaMatriculacion", nuevaCitaEntity.FechaMatriculacion);
+        command.Parameters.AddWithValue("@FechaInspeccion", nuevaCitaEntity.FechaInspeccion);
+        command.Parameters.AddWithValue("@CreateAt", nuevaCitaEntity.CreateAt);
+        command.Parameters.AddWithValue("@UpdateAt", nuevaCitaEntity.UpdateAt);
+        command.Parameters.AddWithValue("@IsDelete", nuevaCitaEntity.IsDelete);
+        
+        nuevaCitaEntity = nuevaCitaEntity with{ Id = Convert.ToInt32(command.ExecuteScalar())};
+        return Result.Success<Cita, DomainError>(nuevaCitaEntity.ToModel());
     }
 
+    /// <inheritdoc cref="ICitaRepository.Update" />
     public Result<Cita, DomainError> Update(int id, Cita entity) {
-        throw new NotImplementedException();
+        var citaVieja = GetById(id);
+        if (citaVieja.IsFailure) {
+            _logger.Debug("No se ha podido actualizar la cita el id no existe.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
+        }
+        
+        using var connection = CreateConnection();
+        connection.Open();
+
+        var nuevaCitaEntity = entity.ToEntity();
+        nuevaCitaEntity = nuevaCitaEntity with {Id = id, UpdateAt = null, IsDelete = false };
+        
+        using var command =  connection.CreateCommand();
+        command.CommandText = @"
+            UPDATE Citas SET  Matricula = @Matricula, Marca = @Marca, Modelo = @Modelo, Cilindrada = @Cilindrada, Motor = @Motor, DniDueño = @DniDueño, FechaMatriculacion = @FechaMatriculacion, FechaInspeccion = @FechaInspeccion, CreateAt = @CreateAt, UpdateAt = @UpdateAt, IsDelete = @IsDelete
+            Where Id = @Id
+            ";
+
+        command.Parameters.AddWithValue("@Id", id);
+        command.Parameters.AddWithValue("@Matricula", nuevaCitaEntity.Matricula);
+        command.Parameters.AddWithValue("@Marca", nuevaCitaEntity.Marca);
+        command.Parameters.AddWithValue("@Modelo", nuevaCitaEntity.Modelo);
+        command.Parameters.AddWithValue("@Cilindrada", nuevaCitaEntity.Cilindrada);
+        command.Parameters.AddWithValue("@Motor", nuevaCitaEntity.Motor);
+        command.Parameters.AddWithValue("@DniDueño", nuevaCitaEntity.DniDueño);
+        command.Parameters.AddWithValue("@FechaMatriculacion", nuevaCitaEntity.FechaMatriculacion);
+        command.Parameters.AddWithValue("@FechaInspeccion", nuevaCitaEntity.FechaInspeccion);
+        command.Parameters.AddWithValue("@CreateAt", nuevaCitaEntity.CreateAt);
+        command.Parameters.AddWithValue("@UpdateAt", nuevaCitaEntity.UpdateAt);
+        command.Parameters.AddWithValue("@IsDelete", nuevaCitaEntity.IsDelete);
+        
+        command.ExecuteNonQuery();
+        
+        return Result.Success<Cita, DomainError>(nuevaCitaEntity.ToModel());
     }
 
+    /// <inheritdoc cref="ICitaRepository.Delete" />
     public Result<Cita, DomainError> Delete(int id) {
         if (GetById(id).IsFailure) {
             _logger.Debug("No se ha podido eliminar la cita, el id no existe.");
@@ -156,7 +248,8 @@ public class CitaAdoRepository : ICitaRepository {
         using var reader = command.ExecuteReader();
         return Result.Success<Cita, DomainError>(MapCita(reader).ToModel());
     }
-
+    
+    /// <inheritdoc cref="ICitaRepository.DeleteHard" />
     public Result<Cita, DomainError> DeleteHard(int id) {
         if (GetById(id).IsFailure) {
             _logger.Debug("No se ha podido eliminar la cita, el id no existe.");
@@ -177,7 +270,8 @@ public class CitaAdoRepository : ICitaRepository {
         return Result.Success<Cita, DomainError>(eliminado.ToModel());    
     }
 
-     public bool DeleteAll() {
+    /// <inheritdoc cref="ICitaRepository.DeleteAll" />
+    public bool DeleteAll() {
          using var connection = CreateConnection();
          connection.Open();
         

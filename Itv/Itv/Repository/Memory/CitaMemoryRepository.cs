@@ -25,39 +25,58 @@ public class CitaMemoryRepository : ICitaRepository {
     }
 
     /// <inheritdoc cref="ICitaRepository.GetAll" />
-    public IEnumerable<Cita> GetAll(int pagina, int tamPagina, bool isDeleteInclude, string campoBusqueda) {
+    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "") {
         if (!isDeleteInclude) {
             return _almacenId.Values
-                .OrderBy(v => v.Id)
+                .OrderBy(v => v.Matricula)
                 .Where(v => v.IsDelete == false && 
-                    v.Matricula.Contains(campoBusqueda) || 
-                    v.Marca.Contains(campoBusqueda) ||
-                    v.Modelo.Contains(campoBusqueda) ||
-                    v.Cilindrada.ToString().Contains(campoBusqueda) ||
-                    v.Motor.ToString().Contains(campoBusqueda) ||
-                    v.DniDueño.Contains(campoBusqueda)
-                    )
+                            v.Matricula.Contains(campoBusqueda) || 
+                            v.Marca.Contains(campoBusqueda) ||
+                            v.Modelo.Contains(campoBusqueda) ||
+                            v.Cilindrada.ToString().Contains(campoBusqueda) ||
+                            v.Motor.ToString().Contains(campoBusqueda) ||
+                            v.DniDueño.Contains(campoBusqueda)
+                )
                 .Skip((pagina -1) * tamPagina)
                 .Take(tamPagina);
         }
 
         return _almacenId.Values                
-            .OrderBy(v => v.Id)
+            .OrderBy(v => v.Matricula)
             .Where(v => v.Matricula.Contains(campoBusqueda) || 
-                  v.Marca.Contains(campoBusqueda) ||
-                  v.Modelo.Contains(campoBusqueda) ||
-                  v.Cilindrada.ToString().Contains(campoBusqueda) ||
-                  v.Motor.ToString().Contains(campoBusqueda) ||
-                  v.DniDueño.Contains(campoBusqueda)
-                  )
+                        v.Marca.Contains(campoBusqueda) ||
+                        v.Modelo.Contains(campoBusqueda) ||
+                        v.Cilindrada.ToString().Contains(campoBusqueda) ||
+                        v.Motor.ToString().Contains(campoBusqueda) ||
+                        v.DniDueño.Contains(campoBusqueda)
+            )
             .Skip((pagina -1) * tamPagina)
-            .Take(tamPagina);
+            .Take(tamPagina);    
     }
 
     /// <inheritdoc cref="ICitaRepository.GetById" />
     public Result<Cita, DomainError> GetById(int id) {
         if (_almacenId.GetValueOrDefault(id) == null) return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
         return Result.Success<Cita, DomainError>(_almacenId[id]);
+    }
+    
+    /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
+    public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
+        if(fin == null) fin = DateTime.Now;
+        IEnumerable<Cita> citas;
+        if (!isDeleteInclude) {
+            citas = _almacenId.Values
+                .OrderBy(v => v.Matricula)
+                .Where(v => inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin);
+            return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
+        }
+
+        citas = _almacenId.Values
+            .OrderBy(v => v.Matricula)
+            .Where(v => inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin);
+
+        if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
+        return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
     }
 
     /// <inheritdoc cref="ICitaRepository.Create" />

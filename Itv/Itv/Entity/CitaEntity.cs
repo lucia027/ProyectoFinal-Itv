@@ -9,7 +9,7 @@ namespace Itv.Entity;
 /// </summary>
 [Table("Citas")]
 [Index(nameof(Matricula), IsUnique = true)]
-public class CitaEntity {
+public record CitaEntity {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
