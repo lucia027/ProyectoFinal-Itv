@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Itv.Dto;
+using Itv.Entity;
 using Itv.Enums;
 using Itv.Models;
 
@@ -55,4 +56,22 @@ public static class CitaMapper {
             cita.IsDelete
         );
     }
+
+    public static Cita ToModel(this CitaEntity entity) {
+        return new Cita {
+            Id = entity.Id,
+            Matricula = entity.Matricula,
+            Marca = entity.Marca,
+            Modelo = entity.Modelo,
+            Cilindrada = entity.Cilindrada,
+            Motor = Enum.TryParse(entity.Motor, out Motor motor) ? motor : Motor.Diesel,
+            DniDueño = entity.DniDueño,
+            FechaMatriculacion = entity.FechaMatriculacion,
+            FechaInspeccion = entity.FechaInspeccion,
+            CreateAt = entity.CreateAt,
+            UpdateAt = entity.UpdateAt,
+            IsDelete = entity.IsDelete
+        };
+    }
+
 }

@@ -35,8 +35,7 @@ public class CitaMemoryRepository : ICitaRepository {
                     v.Modelo.Contains(campoBusqueda) ||
                     v.Cilindrada.ToString().Contains(campoBusqueda) ||
                     v.Motor.ToString().Contains(campoBusqueda) ||
-                    v.DniDueño.Contains(campoBusqueda) ||
-                    
+                    v.DniDueño.Contains(campoBusqueda)
                     )
                 .Skip((pagina -1) * tamPagina)
                 .Take(tamPagina);
@@ -49,7 +48,7 @@ public class CitaMemoryRepository : ICitaRepository {
                   v.Modelo.Contains(campoBusqueda) ||
                   v.Cilindrada.ToString().Contains(campoBusqueda) ||
                   v.Motor.ToString().Contains(campoBusqueda) ||
-                  v.DniDueño.Contains(campoBusqueda) ||
+                  v.DniDueño.Contains(campoBusqueda)
                   )
             .Skip((pagina -1) * tamPagina)
             .Take(tamPagina);
@@ -63,11 +62,7 @@ public class CitaMemoryRepository : ICitaRepository {
 
     /// <inheritdoc cref="ICitaRepository.Create" />
     public Result<Cita, DomainError> Create(Cita entity) {
-        if (_almacenMatricula.ContainsKey(entity.Matricula)) {
-            _logger.Debug("No se ha podido crear la cita.");
-            return Result.Failure<Cita, DomainError>(RepositoryErrors.InvalidMatricula(entity.Matricula));
-        }
-        if (_almacenId.Values.Count(v => v.DniDueño == entity.DniDueño) >= 3) {
+        if (_almacenId.Values.Count(v => v.DniDueño == entity.DniDueño && v.FechaMatriculacion == entity.FechaMatriculacion) >= 3) {
             _logger.Debug("No se ha podido crear la cita.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.DniDueñoError(entity));
         }

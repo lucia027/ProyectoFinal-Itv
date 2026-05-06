@@ -5,6 +5,7 @@ using Itv.Enums;
 using Itv.Errors;
 using Itv.Errors.Common;
 using Itv.Factory;
+using Itv.Mappers;
 using Itv.Models;
 using Itv.Repository.Common;
 using Microsoft.Data.Sqlite;
@@ -29,7 +30,7 @@ public class CitaAdoRepository : ICitaRepository {
         EnsureTable();
         
         if (dropData) DeleteAll();
-        if (seedData) foreach (var v in CitasFactory.Seed()) Create(v);
+        if (dropData || seedData) foreach (var v in CitasFactory.Seed()) Create(v);
     }
     
     private SqliteConnection CreateConnection() => new(_connectionString);
@@ -66,7 +67,7 @@ public class CitaAdoRepository : ICitaRepository {
     }
 
     public IEnumerable<Cita> GetAll(int pagina, int tamPagina, bool isDeleteInclude, string campoBusqueda) {
-        var entidades = new List<Cita>();
+        var entidades = new List<CitaEntity>();
         
         using var connection = CreateConnection();
         connection.Open();
@@ -100,6 +101,7 @@ public class CitaAdoRepository : ICitaRepository {
         }
 
         return entidades
+            .Select(c => c.ToModel())
             .OrderBy(c => c.Id)
             .Skip((pagina -1) * tamPagina)
             .Take(tamPagina);
@@ -115,12 +117,23 @@ public class CitaAdoRepository : ICitaRepository {
         
         using var reader = command.ExecuteReader();
         if (!reader.Read()) return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
-        return Result.Success<Cita, DomainError>(MapCita(reader));
+        return Result.Success<Cita, DomainError>(MapCita(reader).ToModel());
     }
 
     public Result<Cita, DomainError> Create(Cita entity) {
-        if()
+        if (!VerificacionDniDueño(entity)) {
+            _logger.Debug("No se ha podido crear la cita.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.DniDueñoError(entity));
+        }
+        if (!VerificacionMatricula(entity)) {
+            _logger.Debug("No se ha podido crear la cita.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+        }
         
+        using var connection = CreateConnection();
+        connection.Open();        
+        
+
     }
 
     public Result<Cita, DomainError> Update(int id, Cita entity) {
@@ -141,7 +154,7 @@ public class CitaAdoRepository : ICitaRepository {
         command.Parameters.AddWithValue("@id", id);
         
         using var reader = command.ExecuteReader();
-        return Result.Success<Cita, DomainError>(MapCita(reader));
+        return Result.Success<Cita, DomainError>(MapCita(reader).ToModel());
     }
 
     public Result<Cita, DomainError> DeleteHard(int id) {
@@ -159,8 +172,9 @@ public class CitaAdoRepository : ICitaRepository {
         
         command.CommandText = "DELETE FROM Citas WHERE Id = @id";
         command.Parameters.AddWithValue("@id", id);
+        command.ExecuteNonQuery();
         
-        return Result.Success<Cita, DomainError>(eliminado);    
+        return Result.Success<Cita, DomainError>(eliminado.ToModel());    
     }
 
      public bool DeleteAll() {
@@ -173,14 +187,14 @@ public class CitaAdoRepository : ICitaRepository {
          return command.ExecuteNonQuery() <= 0;
      }
      
-    private Cita MapCita(SqliteDataReader reader) {
-        return new Cita {
+    private CitaEntity MapCita(SqliteDataReader reader) {
+        return new CitaEntity {
             Id = reader.GetInt32(0),
             Matricula = reader.GetString(1),
             Marca = reader.GetString(2),
             Modelo = reader.GetString(3), 
             Cilindrada = reader.GetInt32(4),
-            Motor = Enum.TryParse(reader.GetString(5), out Motor m) ? m : Motor.Diesel,
+            Motor = reader.GetString(5),
             DniDueño = reader.GetString(6),
             FechaMatriculacion = DateTime.Parse(reader.GetString(7)),
             FechaInspeccion = DateTime.Parse(reader.GetString(8)),
@@ -188,5 +202,35 @@ public class CitaAdoRepository : ICitaRepository {
             UpdateAt = reader.IsDBNull(10) ? null : DateTime.Parse(reader.GetString(10)),
             IsDelete = reader.GetInt32(11) == 1
         };
+    }
+
+    private bool VerificacionDniDueño(Cita entity) {
+        using var connection = CreateConnection();
+        connection.Open();
+        using var command = connection.CreateCommand();
+        
+        command.CommandText = "SELECT COUNT(*) FROM Citas WHERE DniDueño LIKE @DniDueño AND FechaMAtriculacion LIKE @FechaMatriculacion";
+        command.Parameters.AddWithValue("@DniDueño", entity.DniDueño);
+        command.Parameters.AddWithValue("@FechaMatriculacion", entity.FechaMatriculacion);
+
+        if(Convert.ToInt32(command.ExecuteScalar()) >= 3) {
+            return false;
+        }
+        return true;
+    }
+    
+    private bool VerificacionMatricula(Cita entity) {
+        using var connection = CreateConnection();
+        connection.Open();
+        using var command = connection.CreateCommand();
+        
+        command.CommandText = "SELECT COUNT(*) FROM Citas WHERE Matricula LIKE @Matricula AND FechaMAtriculacion LIKE @FechaMatriculacion";
+        command.Parameters.AddWithValue("@Matricula", entity.Matricula);
+        command.Parameters.AddWithValue("@FechaMatriculacion", entity.FechaMatriculacion);    
+
+        if(Convert.ToInt32(command.ExecuteScalar()) >= 1) {
+            return false;
+        }
+        return true;
     }
 }
