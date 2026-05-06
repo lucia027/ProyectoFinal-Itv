@@ -82,6 +82,7 @@ public class CitaMemoryRepository : ICitaRepository {
 
     public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor( bool isDeleteInclude, Motor motor) {
         IEnumerable<Cita> citas = [];
+        
 
         if (!isDeleteInclude) {
             switch (motor) {
