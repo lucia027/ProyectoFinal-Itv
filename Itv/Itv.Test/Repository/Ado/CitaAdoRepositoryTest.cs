@@ -6,7 +6,6 @@ public class CitaAdoRepositoryTest {
     [TestFixture]
     public sealed class CasosValidos {
         
-        
     }
 
     [TestFixture]
