@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Itv.Config;
 using Itv.Entity;
+using Itv.Enums;
 using Itv.Errors;
 using Itv.Errors.Common;
 using Itv.Factory;
@@ -151,6 +152,35 @@ public class CitaAdoRepository : ICitaRepository {
 
         if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         return Result.Success<IEnumerable<Cita>, DomainError>(citas);      
+    }
+
+    public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor, bool isDeleteInclude = true) {
+        List<Cita> citas = [];
+        
+        using var connection = CreateConnection();
+        connection.Open();
+        using var command = connection.CreateCommand();
+        
+        if (!isDeleteInclude) {
+            command.CommandText = "SELECT * FROM Citas WHERE Motor LIKE @motor AND IsDelete LIKE 0";
+            command.Parameters.AddWithValue("@motor", motor);
+        }
+        
+        if (isDeleteInclude) {
+            command.CommandText = "SELECT * FROM Citas WHERE Motor LIKE @motor AND IsDelete LIKE 1";
+            command.Parameters.AddWithValue("@motor", motor);
+        }
+        
+        using var reader = command.ExecuteReader();
+        while (reader.Read()) {
+            citas.Add(MapCita(reader).ToModel());
+        }
+
+        citas = citas.OrderBy(c => c.Matricula).ToList();
+
+        if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
+        return Result.Success<IEnumerable<Cita>, DomainError>(citas);
+        
     }
 
     /// <inheritdoc cref="ICitaRepository.Create" />

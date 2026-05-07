@@ -32,7 +32,7 @@ public interface ICitaRepository : ICrud_Repository<int, Cita> {
     /// </summary>
     /// <param name="motor">Tipo de motor.</param>
     /// <returns>Enumerable con todas las citas que cumplan la condicion.</returns>
-    Result<IEnumerable<Cita>, DomainError> GetByTipoMotor( bool isDeleteInclude = true, Motor motor);
+    Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor, bool isDeleteInclude = true);
     
     /// <summary>
     /// Elimina todas las citas del almacen;

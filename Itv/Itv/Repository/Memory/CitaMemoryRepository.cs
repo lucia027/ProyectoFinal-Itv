@@ -80,47 +80,12 @@ public class CitaMemoryRepository : ICitaRepository {
         return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
     }
 
-    public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor( bool isDeleteInclude, Motor motor) {
+    public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor, bool isDeleteInclude) {
         IEnumerable<Cita> citas = [];
         
-
-        if (!isDeleteInclude) {
-            switch (motor) {
-                case Motor.Diesel:
-                    citas.Select(c => c.Motor == Motor.Diesel && c.IsDelete == false);
-                    break;
-                case Motor.Electrico:
-                    citas.Select(c => c.Motor == Motor.Electrico && c.IsDelete == false);
-                    break;
-                case Motor.Gasolina:
-                    citas.Select(c => c.Motor == Motor.Gasolina && c.IsDelete == false);
-                    break;
-                case Motor.Hibrido:
-                    citas.Select(c => c.Motor == Motor.Hibrido && c.IsDelete == false);
-                    break;
-                default:
-                    break;
-            }
-        }
+        if (!isDeleteInclude) citas.Select(c => c.Motor == motor && c.IsDelete == false);
+        if (isDeleteInclude) citas.Select(c => c.Motor == motor && c.IsDelete == true);
         
-        if (isDeleteInclude) {
-            switch (motor) {
-                case Motor.Diesel:
-                    citas.Select(c => c.Motor == Motor.Diesel && c.IsDelete == true);
-                    break;
-                case Motor.Electrico:
-                    citas.Select(c => c.Motor == Motor.Electrico && c.IsDelete == true);
-                    break;
-                case Motor.Gasolina:
-                    citas.Select(c => c.Motor == Motor.Gasolina && c.IsDelete == true);
-                    break;
-                case Motor.Hibrido:
-                    citas.Select(c => c.Motor == Motor.Hibrido && c.IsDelete == true);
-                    break;
-                default:
-                    break;
-            }
-        }
         
         if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
