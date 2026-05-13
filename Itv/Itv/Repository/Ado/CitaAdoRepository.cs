@@ -48,8 +48,8 @@ public class CitaAdoRepository : ICitaRepository {
         connection.Open();
         using var command = connection.CreateCommand();
         command.CommandText = @"
-            DROP TABLE IF EXISTS Citas;
-            CREATE TABLE Citas (
+            DROP TABLE IF EXISTS Cita;
+            CREATE TABLE Cita (
                 Id INTEGER PRIMARY KEY,
                 Matricula TEXT NOT NULL UNIQUE,
                 Marca TEXT NOT NULL,
@@ -61,7 +61,7 @@ public class CitaAdoRepository : ICitaRepository {
                 FechaInspeccion  TEXT NOT NULL,
                 CreateAt TEXT NOT NULL,
                 UpdateAt TEXT,
-                IsDeleted INTEGER NOT NULL DEFAULT 0,
+                IsDeleted INTEGER NOT NULL DEFAULT 0
             )";
         command.ExecuteNonQuery();
     }
@@ -75,7 +75,7 @@ public class CitaAdoRepository : ICitaRepository {
         
         using var command = connection.CreateCommand();
         if(!isDeleteInclude)  command.CommandText = @"
-                SELECT * FROM Citas WHERE IsDeleted = 0 
+                SELECT * FROM Cita WHERE IsDeleted = 0 
                 AND Matricula LIKE '%@CampoBusqueda%' 
                 OR Marca LIkE '%@CampoBusqueda%'
                 OR Modelo LIKE '%@CampoBusqueda%'
@@ -86,7 +86,7 @@ public class CitaAdoRepository : ICitaRepository {
         command.Parameters.AddWithValue("@CampoBusqueda", campoBusqueda);
         
         if(isDeleteInclude) command.CommandText =@"
-                SELECT * FROM Citas WHERE IsDeleted = 1
+                SELECT * FROM Cita WHERE IsDeleted = 1
                 AND Matricula LIKE '%@CampoBusqueda%' 
                 OR Marca LIkE '%@CampoBusqueda%'
                 OR Modelo LIKE '%@CampoBusqueda%'
@@ -114,7 +114,7 @@ public class CitaAdoRepository : ICitaRepository {
         connection.Open();
         
         using var command = connection.CreateCommand();
-        command.CommandText = "SELECT * FROM Citas WHERE Id = @id";
+        command.CommandText = "SELECT * FROM Cita WHERE Id = @id";
         command.Parameters.AddWithValue("@id", id);
         
         using var reader = command.ExecuteReader();
@@ -125,61 +125,61 @@ public class CitaAdoRepository : ICitaRepository {
     /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
     public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         if(fin == null) fin = DateTime.Now;
-        List<Cita> citas = [];
+        List<Cita> cita = [];
         
         using var connection = CreateConnection();
         connection.Open();
         using var command = connection.CreateCommand();
         
         if (!isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Citas WHERE FechaMatricula BETWEEN @inicio AND @fin AND IsDelete LIKE 0";
+            command.CommandText = "SELECT * FROM Cita WHERE FechaMatricula BETWEEN @inicio AND @fin AND IsDelete LIKE 0";
             command.Parameters.AddWithValue("@inicio", inicio);
             command.Parameters.AddWithValue("@fin", fin);
         }
         
         if (isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Citas WHERE FechaMatricula BETWEEN @inicio AND @fin AND IsDelete LIKE 1";
+            command.CommandText = "SELECT * FROM Cita WHERE FechaMatricula BETWEEN @inicio AND @fin AND IsDelete LIKE 1";
             command.Parameters.AddWithValue("@inicio", inicio);
             command.Parameters.AddWithValue("@fin", fin);
         }
         
         using var reader = command.ExecuteReader();
         while (reader.Read()) {
-            citas.Add(MapCita(reader).ToModel());
+            cita.Add(MapCita(reader).ToModel());
         }
 
-        citas = citas.OrderBy(c => c.Matricula).ToList();
+        cita = cita.OrderBy(c => c.Matricula).ToList();
 
-        if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
-        return Result.Success<IEnumerable<Cita>, DomainError>(citas);      
+        if (!cita.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
+        return Result.Success<IEnumerable<Cita>, DomainError>(cita);      
     }
 
     public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor, bool isDeleteInclude = true) {
-        List<Cita> citas = [];
+        List<Cita> cita = [];
         
         using var connection = CreateConnection();
         connection.Open();
         using var command = connection.CreateCommand();
         
         if (!isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Citas WHERE Motor LIKE @motor AND IsDelete LIKE 0";
+            command.CommandText = "SELECT * FROM Cita WHERE Motor LIKE @motor AND IsDelete LIKE 0";
             command.Parameters.AddWithValue("@motor", motor);
         }
         
         if (isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Citas WHERE Motor LIKE @motor AND IsDelete LIKE 1";
+            command.CommandText = "SELECT * FROM Cita WHERE Motor LIKE @motor AND IsDelete LIKE 1";
             command.Parameters.AddWithValue("@motor", motor);
         }
         
         using var reader = command.ExecuteReader();
         while (reader.Read()) {
-            citas.Add(MapCita(reader).ToModel());
+            cita.Add(MapCita(reader).ToModel());
         }
 
-        citas = citas.OrderBy(c => c.Matricula).ToList();
+        cita = cita.OrderBy(c => c.Matricula).ToList();
 
-        if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
-        return Result.Success<IEnumerable<Cita>, DomainError>(citas);
+        if (!cita.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
+        return Result.Success<IEnumerable<Cita>, DomainError>(cita);
         
     }
 
@@ -202,9 +202,9 @@ public class CitaAdoRepository : ICitaRepository {
 
         using var command = connection.CreateCommand();
         command.CommandText = @"
-            INSERT INTO Citas (Id, Matricula, Marca, Modelo, Cilindrada, Motor, DniDueño, FechaMatriculacion, FechaInspeccion, CreateAt, UpdateAt, IsDelete)
+            INSERT INTO Cita (Id, Matricula, Marca, Modelo, Cilindrada, Motor, DniDueño, FechaMatriculacion, FechaInspeccion, CreateAt, UpdateAt, IsDelete)
             VALUES (@Id, @Matricula, @Marca, @Modelo, @Cilindrada, @Motor, @DniDueño, @FechaMatriculacion, @FechaInspeccion, @CreateAt, @UpdateAt, @IsDelete)
-            Select last_insert_rowid();";
+            Select last_insert_rowid()";
         
         command.Parameters.AddWithValue("@Id", nuevaCitaEntity.Id);
         command.Parameters.AddWithValue("@Matricula", nuevaCitaEntity.Matricula);
@@ -239,7 +239,7 @@ public class CitaAdoRepository : ICitaRepository {
         
         using var command =  connection.CreateCommand();
         command.CommandText = @"
-            UPDATE Citas SET  Matricula = @Matricula, Marca = @Marca, Modelo = @Modelo, Cilindrada = @Cilindrada, Motor = @Motor, DniDueño = @DniDueño, FechaMatriculacion = @FechaMatriculacion, FechaInspeccion = @FechaInspeccion, CreateAt = @CreateAt, UpdateAt = @UpdateAt, IsDelete = @IsDelete
+            UPDATE Cita SET  Matricula = @Matricula, Marca = @Marca, Modelo = @Modelo, Cilindrada = @Cilindrada, Motor = @Motor, DniDueño = @DniDueño, FechaMatriculacion = @FechaMatriculacion, FechaInspeccion = @FechaInspeccion, CreateAt = @CreateAt, UpdateAt = @UpdateAt, IsDelete = @IsDelete
             Where Id = @Id
             ";
 
@@ -272,7 +272,7 @@ public class CitaAdoRepository : ICitaRepository {
         connection.Open();
         
         using var command = connection.CreateCommand();
-        command.CommandText = "UPDATE Citas SET IsDelete = 1 WHERE Id = @id";
+        command.CommandText = "UPDATE Cita SET IsDelete = 1 WHERE Id = @id";
         command.Parameters.AddWithValue("@id", id);
         
         using var reader = command.ExecuteReader();
@@ -293,7 +293,7 @@ public class CitaAdoRepository : ICitaRepository {
         using var reader = command.ExecuteReader();
         var eliminado = MapCita(reader);
         
-        command.CommandText = "DELETE FROM Citas WHERE Id = @id";
+        command.CommandText = "DELETE FROM Cita WHERE Id = @id";
         command.Parameters.AddWithValue("@id", id);
         command.ExecuteNonQuery();
         
@@ -306,7 +306,7 @@ public class CitaAdoRepository : ICitaRepository {
          connection.Open();
         
          using var command = connection.CreateCommand();
-         command.CommandText = "DELETE FROM Citas";
+         command.CommandText = "DELETE FROM Cita";
          
          return command.ExecuteNonQuery() <= 0;
      }
@@ -333,7 +333,7 @@ public class CitaAdoRepository : ICitaRepository {
         connection.Open();
         using var command = connection.CreateCommand();
         
-        command.CommandText = "SELECT COUNT(*) FROM Citas WHERE DniDueño LIKE @DniDueño AND FechaMAtriculacion LIKE @FechaMatriculacion";
+        command.CommandText = "SELECT COUNT(*) FROM Cita WHERE DniDueño LIKE @DniDueño AND FechaMatriculacion LIKE @FechaMatriculacion";
         command.Parameters.AddWithValue("@DniDueño", entity.DniDueño);
         command.Parameters.AddWithValue("@FechaMatriculacion", entity.FechaMatriculacion);
 
@@ -348,7 +348,7 @@ public class CitaAdoRepository : ICitaRepository {
         connection.Open();
         using var command = connection.CreateCommand();
         
-        command.CommandText = "SELECT COUNT(*) FROM Citas WHERE Matricula LIKE @Matricula AND FechaMAtriculacion LIKE @FechaMatriculacion";
+        command.CommandText = "SELECT COUNT(*) FROM Cita WHERE Matricula LIKE @Matricula AND FechaMatriculacion LIKE @FechaMatriculacion";
         command.Parameters.AddWithValue("@Matricula", entity.Matricula);
         command.Parameters.AddWithValue("@FechaMatriculacion", entity.FechaMatriculacion);    
 

@@ -23,6 +23,8 @@ public abstract record RepositoryError(string Message) : DomainError(Message) {
     public sealed record NotFoundCitasError()
         : RepositoryError($"No se han encotrado citas que cumplan la condicion.");
 
+    public sealed record CreationError()
+        : RepositoryError($"Ha surido un error en la creacion de la nueva entidad.");
 }
 
 public static class RepositoryErrors {
@@ -44,5 +46,9 @@ public static class RepositoryErrors {
     
     public static DomainError NotFoundCitasError() {
         return new RepositoryError.NotFoundCitasError();
+    }
+
+    public static DomainError CreationError() {
+        return new RepositoryError.CreationError();
     }
 }

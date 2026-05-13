@@ -42,17 +42,4 @@ public interface ICrud_Repository<in TKey, TEntity> where TEntity : class {
     /// <param name="id">Id de la entidad existente.</param>
     /// <returns>En caso de ser correcta la entidad eliminada y nulo en caso contrario.</returns>
     Result<TEntity, DomainError> Delete(TKey id);
-    
-    /// <summary>
-    /// Elimina permanentemente una cita del almacen.
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    Result<TEntity, DomainError> DeleteHard(int id);
-
-    /// <summary>
-    /// Elimina todas las citas del almacen;
-    /// </summary>
-    /// <returns>Verdadero al eliminarlos.</returns>
-    bool DeleteAll();
 }

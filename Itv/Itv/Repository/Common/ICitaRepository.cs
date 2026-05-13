@@ -20,6 +20,12 @@ public interface ICitaRepository : ICrud_Repository<int, Cita> {
     Result<Cita, DomainError> DeleteHard(int id);
     
     /// <summary>
+    /// Elimina todas las citas del almacen;
+    /// </summary>
+    /// <returns>Verdadero al eliminarlos.</returns>
+    bool DeleteAll();
+    
+    /// <summary>
     /// Busca todas las citas que se encuetren entre dos rangos de su fecha de matriculacion.
     /// </summary>
     /// <param name="inicio">Inicio del rango.</param>
@@ -33,10 +39,4 @@ public interface ICitaRepository : ICrud_Repository<int, Cita> {
     /// <param name="motor">Tipo de motor.</param>
     /// <returns>Enumerable con todas las citas que cumplan la condicion.</returns>
     Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor, bool isDeleteInclude = true);
-    
-    /// <summary>
-    /// Elimina todas las citas del almacen;
-    /// </summary>
-    /// <returns>Verdadero al eliminarlos.</returns>
-    bool DeleteAll();
 }
