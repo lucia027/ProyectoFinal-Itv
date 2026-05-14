@@ -122,6 +122,14 @@ public class CitaMemoryRepository : ICitaRepository {
             _logger.Debug("No se ha podido actualizar la cita, fallo con las matriculas.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.InvalidMatricula(entity.Matricula));
         }
+        if (_almacenId.Values.Count(v => v.DniDueño == entity.DniDueño && v.FechaMatriculacion == entity.FechaMatriculacion) >= 3) {
+            _logger.Debug("No se ha podido actualizar la cita.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.DniDueñoError(entity));
+        }
+        if (_almacenId.Values.Any(c => c.Matricula == entity.Matricula && c.FechaMatriculacion == entity.FechaMatriculacion)) {
+            _logger.Debug("No se ha podido actualizar la cita.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+        } 
 
         var citaNuevo = entity with { Id = id, UpdateAt = DateTime.Today ,IsDelete = false};
 

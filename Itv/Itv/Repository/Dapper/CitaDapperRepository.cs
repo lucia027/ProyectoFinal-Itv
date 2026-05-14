@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Runtime.InteropServices;
 using CSharpFunctionalExtensions;
 using Dapper;
 using Itv.Entity;
@@ -20,12 +19,14 @@ namespace Itv.Repository.Dapper;
 public class CitaDapperRepository : ICitaRepository {
     private ILogger _logger = Log.ForContext<CitaDapperRepository>();
     private readonly IDbConnection _connection;
-    private readonly Action? _onDispose;
+    private Action? _onDispose;
 
-    public CitaDapperRepository(IDbConnection connection, Action? onDispose = null, bool dropData = false, bool seedData = false) {
+
+    public CitaDapperRepository(IDbConnection connection,  Action? onDispose = null, bool dropData = false, bool seedData = false) {
         _connection = connection;
         _onDispose = onDispose;
         EnsureTable(dropData);
+        
 
         if (seedData) Seed();
     }
@@ -47,45 +48,45 @@ public class CitaDapperRepository : ICitaRepository {
                 FechaInspeccion  TEXT NOT NULL,
                 CreateAt TEXT NOT NULL,
                 UpdateAt TEXT,
-                IsDeleted INTEGER NOT NULL DEFAULT 0
-        ");
+                IsDelete INTEGER NOT NULL DEFAULT 0
+        )");
     }
 
     /// <inheritdoc cref="ICitaRepository.GetAll" />
-    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "") {
+    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "%") {
         try {
             String sql = "";
             if (isDeleteInclude) {
                 sql = @"
                     SELECT * FROM Cita
+                    WHERE Matricula LIKE @CampoBusqueda 
+                    OR Marca LIkE @CampoBusqueda
+                    OR Modelo LIKE @CampoBusqueda
+                    OR Cilindrada LIKE @CampoBusqueda
+                    OR Motor LIKE @CampoBusqueda
+                    OR DniDueño LIKE @CampoBusqueda
                     ORDER BY Id LIMIT @TamPagina OFFSET @Offset
-                    WHERE IsDeleted = 1
-                    AND Matricula LIKE '%@CampoBusqueda%' 
-                    OR Marca LIkE '%@CampoBusqueda%'
-                    OR Modelo LIKE '%@CampoBusqueda%'
-                    OR Cilindrada LIKE '%@CampoBusqueda%'
-                    OR Motor LIKE '%@CampoBusqueda%'
-                    OR DniDueño LIKE '%@CampoBusqueda%'
                 ";
             }
             
             if(!isDeleteInclude)  {
                 sql = @"
                     SELECT * FROM Cita
+                    WHERE IsDelete = 0
+                    AND (
+                        Matricula LIKE @CampoBusqueda
+                        OR Marca LIkE @CampoBusqueda
+                        OR Modelo LIKE @CampoBusqueda
+                        OR Cilindrada LIKE @CampoBusqueda
+                        OR Motor LIKE @CampoBusqueda
+                        OR DniDueño LIKE @CampoBusqueda)
                     ORDER BY Id LIMIT @TamPagina OFFSET @Offset
-                    WHERE IsDeleted = 0
-                    AND Matricula LIKE '%@CampoBusqueda%' 
-                    OR Marca LIkE '%@CampoBusqueda%'
-                    OR Modelo LIKE '%@CampoBusqueda%'
-                    OR Cilindrada LIKE '%@CampoBusqueda%'
-                    OR Motor LIKE '%@CampoBusqueda%'
-                    OR DniDueño LIKE '%@CampoBusqueda%'
                 ";
             }
             
-            var entities = _connection.Query<CitaEntity>(sql, new { TamPagina = tamPagina, Offset = (pagina - 1), CampoBusqueda =  campoBusqueda }).ToList();
-            return entities.Select(CitaMapper.ToModel).OfType<Cita>().ToList();
-
+            var entidades = _connection.Query<CitaEntity>(sql, new { TamPagina = tamPagina, Offset = (pagina - 1), CampoBusqueda =  campoBusqueda }).ToList();
+            return entidades.Select(c => c.ToModel()).OfType<Cita>().ToList();
+    
         } catch (Exception e) {
             _logger.Error($"Ha sucedido un error al intentar obtener todas laas citas, mensaje error: {e.Message}");
             return [];
@@ -97,7 +98,7 @@ public class CitaDapperRepository : ICitaRepository {
         try {
             var sql = "SELECT * FROM Cita WHERE Id = @Id";
             var entity = _connection.QueryFirstOrDefault<CitaEntity>(sql, new { Id = id });
-            return Result.Success<Cita, DomainError>(CitaMapper.ToModel(entity));
+            return Result.Success<Cita, DomainError>(entity!.ToModel());
         } catch (Exception e) {
             _logger.Error($"Ha surgido un error intentando encontrar la cita con el id={id}, mensaje de error: {e.Message}.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
@@ -108,11 +109,11 @@ public class CitaDapperRepository : ICitaRepository {
     public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         try {
             var sql = "";
-            if(isDeleteInclude) sql = "SELECT * FROM Cita WHERE IsDelete = 1 AND FechaMatriculacion BETWEEN @Inicio AND @Fin";
+            if(isDeleteInclude) sql = "SELECT * FROM Cita WHERE FechaMatriculacion BETWEEN @Inicio AND @Fin";
             if(!isDeleteInclude) sql = "SELECT * FROM Cita WHERE IsDelete = 0 AND FechaMatriculacion BETWEEN @Inicio AND @Fin";
             
-            var entities = _connection.Query(sql, new {Inicio = inicio, Fin = fin}).OfType<CitaEntity>().Select(c => c.ToModel());
-            return Result.Success<IEnumerable<Cita>, DomainError>(entities);
+            var entidades = _connection.Query(sql, new {Inicio = inicio, Fin = fin}).OfType<CitaEntity>().Select(c => c.ToModel());
+            return Result.Success<IEnumerable<Cita>, DomainError>(entidades);
         } catch (Exception e) {
             _logger.Error($"No se ha podido encontrar ninguna cita que coincida con el rango de fechas de matrculacion; inicio[{inicio}] y fin[{fin}]. Mensaje de error: {e.Message}.");
             return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
@@ -123,11 +124,11 @@ public class CitaDapperRepository : ICitaRepository {
     public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor, bool isDeleteInclude = true) {
         try {
             var sql = "";
-            if(isDeleteInclude) sql = "SELECT * FROM Cita WHERE IsDelete = 1 AND Motor = @motor";
+            if(isDeleteInclude) sql = "SELECT * FROM Cita WHERE Motor = @motor";
             if(!isDeleteInclude) sql = "SELECT * FROM Cita WHERE IsDelete = 0 AND Motor = @motor";
             
-            var entities = _connection.Query(sql, new {Motor = motor}).OfType<CitaEntity>().Select(c => c.ToModel());
-            return Result.Success<IEnumerable<Cita>, DomainError>(entities);
+            var entidades = _connection.Query(sql, new {Motor = motor}).OfType<CitaEntity>().Select(c => c.ToModel());
+            return Result.Success<IEnumerable<Cita>, DomainError>(entidades);
         } catch (Exception e) {
             _logger.Error($"No se ha podido encontrar ninguna cita que coincida con el tipo de motor especificado({motor}). Mensaje de error: {e.Message}.");
             return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
@@ -146,27 +147,26 @@ public class CitaDapperRepository : ICitaRepository {
         }
 
         var nuevaCita = entity with { Id = 0, CreateAt = DateTime.Now,  UpdateAt = null, IsDelete = false };
-        var nuevaCitaEntity = entity.ToEntity();
+        var nuevaCitaEntity = nuevaCita.ToEntity();
         try {
             var sql = @" 
                 INSERT INTO Cita (Id, Matricula, Marca, Modelo, Cilindrada, Motor, DniDueño, FechaMatriculacion, FechaInspeccion, CreateAt, UpdateAt, IsDelete)
-                VALUES (@Id, @Matricula, @Marca, @Modelo, @Cilindrada, @Motor, @DniDueño, @FechaMatriculacion, @FechaInspeccion, @CreateAt, @UpdateAt, @IsDelete)
+                VALUES (@Id, @Matricula, @Marca, @Modelo, @Cilindrada, @Motor, @DniDueño, @FechaMatriculacion, @FechaInspeccion, @CreateAt, @UpdateAt, @IsDelete);
                 Select last_insert_rowid()";
-            var entidad = _connection.Query<CitaEntity>(sql, new {
-                Id = nuevaCitaEntity.Id,
-                Matricula = nuevaCitaEntity.Matricula,
-                Marca = nuevaCitaEntity.Marca,
-                Modelo = nuevaCitaEntity.Modelo,
-                Cilindrada = nuevaCitaEntity.Cilindrada,
-                Motor = nuevaCitaEntity.Motor,
-                DniDueño = nuevaCitaEntity.DniDueño,
-                FechaMatriculacion = nuevaCitaEntity.FechaMatriculacion,
-                FechaInspeccion = nuevaCitaEntity.FechaInspeccion,
-                CreateAt = nuevaCitaEntity.CreateAt,
-                UpdateAt = nuevaCitaEntity.UpdateAt,
-                IsDelete = nuevaCitaEntity.IsDelete,
+            var id = _connection.ExecuteScalar<int>(sql, new {
+                nuevaCitaEntity.Id,
+                nuevaCitaEntity.Matricula,
+                nuevaCitaEntity.Marca,
+                nuevaCitaEntity.Modelo,
+                nuevaCitaEntity.Cilindrada,
+                nuevaCitaEntity.Motor,
+                nuevaCitaEntity.DniDueño,
+                nuevaCitaEntity.FechaMatriculacion,
+                nuevaCitaEntity.FechaInspeccion,
+                nuevaCitaEntity.CreateAt,
+                nuevaCitaEntity.UpdateAt,
+                nuevaCitaEntity.IsDelete,
             });
-            var id = _connection.ExecuteScalar<int>(sql);
             return Result.Success<Cita, DomainError>(GetById(id).Value);
         } catch (Exception e) {
             _logger.Error($"Error en la creacion de la nueva cita, mensaje de error: {e.Message}.");
@@ -176,22 +176,94 @@ public class CitaDapperRepository : ICitaRepository {
 
     /// <inheritdoc cref="ICitaRepository.Update" />
     public Result<Cita, DomainError> Update(int id, Cita entity) {
-        throw new NotImplementedException();
+        var citaVieja = GetById(id).Value;
+        if (citaVieja == null) {
+            _logger.Debug("No se ha podido actualizar la cita el id no existe.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
+        }
+        if (entity.Matricula != citaVieja.Matricula && !ComprobarDisponibilidadMatricula(entity.Matricula) && ObtenerIdPorMatricula(entity.Matricula) != id) {
+            _logger.Debug("No se ha podido actualizar la cita la matricula ya la tiene otro vehiculo.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
+        }
+        if (!VerificacionDniDueño(entity)) {
+            _logger.Debug("No se ha podido actualizar la cita.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.DniDueñoError(entity));
+        }
+        if (!VerificacionMatricula(entity)) {
+            _logger.Debug("No se ha podido actualizar la cita.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+        }
+        
+        var nuevaCita = entity with { Id = id, UpdateAt = DateTime.Now, IsDelete = false };
+        var nuevaCitaEntity = nuevaCita.ToEntity();
+        try {
+            var sql = @" UPDATE Cita SET  Matricula = @Matricula, Marca = @Marca, Modelo = @Modelo, Cilindrada = @Cilindrada, Motor = @Motor, DniDueño = @DniDueño, FechaMatriculacion = @FechaMatriculacion, FechaInspeccion = @FechaInspeccion, CreateAt = @CreateAt, UpdateAt = @UpdateAt, IsDelete = @IsDelete
+                         Where Id = @Id";
+            _connection.Execute(sql, new {
+                nuevaCitaEntity.Matricula,
+                nuevaCitaEntity.Marca,
+                nuevaCitaEntity.Modelo,
+                nuevaCitaEntity.Cilindrada,
+                nuevaCitaEntity.Motor,
+                nuevaCitaEntity.DniDueño,
+                nuevaCitaEntity.FechaMatriculacion,
+                nuevaCitaEntity.FechaInspeccion,
+                nuevaCitaEntity.CreateAt,
+                nuevaCitaEntity.UpdateAt,
+                nuevaCitaEntity.IsDelete,
+            });
+            return Result.Success<Cita, DomainError>(nuevaCitaEntity.ToModel());
+        } catch (Exception e) {
+            _logger.Error($"Error en la actualizacion de la nueva cita, mensaje de error: {e.Message}.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.UpdatingError());
+        }
     }
 
     /// <inheritdoc cref="ICitaRepository.Delete" />
     public Result<Cita, DomainError> Delete(int id) {
-        throw new NotImplementedException();
+        if (GetById(id).IsFailure) {
+            _logger.Debug("No se ha podido eliminar la cita, el id no existe.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
+        }
+
+        try {
+            var sql = "UPDATE Cita SET IsDelete = 1 WHERE Id = @id";
+            _connection.Execute(sql, new { Id = id });
+            return Result.Success<Cita, DomainError>(GetById(id).Value);
+        } catch (Exception e) {
+            _logger.Error($"Error en la eliminacion de la cita, mensaje de error: {e.Message}.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.DeletionError());
+        }
     }
 
     /// <inheritdoc cref="ICitaRepository.DeleteHard" />
     Result<Cita, DomainError> ICitaRepository.DeleteHard(int id) {
-        throw new NotImplementedException();
+        if (GetById(id).IsFailure) {
+            _logger.Debug("No se ha podido eliminar la cita, el id no existe.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
+        }
+
+        try {
+            var eliminado = GetById(id).Value;
+            var sql = "DELETE FROM Cita WHERE Id = @id";
+            _connection.Execute(sql, new { Id = id });
+            return Result.Success<Cita, DomainError>(eliminado);
+        } catch (Exception e) {
+            _logger.Error($"Error en la eliminacion de la cita, mensaje de error: {e.Message}.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.DeletionError());
+        }    
     }
 
     /// <inheritdoc cref="ICitaRepository.DeleteAll" />
     public bool DeleteAll() {
-        throw new NotImplementedException();
+        try {
+            var sql = "DELETE FROM Cita";
+            _connection.Execute(sql);
+            return true;
+        } catch (Exception e) {
+            _logger.Error($"Error en la eliminacion de la cita, mensaje de error: {e.Message}.");
+            return false;
+        }
     }
     
     private void Seed() {
@@ -201,7 +273,7 @@ public class CitaDapperRepository : ICitaRepository {
     private bool VerificacionDniDueño(Cita cita) {
         try {
             var sql = "SELECT COUNT(*) FROM Cita WHERE DniDueño LIKE @DniDueño AND FechaMAtriculacion LIKE @FechaMatriculacion";
-            return _connection.ExecuteScalar<int>(sql, new { DniDueño = cita.DniDueño, FechaMatriculacion = cita.FechaMatriculacion}) < 3;
+            return _connection.ExecuteScalar<int>(sql, new { cita.DniDueño, cita.FechaMatriculacion}) < 3;
         } catch (Exception e) {
             _logger.Error($"Error verificando la condicion del dni del dueño, mensaje: {e.Message}.");
             return false;
@@ -211,10 +283,31 @@ public class CitaDapperRepository : ICitaRepository {
     private bool VerificacionMatricula(Cita cita) {
         try {
             var sql = "SELECT COUNT(*) FROM Cita WHERE Matricula LIKE @Matricula AND FechaMatriculacion LIKE @FechaMatriculacion";
-            return _connection.ExecuteScalar<int>(sql, new { Matricula = cita.Matricula, FechaMatriculacion = cita.FechaMatriculacion}) < 0;
+            return _connection.ExecuteScalar<int>(sql, new { cita.Matricula, cita.FechaMatriculacion}) == 0;
         } catch (Exception e) {
             _logger.Error($"Error verificando la condicion de la matricula, mensaje: {e.Message}.");
             return false;
+        }
+    }
+
+    private bool ComprobarDisponibilidadMatricula(string matricula) {
+        try {
+            var sql = "SELECT COUNT(*) FROM Cita WHERE Matricula LIKE @Matricula";
+            return _connection.ExecuteScalar<int>(sql, new { Matricula = matricula}) >= 1;
+        } catch (Exception e) {
+            _logger.Error($"Error verificando la condicion de la matricula, mensaje: {e.Message}.");
+            return false;
+        }
+    }
+
+    private int? ObtenerIdPorMatricula(string matricula) {
+        try {
+            var sql = "SELECT Id FROM Cita WHERE Matricula LIKE @Matricula";
+            if (_connection.ExecuteScalar<int>(sql, new { Matricula = matricula }) == 0) return null;
+            return _connection.ExecuteScalar<int>(sql, new { Matricula = matricula });
+        } catch (Exception e) {
+            _logger.Error($"Error verificando la condicion de la matricula, mensaje: {e.Message}.");
+            return null;
         }
     }
 }

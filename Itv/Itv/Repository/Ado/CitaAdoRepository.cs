@@ -230,7 +230,19 @@ public class CitaAdoRepository : ICitaRepository {
             _logger.Debug("No se ha podido actualizar la cita el id no existe.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
         }
-        
+        if (entity.Matricula != citaVieja.Value.Matricula && !ComprobarDisponibilidadMatricula(entity.Matricula) && ObtenerIdPorMatricula(entity.Matricula) != id) {
+            _logger.Debug("No se ha podido actualizar la cita la matricula ya la tiene otro vehiculo.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
+        }
+        if (!VerificacionDniDueño(entity)) {
+            _logger.Debug("No se ha podido actualizar la cita.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.DniDueñoError(entity));
+        }
+        if (!VerificacionMatricula(entity)) {
+            _logger.Debug("No se ha podido actualizar la cita.");
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+        }
+
         using var connection = CreateConnection();
         connection.Open();
 
@@ -356,5 +368,32 @@ public class CitaAdoRepository : ICitaRepository {
             return false;
         }
         return true;
+    }
+
+    private bool ComprobarDisponibilidadMatricula(string matricula) {
+        using var connection = CreateConnection();
+        connection.Open();
+        using var command = connection.CreateCommand();
+        
+        command.CommandText = "SELECT COUNT(*) FROM Cita WHERE Matricula LIKE @Matricula";
+        command.Parameters.AddWithValue("@Matricula", matricula);
+
+        if(Convert.ToInt32(command.ExecuteScalar()) >= 1) {
+            return false;
+        }
+        return true;
+    }
+
+    private int? ObtenerIdPorMatricula(string matricula) {
+        using var connection = CreateConnection();
+        connection.Open();
+        using var command = connection.CreateCommand();
+        
+        command.CommandText = "SELECT Id FROM Cita WHERE Matricula LIKE @Matricula";
+        command.Parameters.AddWithValue("@Matricula", matricula);
+
+        if(Convert.ToInt32(command.ExecuteScalar()) == 0) return null;
+        
+        return Convert.ToInt32(command.ExecuteScalar());
     }
 }
