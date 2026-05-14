@@ -85,7 +85,7 @@ public class CitaDapperRepository : ICitaRepository {
             }
             
             var entidades = _connection.Query<CitaEntity>(sql, new { TamPagina = tamPagina, Offset = (pagina - 1), CampoBusqueda =  campoBusqueda }).ToList();
-            return entidades.Select(c => c.ToModel()).OfType<Cita>().ToList();
+            return entidades.Select(c => c.ToModel()).ToList();
     
         } catch (Exception e) {
             _logger.Error($"Ha sucedido un error al intentar obtener todas laas citas, mensaje error: {e.Message}");
