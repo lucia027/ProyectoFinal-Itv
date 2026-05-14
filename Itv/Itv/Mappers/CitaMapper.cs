@@ -90,4 +90,8 @@ public static class CitaMapper {
             IsDelete = cita.IsDelete
         };
     }
+
+    public static IEnumerable<Cita> ToModel(this IEnumerable<CitaEntity> citas) {
+        return citas.Select(c => c.ToModel());
+    }
 }

@@ -107,6 +107,7 @@ public class CitaDapperRepository : ICitaRepository {
     
     /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
     public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
+        if (fin == null) fin = DateTime.Now;
         try {
             var sql = "";
             if(isDeleteInclude) sql = "SELECT * FROM Cita WHERE FechaMatriculacion BETWEEN @Inicio AND @Fin";
@@ -146,7 +147,7 @@ public class CitaDapperRepository : ICitaRepository {
             return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
         }
 
-        var nuevaCita = entity with { Id = 0, CreateAt = DateTime.Now,  UpdateAt = null, IsDelete = false };
+        var nuevaCita = entity with { Id = 0, CreateAt = DateTime.Today,  UpdateAt = null, IsDelete = false };
         var nuevaCitaEntity = nuevaCita.ToEntity();
         try {
             var sql = @" 
@@ -181,7 +182,7 @@ public class CitaDapperRepository : ICitaRepository {
             _logger.Debug("No se ha podido actualizar la cita el id no existe.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
         }
-        if (entity.Matricula != citaVieja.Matricula && !ComprobarDisponibilidadMatricula(entity.Matricula) && ObtenerIdPorMatricula(entity.Matricula) != id) {
+        if (entity.Matricula != citaVieja.Matricula && ComprobarDisponibilidadMatricula(entity.Matricula) && ObtenerIdPorMatricula(entity.Matricula) != id) {
             _logger.Debug("No se ha podido actualizar la cita la matricula ya la tiene otro vehiculo.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
         }
@@ -194,12 +195,13 @@ public class CitaDapperRepository : ICitaRepository {
             return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
         }
         
-        var nuevaCita = entity with { Id = id, UpdateAt = DateTime.Now, IsDelete = false };
+        var nuevaCita = entity with { Id = id, UpdateAt = DateTime.Today, IsDelete = false };
         var nuevaCitaEntity = nuevaCita.ToEntity();
         try {
-            var sql = @" UPDATE Cita SET  Matricula = @Matricula, Marca = @Marca, Modelo = @Modelo, Cilindrada = @Cilindrada, Motor = @Motor, DniDueño = @DniDueño, FechaMatriculacion = @FechaMatriculacion, FechaInspeccion = @FechaInspeccion, CreateAt = @CreateAt, UpdateAt = @UpdateAt, IsDelete = @IsDelete
+            var sql = @" UPDATE Cita SET  Id = @Id, Matricula = @Matricula, Marca = @Marca, Modelo = @Modelo, Cilindrada = @Cilindrada, Motor = @Motor, DniDueño = @DniDueño, FechaMatriculacion = @FechaMatriculacion, FechaInspeccion = @FechaInspeccion, CreateAt = @CreateAt, UpdateAt = @UpdateAt, IsDelete = @IsDelete
                          Where Id = @Id";
             _connection.Execute(sql, new {
+                nuevaCitaEntity.Id,
                 nuevaCitaEntity.Matricula,
                 nuevaCitaEntity.Marca,
                 nuevaCitaEntity.Modelo,
@@ -227,7 +229,7 @@ public class CitaDapperRepository : ICitaRepository {
         }
 
         try {
-            var sql = "UPDATE Cita SET IsDelete = 1 WHERE Id = @id";
+            var sql = "UPDATE Cita SET IsDelete = 1 WHERE Id = @Id";
             _connection.Execute(sql, new { Id = id });
             return Result.Success<Cita, DomainError>(GetById(id).Value);
         } catch (Exception e) {
@@ -245,7 +247,7 @@ public class CitaDapperRepository : ICitaRepository {
 
         try {
             var eliminado = GetById(id).Value;
-            var sql = "DELETE FROM Cita WHERE Id = @id";
+            var sql = "DELETE FROM Cita WHERE Id = @@Id";
             _connection.Execute(sql, new { Id = id });
             return Result.Success<Cita, DomainError>(eliminado);
         } catch (Exception e) {
