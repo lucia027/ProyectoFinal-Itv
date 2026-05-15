@@ -4,12 +4,6 @@ dotnet add package coverlet.msbuild
 
 dotnet tool install --global dotnet-reportgenerator-globaltool
 
-dotnet tool install --global dotnet-reportgenerator-globaltool
-
-reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
-
-dotnet test --collect:"XPlat Code Coverage" --coverage-output-format cobertura  
-
 dotnet test --collect:"XPlat Code Coverage"
 
 reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
