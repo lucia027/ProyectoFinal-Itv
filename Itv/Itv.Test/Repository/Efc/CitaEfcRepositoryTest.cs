@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.JavaScript;
 using FluentAssertions;
 using Itv.Entity;
 using Itv.Enums;
@@ -7,7 +6,7 @@ using Itv.Repository.Efc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace Itv.Test.Repository;
+namespace Itv.Test.Repository.Efc;
 
 [TestFixture]
 public class CitaEfcRepositoryTest {
@@ -43,9 +42,9 @@ public class CitaEfcRepositoryTest {
         [Test]
         public void GetAll_ConEliminados_RetornaListadoEliminados() {
             //Arrange
-            var v = _repository.Create(new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
+            var v = _repository.Create(new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion  = DateTime.Today, CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
             _repository.Delete(v.Value.Id);
-            _repository.Create(new Cita { Id = 2, Matricula = "5432BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
+            _repository.Create(new Cita { Id = 2, Matricula = "5432BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion  = DateTime.Today, CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
             
             //Act
             var res = _repository.GetAll();
@@ -53,24 +52,38 @@ public class CitaEfcRepositoryTest {
             //Assert
             res.Should().NotBeNull();
             res.Should().HaveCount(2);
-            res.First(ve => ve.Matricula == "1234BBB").IsDelete.Should().BeTrue();
-            res.First(ve => ve.Matricula == "5432BBB").IsDelete.Should().BeFalse();
+            res.First(c => c.Matricula == "1234BBB").IsDelete.Should().BeTrue();
+            res.First(c => c.Matricula == "5432BBB").IsDelete.Should().BeFalse();
         }
 
         [Test]
         public void GetAll_SinEliminados_RetornaNoEliminados() {
             //Arrange
-            var cita = _repository.Create(new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
+            var cita = _repository.Create(new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion  = DateTime.Today, CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
             _repository.Delete(cita.Value.Id);
-            _repository.Create(new Cita { Id = 2, Matricula = "5432BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
+            _repository.Create(new Cita { Id = 2, Matricula = "5432BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion  = DateTime.Today, CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
             
             //Act
-            var res = _repository.GetAll(1, 1, false);
+            var res = _repository.GetAll(1, 5, false);
             
             //Assert
             res.Should().NotBeNull();
             res.Should().HaveCount(1);
-            res.Where(v => v.IsDelete).Any().Should().BeTrue();
+            res.Any(v => v.IsDelete).Should().BeFalse();
+        }
+        
+        [Test]
+        public void GetAll_CampoBusqueda_RetornaBusqueda() {
+            //Arrange
+            _repository.Create(new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion  = DateTime.Today, CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
+            _repository.Create(new Cita { Id = 2, Matricula = "5432BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion  = DateTime.Today, CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false});
+            
+            //Act
+            var res = _repository.GetAll(1, 5, true, "To");
+            
+            //Assert
+            res.Should().NotBeNull();
+            res.Should().HaveCount(2);
         }
 
         [Test]
@@ -87,7 +100,75 @@ public class CitaEfcRepositoryTest {
             res.Should().NotBeNull();
             res.Value.Matricula.Should().Be("1234BBB");
         }
+        
+        [Test]
+        public void GetByDateMatricula_DeleteInclude_RetornaSuccess() {
+            //Arrange
+            var cita = _repository.Create( new Cita { Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
+            _repository.Delete(cita.Value.Id);
+            
+            //Act
+            var res = _repository.GetByDateMatricula(DateTime.Today.AddDays(-5), null);
+            
+            //Assert
+            res.IsSuccess.Should().BeTrue();
+            res.Value.Should().NotBeNull();
+            res.Value.Select(c => c.Matricula == "1234BBB").Any().Should().BeTrue();
+        }
+        
+        [Test]
+        public void GetByDateMatricula_DeleteNoInclude_RetornaSuccess() {
+            //Arrange
+            var c =_repository.Create( new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
+            _repository.Delete(c.Value.Id);
+            _repository.Create( new Cita { Matricula = "433BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
 
+            
+            //Act
+            var res = _repository.GetByDateMatricula(DateTime.Today.AddDays(-5), null, false);
+            
+            //Assert
+            res.IsSuccess.Should().BeTrue();
+            res.Value.Should().NotBeNull();
+            res.Value.Should().HaveCount(1);
+        }
+        
+        [Test]
+        public void GetByMotor_DeleteInclude_RetornaSuccess() {
+            //Arrange
+            var c = _repository.Create( new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Hibrido, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
+            _repository.Delete(c.Value.Id);
+            _repository.Create( new Cita { Matricula = "1235BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Hibrido, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
+            _repository.Create( new Cita { Matricula = "433BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
+
+            
+            //Act
+            var res = _repository.GetByTipoMotor(Motor.Hibrido);
+            
+            //Assert
+            res.IsSuccess.Should().BeTrue();
+            res.Value.Should().NotBeNull();
+            res.Value.Should().HaveCount(2);
+        }
+        
+        [Test]
+        public void GetByMotor_DeleteNoInclude_RetornaSuccess() {
+            //Arrange
+            var c = _repository.Create( new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Hibrido, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
+            _repository.Delete(c.Value.Id);
+            _repository.Create( new Cita { Matricula = "1235BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Hibrido, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
+            _repository.Create( new Cita { Matricula = "433BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
+
+            
+            //Act
+            var res = _repository.GetByTipoMotor(Motor.Hibrido, false);
+            
+            //Assert
+            res.IsSuccess.Should().BeTrue();
+            res.Value.Should().NotBeNull();
+            res.Value.Should().HaveCount(1);
+        }
+        
         [Test]
         public void Create_CitaValida_CreaCita() {
             //Arrange
@@ -108,9 +189,9 @@ public class CitaEfcRepositoryTest {
         [Test]
         public void Update_CitaValida_ActualizaCita() {
             //Arrange
-            var cita = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
+            var cita = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion  = DateTime.Today, CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
             cita  = _repository.Create(cita).Value;
-            var citaNuevo = new Cita { Id = 1, Matricula = "4321BBB", Marca = "nuevo", Modelo = "nuevo", Cilindrada = 500, Motor = Motor.Hibrido, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
+            var citaNuevo = new Cita { Id = 1, Matricula = "4333BBB", Marca = "nuevo", Modelo = "nuevo", Cilindrada = 500, Motor = Motor.Hibrido, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion  = DateTime.Today, CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false }; 
 
 
             //Act
@@ -223,6 +304,25 @@ public class CitaEfcRepositoryTest {
             res.IsFailure.Should().BeTrue();
             res.Error.Message.Contains("No se puede encontrar el cita con el id").Should().BeTrue();
         }
+        
+        [Test]
+        public void GetByDateMatricula_SinDatos_RetornaFallo() {
+            //Act
+            var res = _repository.GetByDateMatricula(DateTime.Today.AddDays(-5), null);
+            
+            //Assert
+            res.IsFailure.Should().BeTrue();
+        }
+        
+        [Test]
+        public void GetByMotor_SinDatos_RetornaFallo() {
+            //Act
+            var res = _repository.GetByTipoMotor(Motor.Hibrido);
+            
+            //Assert
+            res.IsFailure.Should().BeTrue();
+            res.Error.Message.Should().Be("No se han encontrado citas que cumplan la condicion.");
+        }
 
         [Test]
         public void Create_MatriculaInvalida_RetornaFallo() {
@@ -238,14 +338,29 @@ public class CitaEfcRepositoryTest {
             res.IsFailure.Should().BeTrue();
             res.Error.Message.Contains("el vehiculo proporcionado ya tiene una fecha de matriculacion").Should().BeTrue();
         }
+        
+        [Test]
+        public void Create_CitaRepetida_RetornaFallo() {
+            //Arrange
+            var cita = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = true };
+            var cita2 = new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = true };
+            _repository.Create(cita);
+            
+            //Act
+            var res = _repository.Create(cita2);
+            
+            //Assert
+            res.IsFailure.Should().BeTrue();
+            res.Error.Message.Contains($"El cita no se puede crear, el vehiculo proporcionado ya tiene una fecha de matriculacion({cita.FechaMatriculacion}) el mismo dia.").Should().BeTrue();
+        }
 
         [Test]
         public void Create_DniDueñoRepetido_RetornaFallo() {
             //Assert
             var cita1 = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today.AddDays(2), CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
-            var cita2 = new Cita { Id = 1, Matricula = "4321BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today.AddDays(2), CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
-            var cita3 = new Cita { Id = 1, Matricula = "1324BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today.AddDays(2), CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
-            var citaFallo = new Cita { Id = 1, Matricula = "2413BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today.AddDays(2), CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var cita2 = new Cita { Id = 2, Matricula = "4321BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today.AddDays(2), CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var cita3 = new Cita { Id = 3, Matricula = "1324BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today.AddDays(2), CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var citaFallo = new Cita { Id = 4, Matricula = "2413BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today.AddDays(2), CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
             _repository.Create(cita1);
             _repository.Create(cita2);
             _repository.Create(cita3);
@@ -276,7 +391,7 @@ public class CitaEfcRepositoryTest {
         public void Update_CitaMatriculaRepetida_RetornaFallo() {
             //Arrange
             var cita1 = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
-            var cita2 = new Cita { Id = 1, Matricula = "4321BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
+            var cita2 = new Cita { Id = 2, Matricula = "4321BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
             _repository.Create(cita1);
             cita2 = _repository.Create(cita2).Value;
             

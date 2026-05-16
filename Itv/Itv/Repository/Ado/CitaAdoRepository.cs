@@ -18,7 +18,7 @@ namespace Itv.Repository.Ado;
 /// </summary>
 public class CitaAdoRepository : ICitaRepository {
     
-    private ILogger _logger = Log.ForContext<CitaAdoRepository>();
+    private readonly ILogger _logger = Log.ForContext<CitaAdoRepository>();
     private readonly string _connectionString;
 
     public CitaAdoRepository() : this(Configuracion.DropData, Configuracion.SeedData) { }
@@ -30,7 +30,7 @@ public class CitaAdoRepository : ICitaRepository {
         EnsureTable();
         
         if (dropData) DeleteAll();
-        if (dropData || seedData) foreach (var v in CitasFactory.Seed()) Create(v);
+        if (seedData) foreach (var v in CitasFactory.Seed()) Create(v);
     }
     
     private SqliteConnection CreateConnection() => new(_connectionString);
@@ -61,13 +61,13 @@ public class CitaAdoRepository : ICitaRepository {
                 FechaInspeccion  TEXT NOT NULL,
                 CreateAt TEXT NOT NULL,
                 UpdateAt TEXT,
-                IsDeleted INTEGER NOT NULL DEFAULT 0
+                IsDelete INTEGER NOT NULL DEFAULT 0
             )";
         command.ExecuteNonQuery();
     }
 
     /// <inheritdoc cref="ICitaRepository.GetAll" />
-    public IEnumerable<Cita> GetAll(int pagina, int tamPagina, bool isDeleteInclude, string campoBusqueda) {
+    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "%") {
         var entidades = new List<CitaEntity>();
         
         using var connection = CreateConnection();
@@ -75,24 +75,22 @@ public class CitaAdoRepository : ICitaRepository {
         
         using var command = connection.CreateCommand();
         if(!isDeleteInclude)  command.CommandText = @"
-                SELECT * FROM Cita WHERE IsDeleted = 0 
-                AND Matricula LIKE '%@CampoBusqueda%' 
-                OR Marca LIkE '%@CampoBusqueda%'
-                OR Modelo LIKE '%@CampoBusqueda%'
-                OR Cilindrada LIKE '%@CampoBusqueda%'
-                OR Motor LIKE '%@CampoBusqueda%'
-                OR DniDueño LIKE '%@CampoBusqueda%'
+                SELECT * FROM Cita WHERE IsDelete = 0 
+                AND (Matricula LIKE @CampoBusqueda 
+                OR Marca LIkE @CampoBusqueda
+                OR Modelo LIKE @CampoBusqueda
+                OR Cilindrada LIKE @CampoBusqueda
+                OR Motor LIKE @CampoBusqueda
+                OR DniDueño LIKE @CampoBusqueda)
                 ";
-        command.Parameters.AddWithValue("@CampoBusqueda", campoBusqueda);
-        
         if(isDeleteInclude) command.CommandText =@"
-                SELECT * FROM Cita WHERE IsDeleted = 1
-                AND Matricula LIKE '%@CampoBusqueda%' 
-                OR Marca LIkE '%@CampoBusqueda%'
-                OR Modelo LIKE '%@CampoBusqueda%'
-                OR Cilindrada LIKE '%@CampoBusqueda%'
-                OR Motor LIKE '%@CampoBusqueda%'
-                OR DniDueño LIKE '%@CampoBusqueda%'
+                SELECT * FROM Cita WHERE 
+                Matricula LIKE @CampoBusqueda
+                OR Marca LIkE @CampoBusqueda
+                OR Modelo LIKE @CampoBusqueda
+                OR Cilindrada LIKE @CampoBusqueda
+                OR Motor LIKE @CampoBusqueda
+                OR DniDueño LIKE @CampoBusqueda
                 ";
         command.Parameters.AddWithValue("@CampoBusqueda", campoBusqueda);
         
@@ -132,13 +130,13 @@ public class CitaAdoRepository : ICitaRepository {
         using var command = connection.CreateCommand();
         
         if (!isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Cita WHERE FechaMatricula BETWEEN @inicio AND @fin AND IsDelete LIKE 0";
+            command.CommandText = "SELECT * FROM Cita WHERE FechaMatriculacion BETWEEN @inicio AND @fin AND IsDelete LIKE 0";
             command.Parameters.AddWithValue("@inicio", inicio);
             command.Parameters.AddWithValue("@fin", fin);
         }
         
         if (isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Cita WHERE FechaMatricula BETWEEN @inicio AND @fin AND IsDelete LIKE 1";
+            command.CommandText = "SELECT * FROM Cita WHERE FechaMatriculacion BETWEEN @inicio AND @fin";
             command.Parameters.AddWithValue("@inicio", inicio);
             command.Parameters.AddWithValue("@fin", fin);
         }
@@ -163,12 +161,12 @@ public class CitaAdoRepository : ICitaRepository {
         
         if (!isDeleteInclude) {
             command.CommandText = "SELECT * FROM Cita WHERE Motor LIKE @motor AND IsDelete LIKE 0";
-            command.Parameters.AddWithValue("@motor", motor);
+            command.Parameters.AddWithValue("@motor", motor.ToString());
         }
         
         if (isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Cita WHERE Motor LIKE @motor AND IsDelete LIKE 1";
-            command.Parameters.AddWithValue("@motor", motor);
+            command.CommandText = "SELECT * FROM Cita WHERE Motor LIKE @motor";
+            command.Parameters.AddWithValue("@motor", motor.ToString());
         }
         
         using var reader = command.ExecuteReader();
@@ -202,11 +200,10 @@ public class CitaAdoRepository : ICitaRepository {
 
         using var command = connection.CreateCommand();
         command.CommandText = @"
-            INSERT INTO Cita (Id, Matricula, Marca, Modelo, Cilindrada, Motor, DniDueño, FechaMatriculacion, FechaInspeccion, CreateAt, UpdateAt, IsDelete)
-            VALUES (@Id, @Matricula, @Marca, @Modelo, @Cilindrada, @Motor, @DniDueño, @FechaMatriculacion, @FechaInspeccion, @CreateAt, @UpdateAt, @IsDelete)
-            Select last_insert_rowid()";
+            INSERT INTO Cita ( Matricula, Marca, Modelo, Cilindrada, Motor, DniDueño, FechaMatriculacion, FechaInspeccion, CreateAt, UpdateAt, IsDelete)
+            VALUES ( @Matricula, @Marca, @Modelo, @Cilindrada, @Motor, @DniDueño, @FechaMatriculacion, @FechaInspeccion, @CreateAt, @UpdateAt, @IsDelete);
+            Select last_insert_rowid();";
         
-        command.Parameters.AddWithValue("@Id", nuevaCitaEntity.Id);
         command.Parameters.AddWithValue("@Matricula", nuevaCitaEntity.Matricula);
         command.Parameters.AddWithValue("@Marca", nuevaCitaEntity.Marca);
         command.Parameters.AddWithValue("@Modelo", nuevaCitaEntity.Modelo);
@@ -216,7 +213,7 @@ public class CitaAdoRepository : ICitaRepository {
         command.Parameters.AddWithValue("@FechaMatriculacion", nuevaCitaEntity.FechaMatriculacion);
         command.Parameters.AddWithValue("@FechaInspeccion", nuevaCitaEntity.FechaInspeccion);
         command.Parameters.AddWithValue("@CreateAt", nuevaCitaEntity.CreateAt);
-        command.Parameters.AddWithValue("@UpdateAt", nuevaCitaEntity.UpdateAt);
+        command.Parameters.AddWithValue("@UpdateAt", nuevaCitaEntity.UpdateAt == null ? DBNull.Value : nuevaCitaEntity.UpdateAt);
         command.Parameters.AddWithValue("@IsDelete", nuevaCitaEntity.IsDelete);
         
         nuevaCitaEntity = nuevaCitaEntity with{ Id = Convert.ToInt32(command.ExecuteScalar())};
@@ -232,7 +229,7 @@ public class CitaAdoRepository : ICitaRepository {
         }
         if (entity.Matricula != citaVieja.Value.Matricula && !ComprobarDisponibilidadMatricula(entity.Matricula) && ObtenerIdPorMatricula(entity.Matricula) != id) {
             _logger.Debug("No se ha podido actualizar la cita la matricula ya la tiene otro vehiculo.");
-            return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.InvalidMatricula(entity.Matricula));
         }
         if (!VerificacionDniDueño(entity)) {
             _logger.Debug("No se ha podido actualizar la cita.");
@@ -247,7 +244,7 @@ public class CitaAdoRepository : ICitaRepository {
         connection.Open();
 
         var nuevaCitaEntity = entity.ToEntity();
-        nuevaCitaEntity = nuevaCitaEntity with {Id = id, UpdateAt = null, IsDelete = false };
+        nuevaCitaEntity = nuevaCitaEntity with {Id = id, UpdateAt = DateTime.Today, IsDelete = false };
         
         using var command =  connection.CreateCommand();
         command.CommandText = @"
@@ -266,7 +263,7 @@ public class CitaAdoRepository : ICitaRepository {
         command.Parameters.AddWithValue("@FechaInspeccion", nuevaCitaEntity.FechaInspeccion);
         command.Parameters.AddWithValue("@CreateAt", nuevaCitaEntity.CreateAt);
         command.Parameters.AddWithValue("@UpdateAt", nuevaCitaEntity.UpdateAt);
-        command.Parameters.AddWithValue("@IsDelete", nuevaCitaEntity.IsDelete);
+        command.Parameters.AddWithValue("@IsDelete", nuevaCitaEntity.IsDelete );
         
         command.ExecuteNonQuery();
         
@@ -286,9 +283,10 @@ public class CitaAdoRepository : ICitaRepository {
         using var command = connection.CreateCommand();
         command.CommandText = "UPDATE Cita SET IsDelete = 1 WHERE Id = @id";
         command.Parameters.AddWithValue("@id", id);
-        
-        using var reader = command.ExecuteReader();
-        return Result.Success<Cita, DomainError>(MapCita(reader).ToModel());
+        command.ExecuteNonQuery();
+
+        var citaActualizada = GetById(id).Value;
+        return Result.Success<Cita, DomainError>(citaActualizada);
     }
     
     /// <inheritdoc cref="ICitaRepository.DeleteHard" />
@@ -320,8 +318,8 @@ public class CitaAdoRepository : ICitaRepository {
          using var command = connection.CreateCommand();
          command.CommandText = "DELETE FROM Cita";
          
-         return command.ExecuteNonQuery() <= 0;
-     }
+         return command.ExecuteNonQuery() > 0;
+    }
      
     private CitaEntity MapCita(SqliteDataReader reader) {
         return new CitaEntity {

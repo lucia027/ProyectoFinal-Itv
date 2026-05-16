@@ -8,7 +8,6 @@ using Itv.Mappers;
 using Itv.Models;
 using Itv.Repository.Common;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.Json;
 using Serilog;
 namespace Itv.Repository.Efc;
 
@@ -31,17 +30,17 @@ public class CitaEfcRepository : ICitaRepository {
     }
 
     public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "") {
-        var query = _context.Citas.AsQueryable();
+        var query = _context.Citas.AsNoTracking();
         if (!isDeleteInclude) {
             query =  query
                 .OrderBy(v => v.Matricula)
-                .Where(v => v.IsDelete == false && 
+                .Where(v => v.IsDelete == false && (
                             v.Matricula.Contains(campoBusqueda) || 
                             v.Marca.Contains(campoBusqueda) ||
                             v.Modelo.Contains(campoBusqueda) ||
                             v.Cilindrada.ToString().Contains(campoBusqueda) ||
                             v.Motor.ToString().Contains(campoBusqueda) ||
-                            v.DniDueño.Contains(campoBusqueda)
+                            v.DniDueño.Contains(campoBusqueda))
                 )
                 .Skip((pagina -1) * tamPagina)
                 .Take(tamPagina);
@@ -74,14 +73,14 @@ public class CitaEfcRepository : ICitaRepository {
     
     public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         try {
-            if(fin == null) fin = DateTime.Now;
-            var query = _context.Citas.AsQueryable();
+            fin ??= DateTime.Now;
+            var query = _context.Citas.AsNoTracking();
             IEnumerable<Cita> citas;
             
             if (!isDeleteInclude) {
                 citas = query
                     .OrderBy(v => v.Matricula)
-                    .Where(v => inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin)
+                    .Where(v => v.IsDelete == false && ( inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin))
                     .AsEnumerable()
                     .ToModel();
                 return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
@@ -91,7 +90,7 @@ public class CitaEfcRepository : ICitaRepository {
                 .OrderBy(v => v.Matricula)
                 .Where(v => inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin)
                 .AsEnumerable()
-                .ToModel();;
+                .ToModel();
 
             if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
             return Result.Success<IEnumerable<Cita>, DomainError>(citas);   
@@ -104,18 +103,18 @@ public class CitaEfcRepository : ICitaRepository {
 
     public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor, bool isDeleteInclude = true) {
         try {
-            var query = _context.Citas.AsQueryable();
+            var query = _context.Citas.AsNoTracking();
             IEnumerable<Cita> citas = [];
         
             if (!isDeleteInclude) {
                 citas = query
-                    .Where(c => Enum.Parse<Motor>(c.Motor) == motor && c.IsDelete == false)
+                    .Where(c => c.Motor == motor.ToString() && c.IsDelete == false)
                     .AsEnumerable()
                     .ToModel();
             }
             if (isDeleteInclude) {
                 citas = query
-                    .Where(c => Enum.Parse<Motor>(c.Motor) == motor && c.IsDelete == true)
+                    .Where(c => c.Motor == motor.ToString())
                     .AsEnumerable()
                     .ToModel();
             }
@@ -160,7 +159,7 @@ public class CitaEfcRepository : ICitaRepository {
                 return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
             }
             var viejo = GetById(id).Value;
-            if (entity.Matricula != viejo.Matricula && _context.Citas.Select(c => c.Matricula == entity.Matricula && c.Id != id).Any()) {
+            if (entity.Matricula != viejo.Matricula && _context.Citas.Any(c => c.Matricula == entity.Matricula && c.Id != id)) {
                 _logger.Debug("No se ha podido actualizar la cita, fallo con las matriculas.");
                 return Result.Failure<Cita, DomainError>(RepositoryErrors.InvalidMatricula(entity.Matricula));
             }
@@ -171,9 +170,10 @@ public class CitaEfcRepository : ICitaRepository {
             if (_context.Citas.Any(c => c.Matricula == entity.Matricula && c.FechaMatriculacion == entity.FechaMatriculacion)) {
                 _logger.Debug("No se ha podido actualizar la cita.");
                 return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
-            } 
-    
-            entity = entity with { UpdateAt = DateTime.Today ,IsDelete = false};
+            }
+
+            entity.UpdateAt = DateTime.Today;
+            entity.IsDelete = false;
             _context.SaveChanges();
     
             return Result.Success<Cita, DomainError>(entity);
@@ -192,12 +192,12 @@ public class CitaEfcRepository : ICitaRepository {
                 return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
             }
 
-            eliminado = eliminado with { IsDelete = true };
+            eliminado.IsDelete = true;
             _context.SaveChanges();
             
             return Result.Success<Cita, DomainError>(eliminado.ToModel());
         } catch (Exception e) {
-            _logger.Error($"Error al intentar elimianr una cita.");
+            _logger.Error($"Error al intentar eliminar una cita.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.DeletionError());
         }
     }
@@ -216,7 +216,7 @@ public class CitaEfcRepository : ICitaRepository {
             
             return Result.Success<Cita, DomainError>(eliminado.ToModel());
         } catch (Exception e) {
-            _logger.Error($"Error al intentar elimianr una cita.");
+            _logger.Error($"Error al intentar eliminar una cita.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.DeletionError());
         }
     }
@@ -228,7 +228,7 @@ public class CitaEfcRepository : ICitaRepository {
             
             return true;
         } catch (Exception e) {
-            _logger.Error($"Error al intentar elimianr una cita.");
+            _logger.Error($"Error al intentar eliminar una cita.");
             return false;
         }    
     }
