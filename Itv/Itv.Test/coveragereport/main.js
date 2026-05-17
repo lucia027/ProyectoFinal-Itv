@@ -309,7 +309,7 @@ var assemblies = [
       { "name": "Itv.Repository.Ado.CitaAdoRepository", "rp": "Itv_CitaAdoRepository.html", "cl": 339, "ucl": 27, "cal": 366, "tl": 399, "cb": 130, "tb": 184, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Repository.Dapper.CitaDapperRepository", "rp": "Itv_CitaDapperRepository.html", "cl": 212, "ucl": 76, "cal": 288, "tl": 314, "cb": 47, "tb": 104, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Repository.Efc.CitaEfcRepository", "rp": "Itv_CitaEfcRepository.html", "cl": 196, "ucl": 22, "cal": 218, "tl": 244, "cb": 75, "tb": 96, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "Itv.Repository.Memory.CitaMemoryRepository", "rp": "Itv_CitaMemoryRepository.html", "cl": 165, "ucl": 0, "cal": 165, "tl": 188, "cb": 123, "tb": 196, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "Itv.Repository.Memory.CitaMemoryRepository", "rp": "Itv_CitaMemoryRepository.html", "cl": 165, "ucl": 0, "cal": 165, "tl": 187, "cb": 140, "tb": 236, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Storage.Binary.CitaBinStorage", "rp": "Itv_CitaBinStorage.html", "cl": 91, "ucl": 2, "cal": 93, "tl": 112, "cb": 17, "tb": 20, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Storage.Csv.CitaCsvStorage", "rp": "Itv_CitaCsvStorage.html", "cl": 71, "ucl": 2, "cal": 73, "tl": 95, "cb": 12, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Storage.Json.CitaJsonStorage", "rp": "Itv_CitaJsonStorage.html", "cl": 64, "ucl": 2, "cal": 66, "tl": 87, "cb": 9, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -331,6 +331,12 @@ var riskHotspotMetrics = [
 var riskHotspots = [
   {
     "assembly": "Itv", "class": "Itv.Repository.Memory.CitaMemoryRepository", "reportPath": "Itv_CitaMemoryRepository.html", "methodName": "GetByDateMatricula(System.DateTime,System.Nullable\u00601\u003CSystem.DateTime\u003E,System.Boolean)", "methodShortName": "GetByDateMatricula(...)", "fileIndex": 0, "line": 65,
+    "metrics": [
+      { "value": 210, "exceeded": true },
+      { "value": 14, "exceeded": false },
+    ]},
+  {
+    "assembly": "Itv", "class": "Itv.Repository.Memory.CitaMemoryRepository", "reportPath": "Itv_CitaMemoryRepository.html", "methodName": "GetByDateInspeccion(System.DateTime,System.Nullable\u00601\u003CSystem.DateTime\u003E,System.Boolean)", "methodShortName": "GetByDateInspeccion(...)", "fileIndex": 0, "line": 64,
     "metrics": [
       { "value": 210, "exceeded": true },
       { "value": 14, "exceeded": false },
@@ -385,6 +391,12 @@ var riskHotspots = [
     ]},
   {
     "assembly": "Itv", "class": "Itv.Repository.Memory.CitaMemoryRepository", "reportPath": "Itv_CitaMemoryRepository.html", "methodName": "GetAll(System.Int32,System.Int32,System.Boolean,System.String)", "methodShortName": "GetAll(...)", "fileIndex": 0, "line": 29,
+    "metrics": [
+      { "value": 24, "exceeded": false },
+      { "value": 24, "exceeded": true },
+    ]},
+  {
+    "assembly": "Itv", "class": "Itv.Repository.Memory.CitaMemoryRepository", "reportPath": "Itv_CitaMemoryRepository.html", "methodName": "GetAll(System.Int32,System.Int32,System.Boolean,System.String)", "methodShortName": "GetAll(...)", "fileIndex": 0, "line": 28,
     "metrics": [
       { "value": 24, "exceeded": false },
       { "value": 24, "exceeded": true },
