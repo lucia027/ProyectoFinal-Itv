@@ -229,8 +229,8 @@ public class CitaAdoRepositoryTest() {
         [Test]
         public void Create_MatriculaInvalida_RetornaFallo() {
             //Arrange
-            var cita1 = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), FechaMatriculacion = DateTime.Today };
-            var cita2 = new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), FechaMatriculacion = DateTime.Today};
+            var cita1 = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today };
+            var cita2 = new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today };
             _repository.Create(cita1);
             
             //Act
@@ -238,14 +238,14 @@ public class CitaAdoRepositoryTest() {
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Message.Contains("el vehiculo proporcionado ya tiene una fecha de matriculacion").Should().BeTrue();
+            res.Error.Message.Contains("el vehiculo proporcionado ya tiene una fecha de inspeccion").Should().BeTrue();
         }
         
         [Test]
         public void Create_CitaRepetida_RetornaFallo() {
             //Arrange
-            var cita = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = true };
-            var cita2 = new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = true };
+            var cita = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaInspeccion =DateTime.Today, CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = true };
+            var cita2 = new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaInspeccion =DateTime.Today, CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = true };
             _repository.Create(cita);
             
             //Act
@@ -253,7 +253,7 @@ public class CitaAdoRepositoryTest() {
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Message.Contains($"El cita no se puede crear, el vehiculo proporcionado ya tiene una fecha de matriculacion({cita.FechaMatriculacion}) el mismo dia.").Should().BeTrue();
+            res.Error.Message.Contains($"El cita no se puede crear, el vehiculo proporcionado ya tiene una fecha de inspeccion({cita.FechaInspeccion}) el mismo dia.").Should().BeTrue();
         }
 
         [Test]

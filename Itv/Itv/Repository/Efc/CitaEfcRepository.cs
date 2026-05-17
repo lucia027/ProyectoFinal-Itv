@@ -135,13 +135,13 @@ public class CitaEfcRepository : ICitaRepository {
     /// <inheritdoc cref="ICitaRepository.Create" />
     public Result<Cita, DomainError> Create(Cita entity) {
         try {
-            if (_context.Citas.Count(v => v.DniDueño == entity.DniDueño && v.FechaMatriculacion == entity.FechaMatriculacion) >= 3) {
+            if (_context.Citas.Count(v => v.DniDueño == entity.DniDueño && v.FechaInspeccion == entity.FechaInspeccion) >= 3) {
                 _logger.Debug("No se ha podido crear la cita.");
                 return Result.Failure<Cita, DomainError>(RepositoryErrors.DniDueñoError(entity));
             }
-            if (_context.Citas.Any(c => c.Matricula == entity.Matricula && c.FechaMatriculacion == entity.FechaMatriculacion)) {
+            if (_context.Citas.Any(c => c.Matricula == entity.Matricula && c.FechaInspeccion == entity.FechaInspeccion)) {
                 _logger.Debug("No se ha podido crear la cita.");
-                return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+                return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaInspeccionError(entity));
             } 
 
             var cita = entity with { CreateAt = DateTime.Today, UpdateAt = null, IsDelete = false};
@@ -169,13 +169,13 @@ public class CitaEfcRepository : ICitaRepository {
                 _logger.Debug("No se ha podido actualizar la cita, fallo con las matriculas.");
                 return Result.Failure<Cita, DomainError>(RepositoryErrors.InvalidMatricula(entity.Matricula));
             }
-            if (_context.Citas.Count(v => v.DniDueño == entity.DniDueño && v.FechaMatriculacion == entity.FechaMatriculacion) >= 3) {
+            if (_context.Citas.Count(v => v.DniDueño == entity.DniDueño && v.FechaInspeccion == entity.FechaInspeccion) >= 3) {
                 _logger.Debug("No se ha podido actualizar la cita.");
                 return Result.Failure<Cita, DomainError>(RepositoryErrors.DniDueñoError(entity));
             }
-            if (_context.Citas.Any(c => c.Matricula == entity.Matricula && c.FechaMatriculacion == entity.FechaMatriculacion)) {
+            if (_context.Citas.Any(c => c.Matricula == entity.Matricula && c.FechaInspeccion == entity.FechaInspeccion)) {
                 _logger.Debug("No se ha podido actualizar la cita.");
-                return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+                return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaInspeccionError(entity));
             }
 
             entity.UpdateAt = DateTime.Today;
