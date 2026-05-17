@@ -23,7 +23,9 @@ public class CitaService(
         if (cache.Get(id) is { } cached) {
             return Result.Success<Cita, DomainError>(cached);
         }
-        if (repository.GetById(id).IsFailure) {
+
+        var res = repository.GetById(id);
+        if (res.IsFailure) {
             return Result.Failure<Cita, DomainError>(CitaErrors.NotFoundCitasError());
         }
 
@@ -69,8 +71,9 @@ public class CitaService(
     }
 
     private Result<Cita, DomainError> ComprobarExistencia(int id) {
-        return repository.GetById(id) is { } cita
-            ? Result.Success<Cita, DomainError>(cita.Value)
+        var res = repository.GetById(id);
+        return res.IsSuccess
+            ? Result.Success<Cita, DomainError>(res.Value)
             : Result.Failure<Cita, DomainError>(CitaErrors.NotFoundCitasError());
     }
 }
