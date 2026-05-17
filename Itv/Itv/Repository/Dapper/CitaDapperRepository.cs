@@ -105,18 +105,18 @@ public class CitaDapperRepository : ICitaRepository {
         }
     }
     
-    /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
-    public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
+    /// <inheritdoc cref="ICitaRepository.GetByDateInspeccion" />
+    public Result<IEnumerable<Cita>, DomainError> GetByDateInspeccion(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         if (fin == null) fin = DateTime.Now;
         try {
             var sql = "";
-            if(isDeleteInclude) sql = "SELECT * FROM Cita WHERE FechaMatriculacion BETWEEN @Inicio AND @Fin";
-            if(!isDeleteInclude) sql = "SELECT * FROM Cita WHERE IsDelete = 0 AND FechaMatriculacion BETWEEN @Inicio AND @Fin";
+            if(isDeleteInclude) sql = "SELECT * FROM Cita WHERE FechaInspeccion BETWEEN @Inicio AND @Fin";
+            if(!isDeleteInclude) sql = "SELECT * FROM Cita WHERE IsDelete = 0 AND FechaInspeccion BETWEEN @Inicio AND @Fin";
             
             var entidades = _connection.Query<CitaEntity>(sql, new {Inicio = inicio, Fin = fin}).Select(c => c.ToModel());
             return Result.Success<IEnumerable<Cita>, DomainError>(entidades);
         } catch (Exception e) {
-            _logger.Error($"No se ha podido encontrar ninguna cita que coincida con el rango de fechas de matrculacion; inicio[{inicio}] y fin[{fin}]. Mensaje de error: {e.Message}.");
+            _logger.Error($"No se ha podido encontrar ninguna cita que coincida con el rango de fechas de inspeccion, inicio[{inicio}] y fin[{fin}]. Mensaje de error: {e.Message}.");
             return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         }
     }
@@ -144,7 +144,7 @@ public class CitaDapperRepository : ICitaRepository {
         }
         if (!VerificacionMatricula(entity)) {
             _logger.Debug("No se ha podido crear la cita.");
-            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaInspeccionError(entity));
         }
 
         var nuevaCita = entity with { Id = 0, CreateAt = DateTime.Today,  UpdateAt = null, IsDelete = false };
@@ -191,7 +191,7 @@ public class CitaDapperRepository : ICitaRepository {
         }
         if (!VerificacionMatricula(entity)) {
             _logger.Debug("No se ha podido actualizar la cita.");
-            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaInspeccionError(entity));
         }
         
         var nuevaCita = entity with { Id = id, UpdateAt = DateTime.Today, IsDelete = false };
@@ -273,8 +273,8 @@ public class CitaDapperRepository : ICitaRepository {
     
     private bool VerificacionDniDueño(Cita cita) {
         try {
-            var sql = "SELECT COUNT(*) FROM Cita WHERE DniDueño LIKE @DniDueño AND FechaMatriculacion LIKE @FechaMatriculacion";
-            return _connection.ExecuteScalar<int>(sql, new { cita.DniDueño, cita.FechaMatriculacion}) < 3;
+            var sql = "SELECT COUNT(*) FROM Cita WHERE DniDueño LIKE @DniDueño AND FechaInspeccion LIKE @FechaInspeccion";
+            return _connection.ExecuteScalar<int>(sql, new { cita.DniDueño, cita.FechaInspeccion}) < 3;
         } catch (Exception e) {
             _logger.Error($"Error verificando la condicion del dni del dueño, mensaje: {e.Message}.");
             return false;
@@ -283,8 +283,8 @@ public class CitaDapperRepository : ICitaRepository {
     
     private bool VerificacionMatricula(Cita cita) {
         try {
-            var sql = "SELECT COUNT(*) FROM Cita WHERE Matricula LIKE @Matricula AND FechaMatriculacion LIKE @FechaMatriculacion";
-            return _connection.ExecuteScalar<int>(sql, new { cita.Matricula, cita.FechaMatriculacion}) == 0;
+            var sql = "SELECT COUNT(*) FROM Cita WHERE Matricula LIKE @Matricula AND FechaInspeccion LIKE @FechaInspeccion";
+            return _connection.ExecuteScalar<int>(sql, new { cita.Matricula, cita.FechaInspeccion}) == 0;
         } catch (Exception e) {
             _logger.Error($"Error verificando la condicion de la matricula, mensaje: {e.Message}.");
             return false;

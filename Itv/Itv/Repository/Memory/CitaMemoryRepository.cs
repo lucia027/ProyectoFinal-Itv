@@ -61,20 +61,20 @@ public class CitaMemoryRepository : ICitaRepository {
         return Result.Success<Cita, DomainError>(_almacenId[id]);
     }
     
-    /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
-    public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
+    /// <inheritdoc cref="ICitaRepository.GetByDateInspeccion" />
+    public Result<IEnumerable<Cita>, DomainError> GetByDateInspeccion(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         if(fin == null) fin = DateTime.Now;
         IEnumerable<Cita> citas;
         if (!isDeleteInclude) {
             citas = _almacenId.Values
                 .OrderBy(v => v.Matricula)
-                .Where(v => inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin);
+                .Where(v => inicio <= v.FechaInspeccion && v.FechaInspeccion <= fin);
             return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
         }
 
         citas = _almacenId.Values
             .OrderBy(v => v.Matricula)
-            .Where(v => inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin);
+            .Where(v => inicio <= v.FechaInspeccion && v.FechaInspeccion <= fin);
 
         if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
@@ -94,13 +94,13 @@ public class CitaMemoryRepository : ICitaRepository {
 
     /// <inheritdoc cref="ICitaRepository.Create" />
     public Result<Cita, DomainError> Create(Cita entity) {
-        if (_almacenId.Values.Count(v => v.DniDueño == entity.DniDueño && v.FechaMatriculacion == entity.FechaMatriculacion) >= 3) {
+        if (_almacenId.Values.Count(v => v.DniDueño == entity.DniDueño && v.FechaInspeccion == entity.FechaInspeccion) >= 3) {
             _logger.Debug("No se ha podido crear la cita.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.DniDueñoError(entity));
         }
-        if (_almacenId.Values.Any(c => c.Matricula == entity.Matricula && c.FechaMatriculacion == entity.FechaMatriculacion)) {
+        if (_almacenId.Values.Any(c => c.Matricula == entity.Matricula && c.FechaInspeccion == entity.FechaInspeccion)) {
             _logger.Debug("No se ha podido crear la cita.");
-            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaInspeccionError(entity));
         } 
 
         var cita = entity with { Id = GetNewId(), CreateAt = DateTime.Today, UpdateAt = null, IsDelete = false};
@@ -123,13 +123,13 @@ public class CitaMemoryRepository : ICitaRepository {
             _logger.Debug("No se ha podido actualizar la cita, fallo con las matriculas.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.InvalidMatricula(entity.Matricula));
         }
-        if (_almacenId.Values.Count(v => v.DniDueño == entity.DniDueño && v.FechaMatriculacion == entity.FechaMatriculacion) >= 3) {
+        if (_almacenId.Values.Count(v => v.DniDueño == entity.DniDueño && v.FechaInspeccion == entity.FechaInspeccion) >= 3) {
             _logger.Debug("No se ha podido actualizar la cita.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.DniDueñoError(entity));
         }
-        if (_almacenId.Values.Any(c => c.Matricula == entity.Matricula && c.FechaMatriculacion == entity.FechaMatriculacion)) {
+        if (_almacenId.Values.Any(c => c.Matricula == entity.Matricula && c.FechaInspeccion == entity.FechaInspeccion)) {
             _logger.Debug("No se ha podido actualizar la cita.");
-            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaInspeccionError(entity));
         } 
 
         var citaNuevo = entity with { Id = id, UpdateAt = DateTime.Today ,IsDelete = false};

@@ -17,8 +17,8 @@ public abstract record RepositoryError(string Message) : DomainError(Message) {
     public sealed record DniDueñoError(Cita cita)
         : RepositoryError($"El cita no se puede crear, el dueño con el dni: {cita.DniDueño} ha superado el maximo de vehiculos.");
     
-    public sealed record FechaMatriculacionError(Cita cita)
-        : RepositoryError($"El cita no se puede crear, el vehiculo proporcionado ya tiene una fecha de matriculacion({cita.FechaMatriculacion}) el mismo dia.");
+    public sealed record FechaInspeccionError(Cita cita)
+        : RepositoryError($"El cita no se puede crear, el vehiculo proporcionado ya tiene una fecha de inspeccion({cita.FechaInspeccion}) el mismo dia.");
     
     public sealed record NotFoundCitasError()
         : RepositoryError($"No se han encontrado citas que cumplan la condicion.");
@@ -47,8 +47,8 @@ public static class RepositoryErrors {
         return new RepositoryError.DniDueñoError(cita);
     }
 
-    public static DomainError FechaMatriculacionError(Cita cita) {
-        return new RepositoryError.FechaMatriculacionError(cita);
+    public static DomainError FechaInspeccionError(Cita cita) {
+        return new RepositoryError.FechaInspeccionError(cita);
     }
 
     public static DomainError NotFoundCitasError() {

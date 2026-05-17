@@ -120,8 +120,8 @@ public class CitaAdoRepository : ICitaRepository {
         return Result.Success<Cita, DomainError>(MapCita(reader).ToModel());
     }
     
-    /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
-    public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
+    /// <inheritdoc cref="ICitaRepository.GetByDateInspeccion" />
+    public Result<IEnumerable<Cita>, DomainError> GetByDateInspeccion(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         if(fin == null) fin = DateTime.Now;
         List<Cita> cita = [];
         
@@ -129,14 +129,15 @@ public class CitaAdoRepository : ICitaRepository {
         connection.Open();
         using var command = connection.CreateCommand();
         
+        
         if (!isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Cita WHERE FechaMatriculacion BETWEEN @inicio AND @fin AND IsDelete LIKE 0";
+            command.CommandText = "SELECT * FROM Cita WHERE FechaInspeccion BETWEEN @inicio AND @fin AND IsDelete LIKE 0";
             command.Parameters.AddWithValue("@inicio", inicio);
             command.Parameters.AddWithValue("@fin", fin);
         }
         
         if (isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Cita WHERE FechaMatriculacion BETWEEN @inicio AND @fin";
+            command.CommandText = "SELECT * FROM Cita WHERE FechaInspeccion BETWEEN @inicio AND @fin";
             command.Parameters.AddWithValue("@inicio", inicio);
             command.Parameters.AddWithValue("@fin", fin);
         }
@@ -190,7 +191,7 @@ public class CitaAdoRepository : ICitaRepository {
         }
         if (!VerificacionMatricula(entity)) {
             _logger.Debug("No se ha podido crear la cita.");
-            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaInspeccionError(entity));
         }
         
         using var connection = CreateConnection();
@@ -238,7 +239,7 @@ public class CitaAdoRepository : ICitaRepository {
         }
         if (!VerificacionMatricula(entity)) {
             _logger.Debug("No se ha podido actualizar la cita.");
-            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaMatriculacionError(entity));
+            return Result.Failure<Cita, DomainError>(RepositoryErrors.FechaInspeccionError(entity));
         }
 
         using var connection = CreateConnection();
@@ -344,9 +345,9 @@ public class CitaAdoRepository : ICitaRepository {
         connection.Open();
         using var command = connection.CreateCommand();
         
-        command.CommandText = "SELECT COUNT(*) FROM Cita WHERE DniDueño LIKE @DniDueño AND FechaMatriculacion LIKE @FechaMatriculacion";
+        command.CommandText = "SELECT COUNT(*) FROM Cita WHERE DniDueño LIKE @DniDueño AND FechaInspeccion LIKE @FechaInspeccion";
         command.Parameters.AddWithValue("@DniDueño", entity.DniDueño);
-        command.Parameters.AddWithValue("@FechaMatriculacion", entity.FechaMatriculacion);
+        command.Parameters.AddWithValue("@FechaInspeccion", entity.FechaInspeccion);
 
         if(Convert.ToInt32(command.ExecuteScalar()) >= 3) {
             return false;
@@ -359,9 +360,9 @@ public class CitaAdoRepository : ICitaRepository {
         connection.Open();
         using var command = connection.CreateCommand();
         
-        command.CommandText = "SELECT COUNT(*) FROM Cita WHERE Matricula LIKE @Matricula AND FechaMatriculacion LIKE @FechaMatriculacion";
+        command.CommandText = "SELECT COUNT(*) FROM Cita WHERE Matricula LIKE @Matricula AND FechaInspeccion LIKE @FechaInspeccion";
         command.Parameters.AddWithValue("@Matricula", entity.Matricula);
-        command.Parameters.AddWithValue("@FechaMatriculacion", entity.FechaMatriculacion);    
+        command.Parameters.AddWithValue("@FechaInspeccion", entity.FechaInspeccion);    
 
         if(Convert.ToInt32(command.ExecuteScalar()) >= 1) {
             return false;
