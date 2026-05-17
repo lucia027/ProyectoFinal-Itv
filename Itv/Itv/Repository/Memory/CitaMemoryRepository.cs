@@ -14,7 +14,6 @@ namespace Itv.Repository.Memory;
 /// </summary>
 public class CitaMemoryRepository : ICitaRepository {
     private readonly ILogger _logger = Log.ForContext<CitaMemoryRepository>();
-
     
     private readonly Dictionary<int, Cita> _almacenId = new();
     private readonly Dictionary<string, int> _almacenMatricula = new();
