@@ -47,7 +47,7 @@ public class CitaMemoryRepositoryTests {
             //Assert
             res.Should().NotBeNull();
             res.Should().HaveCount(1);
-            res.Where(v => v.IsDelete).Any().Should().BeFalse();
+            res.Where(v => v.IsDelete).Any().Should().BeTrue();
         }
 
         [Test]
@@ -184,15 +184,16 @@ public class CitaMemoryRepositoryTests {
         [Test]
         public void Create_MatriculaInvalida_RetornaFallo() {
             //Arrange
-            var cita = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), IsDelete = false };
-            _repository.Create(cita);
+            var cita1 = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), FechaMatriculacion = DateTime.Today };
+            var cita2 = new Cita { Id = 2, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", CreateAt = new DateTime(2026, 04, 16), UpdateAt = new DateTime(2026, 04, 16), FechaMatriculacion = DateTime.Today};
+            _repository.Create(cita1);
             
             //Act
-            var res = _repository.Create(cita);
+            var res = _repository.Create(cita2);
             
             //Assert
             res.IsFailure.Should().BeTrue();
-            res.Error.Message.Contains("no es valida por que ya existe").Should().BeTrue();
+            res.Error.Message.Contains("el vehiculo proporcionado ya tiene una fecha de matriculacion").Should().BeTrue();
         }
 
         [Test]

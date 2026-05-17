@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Itv.Dto;
+using Itv.Entity;
 using Itv.Enums;
 using Itv.Models;
 
@@ -54,5 +55,43 @@ public static class CitaMapper {
             cita.UpdateAt?.ToString(DateTimeFormat, InvariantCulture) ?? "No se ha actualizado",
             cita.IsDelete
         );
+    }
+
+    public static Cita ToModel(this CitaEntity entity) {
+        return new Cita {
+            Id = entity.Id,
+            Matricula = entity.Matricula,
+            Marca = entity.Marca,
+            Modelo = entity.Modelo,
+            Cilindrada = entity.Cilindrada,
+            Motor = Enum.TryParse(entity.Motor, out Motor motor) ? motor : Motor.Diesel,
+            DniDueño = entity.DniDueño,
+            FechaMatriculacion = entity.FechaMatriculacion,
+            FechaInspeccion = entity.FechaInspeccion,
+            CreateAt = entity.CreateAt,
+            UpdateAt = entity.UpdateAt,
+            IsDelete = entity.IsDelete
+        };
+    }
+
+    public static CitaEntity ToEntity(this Cita cita) {
+        return new CitaEntity {
+            Id = cita.Id,
+            Matricula = cita.Matricula,
+            Marca = cita.Marca,
+            Modelo = cita.Modelo,
+            Cilindrada = cita.Cilindrada,
+            Motor = cita.Motor.ToString(),
+            DniDueño = cita.DniDueño,
+            FechaMatriculacion = cita.FechaMatriculacion,
+            FechaInspeccion = cita.FechaInspeccion,
+            CreateAt = cita.CreateAt,
+            UpdateAt = cita.UpdateAt,
+            IsDelete = cita.IsDelete
+        };
+    }
+
+    public static IEnumerable<Cita> ToModel(this IEnumerable<CitaEntity> citas) {
+        return citas.Select(c => c.ToModel());
     }
 }
