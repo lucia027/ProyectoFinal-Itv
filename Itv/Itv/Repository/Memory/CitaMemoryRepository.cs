@@ -14,7 +14,6 @@ namespace Itv.Repository.Memory;
 /// </summary>
 public class CitaMemoryRepository : ICitaRepository {
     private readonly ILogger _logger = Log.ForContext<CitaMemoryRepository>();
-
     
     private readonly Dictionary<int, Cita> _almacenId = new();
     private readonly Dictionary<string, int> _almacenMatricula = new();
@@ -61,20 +60,20 @@ public class CitaMemoryRepository : ICitaRepository {
         return Result.Success<Cita, DomainError>(_almacenId[id]);
     }
     
-    /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
-    public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
+    /// <inheritdoc cref="ICitaRepository.GetByDateInspeccion" />
+    public Result<IEnumerable<Cita>, DomainError> GetByDateInspeccion(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         if(fin == null) fin = DateTime.Now;
         IEnumerable<Cita> citas;
         if (!isDeleteInclude) {
             citas = _almacenId.Values
                 .OrderBy(v => v.Matricula)
-                .Where(v => inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin);
+                .Where(v => inicio <= v.FechaInspeccion && v.FechaInspeccion <= fin);
             return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
         }
 
         citas = _almacenId.Values
             .OrderBy(v => v.Matricula)
-            .Where(v => inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin);
+            .Where(v => inicio <= v.FechaInspeccion && v.FechaInspeccion <= fin);
 
         if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         return Result.Success<IEnumerable<Cita>, DomainError>(citas);    

@@ -105,18 +105,18 @@ public class CitaDapperRepository : ICitaRepository {
         }
     }
     
-    /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
-    public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
+    /// <inheritdoc cref="ICitaRepository.GetByDateInspeccion" />
+    public Result<IEnumerable<Cita>, DomainError> GetByDateInspeccion(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         if (fin == null) fin = DateTime.Now;
         try {
             var sql = "";
-            if(isDeleteInclude) sql = "SELECT * FROM Cita WHERE FechaMatriculacion BETWEEN @Inicio AND @Fin";
-            if(!isDeleteInclude) sql = "SELECT * FROM Cita WHERE IsDelete = 0 AND FechaMatriculacion BETWEEN @Inicio AND @Fin";
+            if(isDeleteInclude) sql = "SELECT * FROM Cita WHERE FechaInspeccion BETWEEN @Inicio AND @Fin";
+            if(!isDeleteInclude) sql = "SELECT * FROM Cita WHERE IsDelete = 0 AND FechaInspeccion BETWEEN @Inicio AND @Fin";
             
             var entidades = _connection.Query<CitaEntity>(sql, new {Inicio = inicio, Fin = fin}).Select(c => c.ToModel());
             return Result.Success<IEnumerable<Cita>, DomainError>(entidades);
         } catch (Exception e) {
-            _logger.Error($"No se ha podido encontrar ninguna cita que coincida con el rango de fechas de matrculacion; inicio[{inicio}] y fin[{fin}]. Mensaje de error: {e.Message}.");
+            _logger.Error($"No se ha podido encontrar ninguna cita que coincida con el rango de fechas de inspeccion, inicio[{inicio}] y fin[{fin}]. Mensaje de error: {e.Message}.");
             return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         }
     }

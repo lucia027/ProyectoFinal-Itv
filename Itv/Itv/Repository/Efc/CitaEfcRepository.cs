@@ -73,8 +73,8 @@ public class CitaEfcRepository : ICitaRepository {
         }
     }
     
-    /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
-    public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
+    /// <inheritdoc cref="ICitaRepository.GetByDateInspeccion" />
+    public Result<IEnumerable<Cita>, DomainError> GetByDateInspeccion(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         try {
             fin ??= DateTime.Now;
             var query = _context.Citas.AsNoTracking();
@@ -83,7 +83,7 @@ public class CitaEfcRepository : ICitaRepository {
             if (!isDeleteInclude) {
                 citas = query
                     .OrderBy(v => v.Matricula)
-                    .Where(v => v.IsDelete == false && ( inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin))
+                    .Where(v => v.IsDelete == false && ( inicio <= v.FechaInspeccion && v.FechaInspeccion <= fin))
                     .AsEnumerable()
                     .ToModel();
                 return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
@@ -91,7 +91,7 @@ public class CitaEfcRepository : ICitaRepository {
 
             citas = query
                 .OrderBy(v => v.Matricula)
-                .Where(v => inicio <= v.FechaMatriculacion && v.FechaMatriculacion <= fin)
+                .Where(v => inicio <= v.FechaInspeccion && v.FechaInspeccion <= fin)
                 .AsEnumerable()
                 .ToModel();
 
@@ -99,7 +99,7 @@ public class CitaEfcRepository : ICitaRepository {
             return Result.Success<IEnumerable<Cita>, DomainError>(citas);   
             
         } catch (Exception e) {
-            _logger.Error($"Error al intentar encontrar la cita segun su fecha de matriculacion.");
+            _logger.Error($"Error al intentar encontrar la cita segun su fecha de inspeccion.");
             return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         }
     }

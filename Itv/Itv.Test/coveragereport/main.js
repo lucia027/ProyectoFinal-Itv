@@ -306,7 +306,7 @@ var assemblies = [
       { "name": "Itv.Factory.CitasFactory", "rp": "Itv_CitasFactory.html", "cl": 0, "ucl": 57, "cal": 57, "tl": 66, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Mappers.CitaMapper", "rp": "Itv_CitaMapper.html", "cl": 72, "ucl": 0, "cal": 72, "tl": 97, "cb": 37, "tb": 42, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Models.Cita", "rp": "Itv_Cita.html", "cl": 16, "ucl": 0, "cal": 16, "tl": 26, "cb": 1, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "Itv.Repository.Ado.CitaAdoRepository", "rp": "Itv_CitaAdoRepository.html", "cl": 324, "ucl": 41, "cal": 365, "tl": 398, "cb": 89, "tb": 160, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "Itv.Repository.Ado.CitaAdoRepository", "rp": "Itv_CitaAdoRepository.html", "cl": 339, "ucl": 27, "cal": 366, "tl": 399, "cb": 130, "tb": 184, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Repository.Dapper.CitaDapperRepository", "rp": "Itv_CitaDapperRepository.html", "cl": 212, "ucl": 76, "cal": 288, "tl": 314, "cb": 47, "tb": 104, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Repository.Efc.CitaEfcRepository", "rp": "Itv_CitaEfcRepository.html", "cl": 196, "ucl": 22, "cal": 218, "tl": 244, "cb": 75, "tb": 96, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Itv.Repository.Memory.CitaMemoryRepository", "rp": "Itv_CitaMemoryRepository.html", "cl": 165, "ucl": 0, "cal": 165, "tl": 188, "cb": 123, "tb": 196, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -336,6 +336,12 @@ var riskHotspots = [
       { "value": 14, "exceeded": false },
     ]},
   {
+    "assembly": "Itv", "class": "Itv.Repository.Memory.CitaMemoryRepository", "reportPath": "Itv_CitaMemoryRepository.html", "methodName": "GetByDateInspeccion(System.DateTime,System.Nullable\u00601\u003CSystem.DateTime\u003E,System.Boolean)", "methodShortName": "GetByDateInspeccion(...)", "fileIndex": 0, "line": 65,
+    "metrics": [
+      { "value": 210, "exceeded": true },
+      { "value": 14, "exceeded": false },
+    ]},
+  {
     "assembly": "Itv", "class": "Itv.Repository.Ado.CitaAdoRepository", "reportPath": "Itv_CitaAdoRepository.html", "methodName": "Update(System.Int32,Itv.Models.Cita)", "methodShortName": "Update(...)", "fileIndex": 0, "line": 227,
     "metrics": [
       { "value": 156, "exceeded": true },
@@ -358,12 +364,6 @@ var riskHotspots = [
     "metrics": [
       { "value": 110, "exceeded": true },
       { "value": 10, "exceeded": false },
-    ]},
-  {
-    "assembly": "Itv", "class": "Itv.Repository.Ado.CitaAdoRepository", "reportPath": "Itv_CitaAdoRepository.html", "methodName": "GetByTipoMotor(Itv.Enums.Motor,System.Boolean)", "methodShortName": "GetByTipoMotor(...)", "fileIndex": 0, "line": 157,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
     ]},
   {
     "assembly": "Itv", "class": "Itv.Repository.Memory.CitaMemoryRepository", "reportPath": "Itv_CitaMemoryRepository.html", "methodName": "GetByTipoMotor(Itv.Enums.Motor,System.Boolean)", "methodShortName": "GetByTipoMotor(...)", "fileIndex": 0, "line": 83,

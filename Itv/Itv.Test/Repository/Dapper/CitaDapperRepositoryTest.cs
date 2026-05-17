@@ -74,12 +74,12 @@ public class CitaDapperRepositoryTest {
         }
         
         [Test]
-        public void GetByDateMatricula_DeleteInclude_RetornaSuccess() {
+        public void GetByDateInspeccion_DeleteInclude_RetornaSuccess() {
             //Arrange
             var cita = _repository.Create( new Cita { Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
             
             //Act
-            var res = _repository.GetByDateMatricula(DateTime.Today.AddDays(-5), null);
+            var res = _repository.GetByDateInspeccion(DateTime.Today.AddDays(-5), null);
             
             //Assert
             res.IsSuccess.Should().BeTrue();
@@ -88,13 +88,13 @@ public class CitaDapperRepositoryTest {
         }
         
         [Test]
-        public void GetByDateMatricula_DeleteNoInclude_RetornaSuccess() {
+        public void GetByDateInspeccion_DeleteNoInclude_RetornaSuccess() {
             //Arrange
             var cita = _repository.Create( new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = DateTime.Today, FechaInspeccion = DateTime.Today });
             _repository.Delete(1);
             
             //Act
-            var res = _repository.GetByDateMatricula(DateTime.Today.AddDays(-5), null, false);
+            var res = _repository.GetByDateInspeccion(DateTime.Today.AddDays(-5), null, false);
             
             //Assert
             res.IsSuccess.Should().BeTrue();

@@ -120,8 +120,8 @@ public class CitaAdoRepository : ICitaRepository {
         return Result.Success<Cita, DomainError>(MapCita(reader).ToModel());
     }
     
-    /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
-    public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
+    /// <inheritdoc cref="ICitaRepository.GetByDateInspeccion" />
+    public Result<IEnumerable<Cita>, DomainError> GetByDateInspeccion(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         if(fin == null) fin = DateTime.Now;
         List<Cita> cita = [];
         
@@ -129,14 +129,15 @@ public class CitaAdoRepository : ICitaRepository {
         connection.Open();
         using var command = connection.CreateCommand();
         
+        
         if (!isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Cita WHERE FechaMatriculacion BETWEEN @inicio AND @fin AND IsDelete LIKE 0";
+            command.CommandText = "SELECT * FROM Cita WHERE FechaInspeccion BETWEEN @inicio AND @fin AND IsDelete LIKE 0";
             command.Parameters.AddWithValue("@inicio", inicio);
             command.Parameters.AddWithValue("@fin", fin);
         }
         
         if (isDeleteInclude) {
-            command.CommandText = "SELECT * FROM Cita WHERE FechaMatriculacion BETWEEN @inicio AND @fin";
+            command.CommandText = "SELECT * FROM Cita WHERE FechaInspeccion BETWEEN @inicio AND @fin";
             command.Parameters.AddWithValue("@inicio", inicio);
             command.Parameters.AddWithValue("@fin", fin);
         }

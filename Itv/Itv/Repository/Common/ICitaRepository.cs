@@ -26,12 +26,12 @@ public interface ICitaRepository : ICrud_Repository<int, Cita> {
     bool DeleteAll();
     
     /// <summary>
-    /// Busca todas las citas que se encuetren entre dos rangos de su fecha de matriculacion.
+    /// Busca todas las citas que se encuentren entre dos rangos de su fecha de inspeccion.
     /// </summary>
     /// <param name="inicio">Inicio del rango.</param>
     /// <param name="fin">Fin del rango.</param>
     /// <returns>Enumerable con todas las citas que cumplan la condicion.</returns>
-    Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true);
+    Result<IEnumerable<Cita>, DomainError> GetByDateInspeccion(DateTime inicio, DateTime? fin, bool isDeleteInclude = true);
     
     /// <summary>
     /// Bsuca todas las citas que tenga un tipo de motor especifico.
