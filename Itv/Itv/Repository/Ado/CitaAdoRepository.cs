@@ -152,6 +152,7 @@ public class CitaAdoRepository : ICitaRepository {
         return Result.Success<IEnumerable<Cita>, DomainError>(cita);      
     }
 
+    /// <inheritdoc cref="ICitaRepository.GetByTipoMotor" />
     public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor, bool isDeleteInclude = true) {
         List<Cita> cita = [];
         

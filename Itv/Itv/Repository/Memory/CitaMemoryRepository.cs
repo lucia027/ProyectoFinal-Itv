@@ -80,6 +80,7 @@ public class CitaMemoryRepository : ICitaRepository {
         return Result.Success<IEnumerable<Cita>, DomainError>(citas);    
     }
 
+    /// <inheritdoc cref="ICitaRepository.GetByTipoMotor" />
     public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor, bool isDeleteInclude) {
         IEnumerable<Cita> citas = [];
         

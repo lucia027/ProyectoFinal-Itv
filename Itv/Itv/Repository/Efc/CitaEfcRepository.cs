@@ -29,6 +29,7 @@ public class CitaEfcRepository : ICitaRepository {
         }
     }
 
+    /// <inheritdoc cref="ICitaRepository.GetAll" />
     public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "") {
         var query = _context.Citas.AsNoTracking();
         if (!isDeleteInclude) {
@@ -61,6 +62,7 @@ public class CitaEfcRepository : ICitaRepository {
         return query.AsEnumerable().ToModel();
     }
 
+    /// <inheritdoc cref="ICitaRepository.GetById" />
     public Result<Cita, DomainError> GetById(int id) {
         try {
             var entity = _context.Citas.FirstOrDefault(c => c.Id == id);
@@ -71,6 +73,7 @@ public class CitaEfcRepository : ICitaRepository {
         }
     }
     
+    /// <inheritdoc cref="ICitaRepository.GetByDateMatricula" />
     public Result<IEnumerable<Cita>, DomainError> GetByDateMatricula(DateTime inicio, DateTime? fin, bool isDeleteInclude = true) {
         try {
             fin ??= DateTime.Now;
@@ -101,6 +104,7 @@ public class CitaEfcRepository : ICitaRepository {
         }
     }
 
+    /// <inheritdoc cref="ICitaRepository.GetByTipoMotor" />
     public Result<IEnumerable<Cita>, DomainError> GetByTipoMotor(Motor motor, bool isDeleteInclude = true) {
         try {
             var query = _context.Citas.AsNoTracking();
@@ -127,7 +131,8 @@ public class CitaEfcRepository : ICitaRepository {
             return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         }
     }
-
+    
+    /// <inheritdoc cref="ICitaRepository.Create" />
     public Result<Cita, DomainError> Create(Cita entity) {
         try {
             if (_context.Citas.Count(v => v.DniDueño == entity.DniDueño && v.FechaMatriculacion == entity.FechaMatriculacion) >= 3) {
@@ -152,6 +157,7 @@ public class CitaEfcRepository : ICitaRepository {
         }
     }
 
+    /// <inheritdoc cref="ICitaRepository.Update" />
     public Result<Cita, DomainError> Update(int id, Cita entity) {
         try {
             if (GetById(id).IsFailure) {
@@ -183,6 +189,7 @@ public class CitaEfcRepository : ICitaRepository {
         }
     }
 
+    /// <inheritdoc cref="ICitaRepository.Delete" />
     public Result<Cita, DomainError> Delete(int id) {
         try {
             var eliminado = _context.Citas.FirstOrDefault(c => c.Id == id);
@@ -202,6 +209,7 @@ public class CitaEfcRepository : ICitaRepository {
         }
     }
 
+    /// <inheritdoc cref="ICitaRepository.DeleteHard" />
     public Result<Cita, DomainError> DeleteHard(int id) {
         try {
             var eliminado = _context.Citas.FirstOrDefault(c => c.Id == id);
@@ -221,6 +229,7 @@ public class CitaEfcRepository : ICitaRepository {
         }
     }
 
+    /// <inheritdoc cref="ICitaRepository.DeleteAll" />
     public bool DeleteAll() {
         try {
             _context.Citas.RemoveRange(_context.Citas);
