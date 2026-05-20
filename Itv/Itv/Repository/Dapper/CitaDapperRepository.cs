@@ -17,7 +17,7 @@ namespace Itv.Repository.Dapper;
 /// Repositorio en Dapper para gestionar las citas.
 /// </summary>
 public class CitaDapperRepository : ICitaRepository {
-    private ILogger _logger = Log.ForContext<CitaDapperRepository>();
+    private readonly ILogger _logger = Log.ForContext<CitaDapperRepository>();
     private readonly IDbConnection _connection;
     private Action? _onDispose;
 
@@ -26,7 +26,6 @@ public class CitaDapperRepository : ICitaRepository {
         _connection = connection;
         _onDispose = onDispose;
         EnsureTable(dropData);
-        
 
         if (seedData) Seed();
     }
@@ -53,7 +52,7 @@ public class CitaDapperRepository : ICitaRepository {
     }
 
     /// <inheritdoc cref="ICitaRepository.GetAll" />
-    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "%") {
+    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "") {
         try {
             String sql = "";
             if (isDeleteInclude) {
