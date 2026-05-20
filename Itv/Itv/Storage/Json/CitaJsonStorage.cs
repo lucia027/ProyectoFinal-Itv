@@ -44,9 +44,8 @@ public class CitaJsonStorage : ICitaJsonStorage {
             var json = File.ReadAllText(path, Encoding.UTF8);
             var dtos = JsonSerializer.Deserialize<List<CitaDto>>(json, _options);
 
-            if (dtos == null) {
-                return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.InvalidFormat("Los dtos no se han podido deserializar."));
-            }
+            if (dtos == null) return Result.Failure<IEnumerable<Cita>, DomainError>(StorageErrors.InvalidFormat("Los dtos no se han podido deserializar."));
+            
             return Result.Success<IEnumerable<Cita>, DomainError>(dtos.Select(v => v.ToModel()));
         } catch (Exception e) {
             _logger.Error("Error al intentar cargar los datos en formato json, mensaje error: {e.Message}",

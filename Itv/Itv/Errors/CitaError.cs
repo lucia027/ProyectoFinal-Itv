@@ -8,6 +8,10 @@ namespace Itv.Errors;
 public abstract record CitaError(string Message) : DomainError(Message) {
     public sealed record Validation(IEnumerable<string> Errores)
         : DomainError($"Han surgido errores en el intento de validación de la nueva entidad:{Environment.NewLine}• {string.Join($"{Environment.NewLine}• ", Errores)}");
+
+    public sealed record NotFoundCitasError()
+        : RepositoryError($"No se han encontrado citas.");
+
 }
 
 /// <summary>
@@ -16,5 +20,9 @@ public abstract record CitaError(string Message) : DomainError(Message) {
 public static class CitaErrors {
     public static DomainError Validation(IEnumerable<string> errores) {
         return new CitaError.Validation(errores);
+    }
+    
+    public static DomainError NotFoundCitasError() {
+        return new RepositoryError.NotFoundCitasError();
     }
 }
