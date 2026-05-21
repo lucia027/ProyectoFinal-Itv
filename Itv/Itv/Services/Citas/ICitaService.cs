@@ -57,18 +57,11 @@ public interface ICitaService {
     Result<Cita, DomainError> Update(int id, Cita cita);
 
     /// <summary>
-    /// Elimina de forma logica una cita ya creada en el sistema.
+    /// Elimina de forma especificada una cita ya creada en el sistema.
     /// </summary>
     /// <param name="id">Id de la cita a eliminar.</param>
     /// <returns>Result con la cita eliminada o un error.</returns>
     Result<Cita, DomainError> Delete(int id);
-
-    /// <summary>
-    /// Elimina de forma permanente una cita ya creada en el sistema.
-    /// </summary>
-    /// <param name="id">Id de la cita a eliminar.</param>
-    /// <returns>Result con la cita eliminada o un error.</returns>
-    Result<Cita, DomainError> DeleteHard(int id);
 
     /// <summary>
     /// Elimina permanentemente todas las citas registradas en el sistema.

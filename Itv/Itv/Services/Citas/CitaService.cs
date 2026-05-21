@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using Itv.Cache;
+using Itv.Config;
 using Itv.Enums;
 using Itv.Errors;
 using Itv.Errors.Common;
@@ -55,12 +56,12 @@ public class CitaService(
     }
 
     public Result<Cita, DomainError> Delete(int id) {
-        return ComprobarExistencia(id)
-            .Bind(c => repository.Delete(id))
-            .Tap(c => cache.Remove(id));
-    }
+        if (!Configuracion.UseLogicalDelete) {
+            return ComprobarExistencia(id)
+                .Bind(c => repository.DeleteHard(id))
+                .Tap(c => cache.Remove(id));
+        }
 
-    public Result<Cita, DomainError> DeleteHard(int id) {
         return ComprobarExistencia(id)
             .Bind(c => repository.Delete(id))
             .Tap(c => cache.Remove(id));

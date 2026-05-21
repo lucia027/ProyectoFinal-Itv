@@ -74,4 +74,10 @@ public static class Configuracion {
     public static bool DropData => Configuration.GetValue("Repository:DropData", false);
     
     public static bool SeedData => Configuration.GetValue("Repository:SeedData", true);
+    
+    public static string ReportDirectory => Path.Combine(
+        AppDomain.CurrentDomain.BaseDirectory,
+        Configuration.GetValue<string>("Reports:Directory") ?? "reports");
+
+    public static bool UseLogicalDelete => Configuration.GetValue("Repository:UseLogicalDelete", true);
 }
