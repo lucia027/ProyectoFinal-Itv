@@ -88,15 +88,17 @@ public partial class MainViewModel(
 
     private void CargarCitas() {
         try {
-            _allCitas = _citaService.GetAll().ToList();
-
+            _allCitas = _citaService.GetAll(1, int.MaxValue, true).ToList();
+            FiltroCampoBusqueda();
         } catch (Exception e) {
             Console.WriteLine(e);
             throw;
         }
     }
 
-
+    private void FiltroCampoBusqueda() {
+    }
+    
     private void OcultarTodo() {
         IsCitasVisibles = false;
         IsInformesvisibles = false;
