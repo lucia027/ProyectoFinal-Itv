@@ -88,7 +88,7 @@ public partial class MainViewModel(
 
     private void CargarCitas() {
         try {
-            _allCitas = _citaService.GetAll()
+            _allCitas = _citaService.GetAll().ToList();
 
         } catch (Exception e) {
             Console.WriteLine(e);
