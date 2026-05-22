@@ -74,10 +74,10 @@ public static class ValidadorCitaExtension {
         return Regex.IsMatch(dniDueño, regexDni) && ComprobarDniValido(dniDueño);
     }
     public static bool IsValidFechaMatriculacion(this DateTime fechaMatriculacion) {
-        return fechaMatriculacion < DateTime.Today;
+        return fechaMatriculacion <= DateTime.Today;
     }
     public static bool IsValidFechaInpeccion(this DateTime fechaInspeccion) {
-        return fechaInspeccion < DateTime.Today.AddDays(30);
+        return fechaInspeccion <= DateTime.Today.AddDays(30);
     }
     
     /// <summary>

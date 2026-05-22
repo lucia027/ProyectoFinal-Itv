@@ -52,7 +52,7 @@ public class CitaDapperRepository : ICitaRepository {
     }
 
     /// <inheritdoc cref="ICitaRepository.GetAll" />
-    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "") {
+    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "%") {
         try {
             String sql = "";
             if (isDeleteInclude) {
