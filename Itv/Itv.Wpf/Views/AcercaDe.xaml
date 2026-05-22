@@ -1,0 +1,136 @@
+<Window x:Class="Itv.Wpf.Views.AcercaDeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Acerca de"
+        Width="460"
+        Height="360"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#EAF3FB"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryDarkBrush" Color="#0F2F4F" />
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#1C6EA4" />
+        <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="BorderSoftBrush" Color="#D7E7F5" />
+        <SolidColorBrush x:Key="TextMutedBrush" Color="#607D97" />
+
+        <Style x:Key="InfoCard" TargetType="Border">
+            <Setter Property="Background" Value="#F5FAFF" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderSoftBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+
+        <Style x:Key="LabelText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+
+        <Style x:Key="ValueText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,5,0,0" />
+        </Style>
+
+        <Style x:Key="CloseButton" TargetType="Button">
+            <Setter Property="Height" Value="38" />
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="10"
+                                Padding="14,0">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{StaticResource CardBrush}"
+            BorderBrush="{StaticResource BorderSoftBrush}"
+            BorderThickness="1"
+            CornerRadius="18"
+            Margin="18">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- CABECERA -->
+            <Border Grid.Row="0"
+                    Background="{StaticResource PrimaryDarkBrush}"
+                    Padding="24"
+                    CornerRadius="18,18,0,0">
+
+                <StackPanel>
+                    <TextBlock Text="Acerca de"
+                               Foreground="White"
+                               FontSize="24"
+                               FontWeight="Bold" />
+
+                    <TextBlock Text="Información de autoría y repositorio del proyecto"
+                               Foreground="#D9EDF9"
+                               FontSize="13"
+                               Margin="0,6,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- CONTENIDO -->
+            <StackPanel Grid.Row="1" Margin="22">
+                <Border Style="{StaticResource InfoCard}">
+                    <StackPanel>
+                        <TextBlock Text="Autora"
+                                   Style="{StaticResource LabelText}" />
+
+                        <TextBlock Text="Lucía Fuertes Cruz"
+                                   Style="{StaticResource ValueText}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource InfoCard}">
+                    <StackPanel>
+                        <TextBlock Text="Usuario de GitHub"
+                                   Style="{StaticResource LabelText}" />
+
+                        <TextBlock Text="lucia027"
+                                   Style="{StaticResource ValueText}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource InfoCard}"
+                        Margin="0,0,0,18">
+                    <StackPanel>
+                        <TextBlock Text="Repositorio"
+                                   Style="{StaticResource LabelText}" />
+
+                        <TextBlock Margin="0,5,0,0">
+                            <Hyperlink NavigateUri="https://github.com/lucia027/ProyectoFinal-Itv"
+                                       RequestNavigate="Hyperlink_RequestNavigate">
+                                github.com/lucia027
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <Button Content="Cerrar"
+                        Style="{StaticResource CloseButton}"
+                        Click="Cerrar_Click" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

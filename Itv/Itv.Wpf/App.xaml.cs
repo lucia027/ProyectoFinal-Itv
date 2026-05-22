@@ -1,11 +1,14 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
+using Itv.Wpf.Infraestructure;
 
 namespace Itv.Wpf;
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
 public partial class App : Application {
+    public static IServiceProvider Services { get; private set; } = null!;
+
+    protected override void OnStartup(StartupEventArgs e) {
+        base.OnStartup(e);
+
+        Services = FrontDependenciesProvider.BuildServiceProvider();
+    }
 }

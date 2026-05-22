@@ -1,0 +1,38 @@
+using Itv.Wpf.ViewModels.Main;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+
+namespace Itv.Wpf.Infraestructure;
+
+/// <summary>
+/// Proveedor de dependencias para el Frontend WPF.
+/// Extiende el Back con los ViewModels específicos de presentación.
+/// </summary>
+public static class FrontDependenciesProvider {
+    /// <summary>
+    /// Construye el proveedor de servicios combinando Back + Front.
+    /// El Back se extiende con los ViewModels del Front mediante callback.
+    /// </summary>
+    /// <returns>Proveedor de servicios con todos los servicios registrados.</returns>
+    public static IServiceProvider BuildServiceProvider() {
+        Log.Information("Configurando servicios (Back + Front)...");
+
+        // Usar el DependenciesProvider del Back y extender con ViewModels del Front
+        var serviceProvider = Itv.Infraestructure.DependenciesProvider.BuildServiceProvider(services => {
+            RegisterViewModels(services);
+            Log.Information("ViewModels registradas desde Front");
+        });
+
+        Log.Information("Servicios configurados correctamente");
+
+        return serviceProvider;
+    }
+
+    /// <summary>
+    /// Registra todos los ViewModels del Frontend como servicios transientes.
+    /// </summary>
+    private static void RegisterViewModels(IServiceCollection services) {
+        // ViewModel principal de la aplicación
+        services.AddTransient<MainViewModel>();
+    }
+}
