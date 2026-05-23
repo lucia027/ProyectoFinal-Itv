@@ -1,5 +1,5 @@
-
 using System.Collections.ObjectModel;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Itv.Config;
@@ -7,29 +7,37 @@ using Itv.Enums;
 using Itv.Services.Citas;
 using Itv.Services.ImportExport;
 using Itv.Services.Report;
+using Itv.Wpf.Mappers;
 using Itv.Wpf.ViewModels.Cita;
 using Itv.Wpf.ViewModels.FormData;
 
 namespace Itv.Wpf.ViewModels.Main;
 
-public partial class MainViewModel(
-    ICitaService citaService,
-    IReportService reportService,
-    IImportExportService importExportService
-    ) : ObservableObject {
-
-    private readonly ICitaService _citaService = citaService;
-    private readonly IReportService _reportService = reportService;
-    private readonly IImportExportService _importExportService = importExportService;
+public partial class MainViewModel : ObservableObject {
+    private readonly ICitaService _citaService;
+    private readonly IReportService _reportService;
+    private readonly IImportExportService _importExportService;
 
     private List<Models.Cita> _allCitas = new();
 
+    public MainViewModel(
+        ICitaService citaService,
+        IReportService reportService,
+        IImportExportService importExportService
+    ) {
+        _citaService = citaService;
+        _reportService = reportService;
+        _importExportService = importExportService;
+
+        CargarCitas();
+    }
+
     //Propiedades observables para cambiar la vista con el menu.
     [ObservableProperty] 
-    private bool _isCitasVisibles = true;
+    private bool _isCitasVisible = true;
 
     [ObservableProperty]
-    private bool _isInformesvisibles;
+    private bool _isInformesVisible;
 
     [ObservableProperty] 
     private bool _isImportarVisible;
@@ -53,24 +61,27 @@ public partial class MainViewModel(
     [ObservableProperty]
     private string _descripcionFormulario = "Selecciona una cita de la tabla para cargar aquí sus datos.";
 
-    public bool IsborradoLogico => Configuracion.UseLogicalDelete;
+    [ObservableProperty]
+    private string _textoPaginaActual = "Pag. 1 / 1";
+
+    public bool IsBorradoLogico => Configuracion.UseLogicalDelete;
 
     public IEnumerable<Motor> MotoresDisponibles => Enum.GetValues<Motor>();
 
+    //Funciones para cambiar entre las páginas del menu.
     [RelayCommand]
     private void MostrarCitas() {
         OcultarTodo();
-        IsCitasVisibles = true;
+        IsCitasVisible = true;
         
         TituloFormulario = "Detalle de cita";
         DescripcionFormulario = "Selecciona una cita de la tabla para cargar aquí sus datos.";
     }
     
-    //Funciones para cambiar entre las páginas del menu.
     [RelayCommand]
     private void MostrarInformes() {
         OcultarTodo();
-        IsInformesvisibles = true;
+        IsInformesVisible = true;
     }
     
     [RelayCommand]
@@ -85,23 +96,42 @@ public partial class MainViewModel(
         IsExportarVisible = true;
     }
 
-
     private void CargarCitas() {
-        try {
+        try
+        {
             _allCitas = _citaService.GetAll(1, int.MaxValue, true).ToList();
-            FiltroCampoBusqueda();
-        } catch (Exception e) {
-            Console.WriteLine(e);
-            throw;
+            var citasVisibles = _allCitas
+                .Where(c => !IsBorradoLogico || !c.IsDelete)
+                .Select(c => c.ToItemViewModel())
+                .ToList();
+
+            Citas = new ObservableCollection<CitaItemViewModel>(citasVisibles);
+            TextoPaginaActual = "Pag. 1 / 1";
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(
+                $"Error al cargar citas: {e.Message}",
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
         }
     }
 
-    private void FiltroCampoBusqueda() {
+    partial void OnCitaSeleccionadaChanged(CitaItemViewModel? value) {
+        if (value == null) return;
+        Form = value.ToModel().ToFormData();
+        
+        TituloFormulario = "Detalle de cita";
+        DescripcionFormulario = "Datos cargados desde la cita seleccionada.";
     }
     
+    
+
     private void OcultarTodo() {
-        IsCitasVisibles = false;
-        IsInformesvisibles = false;
+        IsCitasVisible = false;
+        IsInformesVisible = false;
         IsImportarVisible = false;
         IsExportarVisible = false;
     }

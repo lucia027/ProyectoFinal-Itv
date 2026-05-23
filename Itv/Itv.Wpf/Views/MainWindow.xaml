@@ -339,7 +339,7 @@
                                     <CheckBox Grid.Column="2"
                                               Content="Ver eliminadas"
                                               IsChecked="{Binding IncluirEliminadas}"
-                                              Visibility="{Binding UsaBorradoLogico, Converter={StaticResource BoolToVisibility}}"
+                                              Visibility="{Binding IsBorradoLogico, Converter={StaticResource BoolToVisibility}}"
                                               VerticalAlignment="Bottom"
                                               HorizontalAlignment="Right"
                                               Margin="0,0,0,9" />
@@ -356,13 +356,13 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID"
                                                     Binding="{Binding Id}"
-                                                    SortMemberPath="Id"
-                                                    Width="55" />
+                                                    SortMemberPath=" Id"
+                                                    Width="65" />
 
                                 <DataGridTextColumn Header="Matrícula"
                                                     Binding="{Binding Matricula}"
                                                     SortMemberPath="Matricula"
-                                                    Width="105" />
+                                                    Width="100" />
 
                                 <DataGridTextColumn Header="Marca"
                                                     Binding="{Binding Marca}"
@@ -372,32 +372,32 @@
                                 <DataGridTextColumn Header="Modelo"
                                                     Binding="{Binding Modelo}"
                                                     SortMemberPath="Modelo"
-                                                    Width="110" />
+                                                    Width="100" />
 
                                 <DataGridTextColumn Header="Motor"
                                                     Binding="{Binding Motor}"
                                                     SortMemberPath="Motor"
-                                                    Width="95" />
+                                                    Width="100" />
 
                                 <DataGridTextColumn Header="Cilindrada"
                                                     Binding="{Binding Cilindrada}"
                                                     SortMemberPath="Cilindrada"
-                                                    Width="95" />
+                                                    Width="100" />
 
                                 <DataGridTextColumn Header="DNI dueño"
                                                     Binding="{Binding DniDueño}"
                                                     SortMemberPath="DniDueño"
-                                                    Width="110" />
+                                                    Width="100" />
 
                                 <DataGridTextColumn Header="Matriculación"
                                                     Binding="{Binding FechaMatriculacion, StringFormat={}{0:dd/MM/yyyy}}"
                                                     SortMemberPath="FechaMatriculacion"
-                                                    Width="115" />
+                                                    Width="100" />
 
                                 <DataGridTextColumn Header="Inspección"
                                                     Binding="{Binding FechaInspeccion, StringFormat={}{0:dd/MM/yyyy}}"
                                                     SortMemberPath="FechaInspeccion"
-                                                    Width="105" />
+                                                    Width="100" />
                             </DataGrid.Columns>
                         </DataGrid>
 
@@ -502,7 +502,7 @@
                     </ScrollViewer>
                 </Border>
             </Grid>
-
+            
             <!-- VISTA INFORMES -->
             <Grid Visibility="{Binding IsInformesVisible, Converter={StaticResource BoolToVisibility}}">
                 <Border Style="{StaticResource Card}">
