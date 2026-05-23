@@ -280,21 +280,21 @@
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2">
-                                        <TextBlock Text="Matriculación inicio"
+                                        <TextBlock Text="Inspección inicio"
                                                    Style="{StaticResource MutedText}"
                                                    Margin="0,0,0,5" />
 
                                         <DatePicker Style="{StaticResource InputDatePicker}"
-                                                    SelectedDate="{Binding FechaMatriculacionInicio}" />
+                                                    SelectedDate="{Binding FechaInspeccionInicio}" /> 
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="4">
-                                        <TextBlock Text="Matriculación fin"
+                                        <TextBlock Text="Inspección fin"
                                                    Style="{StaticResource MutedText}"
                                                    Margin="0,0,0,5" />
 
                                         <DatePicker Style="{StaticResource InputDatePicker}"
-                                                    SelectedDate="{Binding FechaMatriculacionFin}" />
+                                                    SelectedDate="{Binding FechaInspeccionFin}" />
                                     </StackPanel>
                                 </Grid>
 
