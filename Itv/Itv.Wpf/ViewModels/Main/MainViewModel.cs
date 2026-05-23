@@ -10,6 +10,7 @@ using Itv.Services.Report;
 using Itv.Wpf.Mappers;
 using Itv.Wpf.ViewModels.Cita;
 using Itv.Wpf.ViewModels.FormData;
+using Itv.Wpf.Views;
 
 namespace Itv.Wpf.ViewModels.Main;
 
@@ -50,7 +51,7 @@ public partial class MainViewModel : ObservableObject {
     private ObservableCollection<CitaItemViewModel> _citas = new();
 
     [ObservableProperty]
-    private CitaItemViewModel? _CitaSeleccionada;
+    private CitaItemViewModel? _citaSeleccionada;
 
     [ObservableProperty]
     private CitaFormData _form = new();
@@ -95,11 +96,139 @@ public partial class MainViewModel : ObservableObject {
         OcultarTodo();
         IsExportarVisible = true;
     }
+    
+    //Crear - Actualizar - Eliminar
+    [RelayCommand]
+    private void CrearCita() {
+        OcultarTodo();
+        IsCitasVisible = true;
+
+        CitaSeleccionada = null;
+        Form = new CitaFormData();
+        
+        TituloFormulario = "Crear cita";
+        DescripcionFormulario = "Rellena los datos del vehículo para registrar una nueva cita.";
+    }
+
+    [RelayCommand]
+    private void ActualizarCita() {
+        OcultarTodo();
+        IsCitasVisible = true;
+        
+        if (CitaSeleccionada == null) {
+            MessageBox.Show(
+                "Selecciona una cita antes de actualizar.",
+                "Actualizar cita",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning
+            );
+            return;
+        }
+
+        TituloFormulario = "Actualizar cita";
+        DescripcionFormulario = "Modifica los datos de la cita seleccionada en la tabla.";
+    }
+
+    [RelayCommand]
+    private void EliminarCita() {
+        OcultarTodo();
+        IsCitasVisible = true;
+
+        if (CitaSeleccionada == null) {
+            MessageBox.Show(
+                "Selecciona una cita antes de eliminar.",
+                "Eliminar cita",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning
+            );
+            return;
+        }
+
+        var mensaje = IsBorradoLogico 
+            ? $"¿Seguro que quieres eliminar la cita con matrícula {CitaSeleccionada.Matricula}? El borrado será lógico." 
+            : $"¿Seguro que quieres eliminar definitivamente la cita con matrícula {CitaSeleccionada.Matricula}? Esta acción no se puede deshacer";
+        
+        var confirmacion = MessageBox.Show(
+            mensaje,
+            "Confirmar eliminación",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question
+        );
+        if (confirmacion != MessageBoxResult.Yes) return;
+
+        var res = _citaService.Delete(CitaSeleccionada.Id);
+        if (res.IsSuccess) {
+            MessageBox.Show(
+                IsBorradoLogico ? "Cita eliminada correctamente." : "Cita eliminada permanentemente.",
+                "Correcto",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
+
+            Form = new CitaFormData();
+            CitaSeleccionada = null;
+            CargarCitas();
+            
+            TituloFormulario = "Detalle de cita";
+            DescripcionFormulario = "Selecciona una cita de la tabla para cargar aquí sus datos.";
+        } else {
+            MessageBox.Show(
+                res.Error.Message,
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
+        }
+    }
+
+    [RelayCommand]
+    private void Guardar() {
+        if (!Form.IsValid) {
+            MessageBox.Show(
+                $"Hay errores de validación:\n\n{Form.GetValidationErrors()}",
+                "Validación",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning
+            );
+            return;
+        }
+
+        var cita = Form.ToModel();
+        var res = cita.Id == 0 ? _citaService.Create(cita) : _citaService.Update(cita.Id, cita);
+
+        if (res.IsSuccess) {
+            MessageBox.Show(
+                "Cita guardada correctamente.",
+                "Correcto",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
+            
+            CargarCitas();
+            TituloFormulario = "Detalle de cita";
+            DescripcionFormulario = "Selecciona una cita de la tabla para cargar aquí sus datos.";
+        } else {
+            MessageBox.Show(
+                res.Error.Message,
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
+        }
+    }
+    
+    [RelayCommand]
+    private void AbrirAcercaDe() {
+        var acercaDe = new AcercaDeWindow {
+            Owner = Application.Current.MainWindow
+        };
+
+        acercaDe.ShowDialog();
+    }
 
     private void CargarCitas() {
-        try
-        {
-            _allCitas = _citaService.GetAll(1, int.MaxValue, true).ToList();
+        try {
+            _allCitas = _citaService.GetAll(1, int.MaxValue).ToList();
             var citasVisibles = _allCitas
                 .Where(c => !IsBorradoLogico || !c.IsDelete)
                 .Select(c => c.ToItemViewModel())
@@ -107,9 +236,7 @@ public partial class MainViewModel : ObservableObject {
 
             Citas = new ObservableCollection<CitaItemViewModel>(citasVisibles);
             TextoPaginaActual = "Pag. 1 / 1";
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             MessageBox.Show(
                 $"Error al cargar citas: {e.Message}",
                 "Error",
@@ -126,8 +253,6 @@ public partial class MainViewModel : ObservableObject {
         TituloFormulario = "Detalle de cita";
         DescripcionFormulario = "Datos cargados desde la cita seleccionada.";
     }
-    
-    
 
     private void OcultarTodo() {
         IsCitasVisible = false;

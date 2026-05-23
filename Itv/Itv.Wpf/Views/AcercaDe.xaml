@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Acerca de"
         Width="460"
-        Height="360"
+        Height="430"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#EAF3FB"
@@ -71,7 +71,6 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <!-- CABECERA -->
             <Border Grid.Row="0"
                     Background="{StaticResource PrimaryDarkBrush}"
                     Padding="24"
@@ -90,47 +89,51 @@
                 </StackPanel>
             </Border>
 
-            <!-- CONTENIDO -->
-            <StackPanel Grid.Row="1" Margin="22">
-                <Border Style="{StaticResource InfoCard}">
-                    <StackPanel>
-                        <TextBlock Text="Autora"
-                                   Style="{StaticResource LabelText}" />
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto"
+                          Padding="22">
 
-                        <TextBlock Text="Lucía Fuertes Cruz"
-                                   Style="{StaticResource ValueText}" />
-                    </StackPanel>
-                </Border>
+                <StackPanel>
+                    <Border Style="{StaticResource InfoCard}">
+                        <StackPanel>
+                            <TextBlock Text="Autora"
+                                       Style="{StaticResource LabelText}" />
 
-                <Border Style="{StaticResource InfoCard}">
-                    <StackPanel>
-                        <TextBlock Text="Usuario de GitHub"
-                                   Style="{StaticResource LabelText}" />
+                            <TextBlock Text="Lucía Fuertes Cruz"
+                                       Style="{StaticResource ValueText}" />
+                        </StackPanel>
+                    </Border>
 
-                        <TextBlock Text="lucia027"
-                                   Style="{StaticResource ValueText}" />
-                    </StackPanel>
-                </Border>
+                    <Border Style="{StaticResource InfoCard}">
+                        <StackPanel>
+                            <TextBlock Text="Usuario de GitHub"
+                                       Style="{StaticResource LabelText}" />
 
-                <Border Style="{StaticResource InfoCard}"
-                        Margin="0,0,0,18">
-                    <StackPanel>
-                        <TextBlock Text="Repositorio"
-                                   Style="{StaticResource LabelText}" />
+                            <TextBlock Text="lucia027"
+                                       Style="{StaticResource ValueText}" />
+                        </StackPanel>
+                    </Border>
 
-                        <TextBlock Margin="0,5,0,0">
-                            <Hyperlink NavigateUri="https://github.com/lucia027/ProyectoFinal-Itv"
-                                       RequestNavigate="Hyperlink_RequestNavigate">
-                                github.com/lucia027
-                            </Hyperlink>
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
+                    <Border Style="{StaticResource InfoCard}">
+                        <StackPanel>
+                            <TextBlock Text="Repositorio"
+                                       Style="{StaticResource LabelText}" />
 
-                <Button Content="Cerrar"
-                        Style="{StaticResource CloseButton}"
-                        Click="Cerrar_Click" />
-            </StackPanel>
+                            <TextBlock Margin="0,5,0,0">
+                                <Hyperlink NavigateUri="https://github.com/lucia027/ProyectoFinal-Itv"
+                                           RequestNavigate="Hyperlink_RequestNavigate">
+                                    github.com/lucia027/ProyectoFinal-Itv
+                                </Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <Button Content="Cerrar"
+                            Style="{StaticResource CloseButton}"
+                            Margin="0,6,0,0"
+                            Click="Cerrar_Click" />
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
     </Border>
 </Window>
