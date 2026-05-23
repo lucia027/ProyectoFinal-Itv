@@ -1,3 +1,6 @@
+using Itv.Wpf.ViewModels.Cita;
+using Itv.Wpf.ViewModels.ImportExport;
+using Itv.Wpf.ViewModels.Informe;
 using Itv.Wpf.ViewModels.Main;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -34,5 +37,8 @@ public static class FrontDependenciesProvider {
     private static void RegisterViewModels(IServiceCollection services) {
         // ViewModel principal de la aplicación
         services.AddTransient<MainViewModel>();
+        services.AddTransient<CitaViewModel>();
+        services.AddTransient<InformeViewModel>();
+        services.AddTransient<ImportExportViewModel>();
     }
 }

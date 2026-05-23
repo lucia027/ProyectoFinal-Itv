@@ -189,15 +189,15 @@
 
                     <Button Content="➕  Crear"
                             Style="{StaticResource MenuButton}"
-                            Command="{Binding CrearCitaCommand}" />
+                            Command="{Binding CitaVm.CrearCitaCommand}" />
 
                     <Button Content="✏️  Actualizar"
                             Style="{StaticResource MenuButton}"
-                            Command="{Binding ActualizarCitaCommand}" />
+                            Command="{Binding CitaVm.ActualizarCitaCommand}" />
 
                     <Button Content="🗑️  Eliminar"
                             Style="{StaticResource MenuButton}"
-                            Command="{Binding EliminarCitaCommand}" />
+                            Command="{Binding CitaVm.EliminarCitaCommand}" />
 
                     <Rectangle Height="1"
                                Fill="#2B5A82"
@@ -275,8 +275,8 @@
                                                    Margin="0,0,0,5" />
 
                                         <ComboBox Style="{StaticResource InputComboBox}"
-                                                  ItemsSource="{Binding MotoresFiltroDisponibles}"
-                                                  SelectedItem="{Binding MotorFiltroSeleccionado}" />
+                                                  ItemsSource="{Binding CitaVm.MotoresFiltroDisponibles}"
+                                                  SelectedItem="{Binding CitaVm.MotorFiltroSeleccionado}" />
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2">
@@ -285,7 +285,7 @@
                                                    Margin="0,0,0,5" />
 
                                         <DatePicker Style="{StaticResource InputDatePicker}"
-                                                    SelectedDate="{Binding FechaInspeccionInicio}" /> 
+                                                    SelectedDate="{Binding CitaVm.FechaInspeccionInicio}" /> 
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="4">
@@ -294,7 +294,7 @@
                                                    Margin="0,0,0,5" />
 
                                         <DatePicker Style="{StaticResource InputDatePicker}"
-                                                    SelectedDate="{Binding FechaInspeccionFin}" />
+                                                    SelectedDate="{Binding CitaVm.FechaInspeccionFin}" />
                                     </StackPanel>
                                 </Grid>
 
@@ -319,12 +319,12 @@
 
                                             <TextBox Grid.Column="0"
                                                      Style="{StaticResource InputTextBox}"
-                                                     Text="{Binding CampoBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                                                     Text="{Binding CitaVm.CampoBusqueda, UpdateSourceTrigger=PropertyChanged}"
                                                      ToolTip="Busca por matrícula, marca, modelo o DNI" />
 
                                             <Button Grid.Column="2"
                                                     Style="{StaticResource SearchButton}"
-                                                    Command="{Binding BuscarCommand}"
+                                                    Command="{Binding CitaVm.BuscarCommand}"
                                                     ToolTip="Buscar">
                                                 <TextBlock Text="&#xE721;"
                                                            FontFamily="Segoe MDL2 Assets"
@@ -338,8 +338,8 @@
 
                                     <CheckBox Grid.Column="2"
                                               Content="Ver eliminadas"
-                                              IsChecked="{Binding IncluirEliminadas}"
-                                              Visibility="{Binding IsBorradoLogico, Converter={StaticResource BoolToVisibility}}"
+                                              IsChecked="{Binding CitaVm.IncluirEliminadas}"
+                                              Visibility="{Binding CitaVm.IsBorradoLogico, Converter={StaticResource BoolToVisibility}}"
                                               VerticalAlignment="Bottom"
                                               HorizontalAlignment="Right"
                                               Margin="0,0,0,9" />
@@ -348,8 +348,8 @@
                         </Border>
 
                         <DataGrid Grid.Row="2"
-                                  ItemsSource="{Binding Citas}"
-                                  SelectedItem="{Binding CitaSeleccionada}"
+                                  ItemsSource="{Binding CitaVm.Citas}"
+                                  SelectedItem="{Binding CitaVm.CitaSeleccionada}"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   CanUserSortColumns="True">
@@ -408,12 +408,12 @@
 
                             <Button Content="Primera"
                                     Style="{StaticResource SecondaryButton}"
-                                    Command="{Binding PrimeraPaginaCommand}"
+                                    Command="{Binding CitaVm.PrimeraPaginaCommand}"
                                     Margin="0,0,8,0" />
 
                             <Button Content="Anterior"
                                     Style="{StaticResource SecondaryButton}"
-                                    Command="{Binding PaginaAnteriorCommand}"
+                                    Command="{Binding CitaVm.PaginaAnteriorCommand}"
                                     Margin="0,0,8,0" />
 
                             <Border Background="#F1F7FC"
@@ -424,19 +424,19 @@
                                     Height="38"
                                     Margin="0,0,8,0">
 
-                                <TextBlock Text="{Binding TextoPaginaActual}"
+                                <TextBlock Text="{Binding CitaVm.TextoPaginaActual}"
                                            Foreground="{StaticResource PrimaryDarkBrush}"
                                            FontWeight="SemiBold" />
                             </Border>
 
                             <Button Content="Siguiente"
                                     Style="{StaticResource SecondaryButton}"
-                                    Command="{Binding PaginaSiguienteCommand}"
+                                    Command="{Binding CitaVm.PaginaSiguienteCommand}"
                                     Margin="0,0,8,0" />
 
                             <Button Content="Última"
                                     Style="{StaticResource SecondaryButton}"
-                                    Command="{Binding UltimaPaginaCommand}" />
+                                    Command="{Binding CitaVm.UltimaPaginaCommand}" />
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -444,60 +444,60 @@
                 <Border Grid.Column="2" Style="{StaticResource Card}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel>
-                            <TextBlock Text="{Binding TituloFormulario}"
+                            <TextBlock Text="{Binding CitaVm.TituloFormulario}"
                                        Style="{StaticResource SectionTitle}"
                                        Margin="0,0,0,6" />
 
-                            <TextBlock Text="{Binding DescripcionFormulario}"
+                            <TextBlock Text="{Binding CitaVm.DescripcionFormulario}"
                                        Style="{StaticResource MutedText}"
                                        TextWrapping="Wrap"
                                        Margin="0,0,0,18" />
 
                             <TextBlock Text="Matrícula" Style="{StaticResource MutedText}" Margin="0,0,0,5" />
                             <TextBox Style="{StaticResource InputTextBox}"
-                                     Text="{Binding Form.Matricula, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                                     Text="{Binding CitaVm.Form.Matricula, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                                      Margin="0,0,0,12" />
 
                             <TextBlock Text="Marca" Style="{StaticResource MutedText}" Margin="0,0,0,5" />
                             <TextBox Style="{StaticResource InputTextBox}"
-                                     Text="{Binding Form.Marca, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                                     Text="{Binding CitaVm.Form.Marca, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                                      Margin="0,0,0,12" />
 
                             <TextBlock Text="Modelo" Style="{StaticResource MutedText}" Margin="0,0,0,5" />
                             <TextBox Style="{StaticResource InputTextBox}"
-                                     Text="{Binding Form.Modelo, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                                     Text="{Binding CitaVm.Form.Modelo, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                                      Margin="0,0,0,12" />
 
                             <TextBlock Text="Cilindrada" Style="{StaticResource MutedText}" Margin="0,0,0,5" />
                             <TextBox Style="{StaticResource InputTextBox}"
-                                     Text="{Binding Form.Cilindrada, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                                     Text="{Binding CitaVm.Form.Cilindrada, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                                      Margin="0,0,0,12" />
 
                             <TextBlock Text="Tipo de motor" Style="{StaticResource MutedText}" Margin="0,0,0,5" />
                             <ComboBox Style="{StaticResource InputComboBox}"
-                                      ItemsSource="{Binding MotoresDisponibles}"
-                                      SelectedItem="{Binding Form.Motor, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                                      ItemsSource="{Binding CitaVm.MotoresDisponibles}"
+                                      SelectedItem="{Binding CitaVm.Form.Motor, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                                       Margin="0,0,0,12" />
 
                             <TextBlock Text="DNI dueño" Style="{StaticResource MutedText}" Margin="0,0,0,5" />
                             <TextBox Style="{StaticResource InputTextBox}"
-                                     Text="{Binding Form.DniDueño, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                                     Text="{Binding CitaVm.Form.DniDueño, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                                      Margin="0,0,0,12" />
 
                             <TextBlock Text="Fecha inspección" Style="{StaticResource MutedText}" Margin="0,0,0,5" />
                             <DatePicker Style="{StaticResource InputDatePicker}"
-                                        SelectedDate="{Binding Form.FechaInspeccion, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                                        SelectedDate="{Binding CitaVm.Form.FechaInspeccion, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                                         Margin="0,0,0,12" />
 
                             <TextBlock Text="Fecha matriculación" Style="{StaticResource MutedText}" Margin="0,0,0,5" />
                             <DatePicker Style="{StaticResource InputDatePicker}"
-                                        SelectedDate="{Binding Form.FechaMatriculacion, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                                        SelectedDate="{Binding CitaVm.Form.FechaMatriculacion, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
                                         Margin="0,0,0,18" />
 
                             <Button Content="Guardar"
                                     Style="{StaticResource BaseButton}"
-                                    Command="{Binding GuardarCommand}"
-                                    IsEnabled="{Binding Form.IsValid}" />
+                                    Command="{Binding CitaVm.GuardarCommand}"
+                                    IsEnabled="{Binding CitaVm.Form.IsValid}" />
                         </StackPanel>
                     </ScrollViewer>
                 </Border>
@@ -543,7 +543,7 @@
 
                                     <Button Content="Generar HTML"
                                             Style="{StaticResource BaseButton}"
-                                            Command="{Binding GenerarInformeHtmlCommand}" />
+                                            Command="{Binding InformeVm.GenerarInformeHtmlCommand}" />
                                 </StackPanel>
                             </Border>
 
@@ -567,7 +567,7 @@
 
                                     <Button Content="Generar PDF"
                                             Style="{StaticResource BaseButton}"
-                                            Command="{Binding GenerarInformePdfCommand}" />
+                                            Command="{Binding InformeVm.GenerarInformePdfCommand}" />
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -576,104 +576,164 @@
             </Grid>
 
             <!-- VISTA IMPORTAR -->
-            <Grid Visibility="{Binding IsImportarVisible, Converter={StaticResource BoolToVisibility}}">
-                <Border Style="{StaticResource Card}">
-                    <StackPanel>
-                        <TextBlock Text="Importar datos"
-                                   Style="{StaticResource SectionTitle}"
-                                   FontSize="28"
-                                   Margin="0,0,0,8" />
+<Grid Visibility="{Binding IsImportarVisible, Converter={StaticResource BoolToVisibility}}">
+    <Border Style="{StaticResource Card}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-                        <TextBlock Text="Selecciona el formato del archivo que quieres cargar en el sistema."
-                                   Style="{StaticResource MutedText}"
-                                   Margin="0,0,0,24" />
+            <StackPanel Grid.Row="0">
+                <TextBlock Text="Importar datos"
+                           Style="{StaticResource SectionTitle}"
+                           FontSize="28"
+                           Margin="0,0,0,8" />
 
-                        <UniformGrid Columns="4" Rows="1">
-                            <Border Background="#F5FAFF" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" CornerRadius="14" Padding="20" Margin="0,0,12,0">
-                                <StackPanel>
-                                    <TextBlock Text="CSV" Style="{StaticResource SectionTitle}" FontSize="20" Margin="0,0,0,8" />
-                                    <TextBlock Text="Importa citas desde un archivo separado por comas." Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,22" />
-                                    <Button Content="Importar CSV" Style="{StaticResource BaseButton}" Command="{Binding ImportarCsvCommand}" />
-                                </StackPanel>
-                            </Border>
+                <TextBlock Text="La importación usará automáticamente el formato configurado en appsettings.json."
+                           Style="{StaticResource MutedText}"
+                           Margin="0,0,0,24" />
+            </StackPanel>
 
-                            <Border Background="#F5FAFF" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" CornerRadius="14" Padding="20" Margin="0,0,12,0">
-                                <StackPanel>
-                                    <TextBlock Text="JSON" Style="{StaticResource SectionTitle}" FontSize="20" Margin="0,0,0,8" />
-                                    <TextBlock Text="Importa citas desde un archivo estructurado en JSON." Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,22" />
-                                    <Button Content="Importar JSON" Style="{StaticResource BaseButton}" Command="{Binding ImportarJsonCommand}" />
-                                </StackPanel>
-                            </Border>
+            <Border Grid.Row="1"
+                    Background="#F5FAFF"
+                    BorderBrush="{StaticResource BorderSoftBrush}"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    Padding="24"
+                    Width="520"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top">
 
-                            <Border Background="#F5FAFF" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" CornerRadius="14" Padding="20" Margin="0,0,12,0">
-                                <StackPanel>
-                                    <TextBlock Text="XML" Style="{StaticResource SectionTitle}" FontSize="20" Margin="0,0,0,8" />
-                                    <TextBlock Text="Importa citas desde un archivo XML." Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,22" />
-                                    <Button Content="Importar XML" Style="{StaticResource BaseButton}" Command="{Binding ImportarXmlCommand}" />
-                                </StackPanel>
-                            </Border>
+                <StackPanel>
+                    <TextBlock Text="Formato actual"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,0,0,5" />
 
-                            <Border Background="#F5FAFF" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" CornerRadius="14" Padding="20">
-                                <StackPanel>
-                                    <TextBlock Text="Binario" Style="{StaticResource SectionTitle}" FontSize="20" Margin="0,0,0,8" />
-                                    <TextBlock Text="Importa citas desde el archivo binario del sistema." Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,22" />
-                                    <Button Content="Importar binario" Style="{StaticResource BaseButton}" Command="{Binding ImportarBinarioCommand}" />
-                                </StackPanel>
-                            </Border>
-                        </UniformGrid>
-                    </StackPanel>
-                </Border>
-            </Grid>
+                    <TextBlock Text="{Binding ImportExportVm.TipoFormatoActual}"
+                               Style="{StaticResource SectionTitle}"
+                               FontSize="24"
+                               Margin="0,0,0,12" />
+
+                    <TextBlock Text="{Binding ImportExportVm.DescripcionFormatoActual}"
+                               Style="{StaticResource MutedText}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,20" />
+
+                    <Border Background="White"
+                            BorderBrush="{StaticResource BorderSoftBrush}"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Padding="14"
+                            Margin="0,0,0,18">
+
+                        <StackPanel>
+                            <TextBlock Text="Archivo esperado"
+                                       Style="{StaticResource MutedText}"
+                                       Margin="0,0,0,5" />
+
+                            <TextBlock Text="{Binding ImportExportVm.ExtensionActual}"
+                                       Foreground="{StaticResource PrimaryDarkBrush}"
+                                       FontSize="16"
+                                       FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Border>
+
+                    <CheckBox Content="Sustituir datos actuales antes de importar"
+                              IsChecked="{Binding ImportExportVm.SustituirDatos}"
+                              Margin="0,0,0,22" />
+
+                    <Button Content="Importar según configuración"
+                            Style="{StaticResource BaseButton}"
+                            Command="{Binding ImportExportVm.ImportarCommand}"
+                            Margin="0,0,0,14" />
+
+                    <TextBlock Text="{Binding ImportExportVm.StatusMessage}"
+                               Style="{StaticResource MutedText}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</Grid>
 
             <!-- VISTA EXPORTAR -->
-            <Grid Visibility="{Binding IsExportarVisible, Converter={StaticResource BoolToVisibility}}">
-                <Border Style="{StaticResource Card}">
-                    <StackPanel>
-                        <TextBlock Text="Exportar datos"
-                                   Style="{StaticResource SectionTitle}"
-                                   FontSize="28"
-                                   Margin="0,0,0,8" />
+<Grid Visibility="{Binding IsExportarVisible, Converter={StaticResource BoolToVisibility}}">
+    <Border Style="{StaticResource Card}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-                        <TextBlock Text="Selecciona el formato en el que quieres guardar las citas actuales."
-                                   Style="{StaticResource MutedText}"
-                                   Margin="0,0,0,24" />
+            <StackPanel Grid.Row="0">
+                <TextBlock Text="Exportar datos"
+                           Style="{StaticResource SectionTitle}"
+                           FontSize="28"
+                           Margin="0,0,0,8" />
 
-                        <UniformGrid Columns="4" Rows="1">
-                            <Border Background="#F5FAFF" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" CornerRadius="14" Padding="20" Margin="0,0,12,0">
-                                <StackPanel>
-                                    <TextBlock Text="CSV" Style="{StaticResource SectionTitle}" FontSize="20" Margin="0,0,0,8" />
-                                    <TextBlock Text="Exporta las citas en un archivo separado por comas." Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,22" />
-                                    <Button Content="Exportar CSV" Style="{StaticResource BaseButton}" Command="{Binding ExportarCsvCommand}" />
-                                </StackPanel>
-                            </Border>
+                <TextBlock Text="La exportación usará automáticamente el formato configurado en appsettings.json."
+                           Style="{StaticResource MutedText}"
+                           Margin="0,0,0,24" />
+            </StackPanel>
 
-                            <Border Background="#F5FAFF" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" CornerRadius="14" Padding="20" Margin="0,0,12,0">
-                                <StackPanel>
-                                    <TextBlock Text="JSON" Style="{StaticResource SectionTitle}" FontSize="20" Margin="0,0,0,8" />
-                                    <TextBlock Text="Exporta las citas en un archivo JSON." Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,22" />
-                                    <Button Content="Exportar JSON" Style="{StaticResource BaseButton}" Command="{Binding ExportarJsonCommand}" />
-                                </StackPanel>
-                            </Border>
+            <Border Grid.Row="1"
+                    Background="#F5FAFF"
+                    BorderBrush="{StaticResource BorderSoftBrush}"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    Padding="24"
+                    Width="520"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top">
 
-                            <Border Background="#F5FAFF" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" CornerRadius="14" Padding="20" Margin="0,0,12,0">
-                                <StackPanel>
-                                    <TextBlock Text="XML" Style="{StaticResource SectionTitle}" FontSize="20" Margin="0,0,0,8" />
-                                    <TextBlock Text="Exporta las citas en un archivo XML." Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,22" />
-                                    <Button Content="Exportar XML" Style="{StaticResource BaseButton}" Command="{Binding ExportarXmlCommand}" />
-                                </StackPanel>
-                            </Border>
+                <StackPanel>
+                    <TextBlock Text="Formato actual"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,0,0,5" />
 
-                            <Border Background="#F5FAFF" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" CornerRadius="14" Padding="20">
-                                <StackPanel>
-                                    <TextBlock Text="Binario" Style="{StaticResource SectionTitle}" FontSize="20" Margin="0,0,0,8" />
-                                    <TextBlock Text="Exporta las citas en el formato binario del sistema." Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,22" />
-                                    <Button Content="Exportar binario" Style="{StaticResource BaseButton}" Command="{Binding ExportarBinarioCommand}" />
-                                </StackPanel>
-                            </Border>
-                        </UniformGrid>
-                    </StackPanel>
-                </Border>
-            </Grid>
+                    <TextBlock Text="{Binding ImportExportVm.TipoFormatoActual}"
+                               Style="{StaticResource SectionTitle}"
+                               FontSize="24"
+                               Margin="0,0,0,12" />
+
+                    <TextBlock Text="{Binding ImportExportVm.DescripcionFormatoActual}"
+                               Style="{StaticResource MutedText}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,20" />
+
+                    <Border Background="White"
+                            BorderBrush="{StaticResource BorderSoftBrush}"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Padding="14"
+                            Margin="0,0,0,22">
+
+                        <StackPanel>
+                            <TextBlock Text="Archivo generado"
+                                       Style="{StaticResource MutedText}"
+                                       Margin="0,0,0,5" />
+
+                            <TextBlock Text="{Binding ImportExportVm.ExtensionActual}"
+                                       Foreground="{StaticResource PrimaryDarkBrush}"
+                                       FontSize="16"
+                                       FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Border>
+
+                    <Button Content="Exportar según configuración"
+                            Style="{StaticResource BaseButton}"
+                            Command="{Binding ImportExportVm.ExportarCommand}"
+                            Margin="0,0,0,14" />
+
+                    <TextBlock Text="{Binding ImportExportVm.StatusMessage}"
+                               Style="{StaticResource MutedText}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</Grid>
         </Grid>
     </Grid>
 </Window>
