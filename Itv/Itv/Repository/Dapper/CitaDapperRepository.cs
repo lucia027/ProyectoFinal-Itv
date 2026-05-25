@@ -246,7 +246,7 @@ public class CitaDapperRepository : ICitaRepository {
 
         try {
             var eliminado = GetById(id).Value;
-            var sql = "DELETE FROM Cita WHERE Id = @@Id";
+            var sql = "DELETE FROM Cita WHERE Id = @Id";
             _connection.Execute(sql, new { Id = id });
             return Result.Success<Cita, DomainError>(eliminado);
         } catch (Exception e) {
