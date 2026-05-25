@@ -20,8 +20,6 @@ public class CitaAdoRepository : ICitaRepository {
     
     private readonly ILogger _logger = Log.ForContext<CitaAdoRepository>();
     private readonly string _connectionString;
-
-    public CitaAdoRepository() : this(Configuracion.DropData, Configuracion.SeedData) { }
     
     public CitaAdoRepository(bool dropData, bool seedData) {
         _logger.Debug("Iniciando el repositorio en ado.");
@@ -76,21 +74,21 @@ public class CitaAdoRepository : ICitaRepository {
         using var command = connection.CreateCommand();
         if(!isDeleteInclude)  command.CommandText = @"
                 SELECT * FROM Cita WHERE IsDelete = 0 
-                AND (Matricula LIKE @CampoBusqueda 
-                OR Marca LIkE @CampoBusqueda
-                OR Modelo LIKE @CampoBusqueda
-                OR Cilindrada LIKE @CampoBusqueda
-                OR Motor LIKE @CampoBusqueda
-                OR DniDueño LIKE @CampoBusqueda)
+                AND (LOWER(Matricula) LIKE LOWER(@CampoBusqueda) 
+                OR LOWER(Marca) LIkE LOWER(@CampoBusqueda)
+                OR LOWER(Modelo) LIKE LOWER(@CampoBusqueda)
+                OR LOWER(Cilindrada) LIKE LOWER(@CampoBusqueda)
+                OR LOWER(Motor) LIKE LOWER(@CampoBusqueda)
+                OR LOWER(DniDueño) LIKE LOWER(@CampoBusqueda))
                 ";
         if(isDeleteInclude) command.CommandText =@"
                 SELECT * FROM Cita WHERE 
-                Matricula LIKE @CampoBusqueda
-                OR Marca LIkE @CampoBusqueda
-                OR Modelo LIKE @CampoBusqueda
-                OR Cilindrada LIKE @CampoBusqueda
-                OR Motor LIKE @CampoBusqueda
-                OR DniDueño LIKE @CampoBusqueda
+                LOWER(Matricula) LIKE LOWER(@CampoBusqueda)
+                OR LOWER(Marca) LIkE LOWER(@CampoBusqueda)
+                OR LOWER(Modelo) LIKE LOWER(@CampoBusqueda)
+                OR LOWER(Cilindrada) LIKE LOWER(@CampoBusqueda)
+                OR LOWER(Motor) LIKE LOWER(@CampoBusqueda)
+                OR LOWER(DniDueño) LIKE LOWER(@CampoBusqueda)
                 ";
         command.Parameters.AddWithValue("@CampoBusqueda", campoBusqueda);
         

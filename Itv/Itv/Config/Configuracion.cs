@@ -74,4 +74,24 @@ public static class Configuracion {
     public static bool DropData => Configuration.GetValue("Repository:DropData", false);
     
     public static bool SeedData => Configuration.GetValue("Repository:SeedData", true);
+    
+    public static string ReportDirectory => Path.Combine(
+        AppDomain.CurrentDomain.BaseDirectory,
+        Configuration.GetValue<string>("Reports:Directory") ?? "reports");
+
+    public static bool UseLogicalDelete => Configuration.GetValue("Repository:UseLogicalDelete", true);
+    
+    public static bool LogToFile => Configuration.GetValue("Logging:File:Enabled", true);
+
+    public static string LogDirectory => Path.Combine(
+        AppDomain.CurrentDomain.BaseDirectory,
+        Configuration.GetValue<string>("Logging:File:Directory") ?? "log");
+
+    public static int LogRetainDays => Configuration.GetValue("Logging:File:RetainDays", 5);
+
+    public static string LogLevel => Configuration.GetValue<string>("Logging:File:Level") ?? "Error";
+
+    public static string LogOutTemplate => Configuration.GetValue<string>("Logging:File:OutputTemplate")
+                                           ?? "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
+
 }

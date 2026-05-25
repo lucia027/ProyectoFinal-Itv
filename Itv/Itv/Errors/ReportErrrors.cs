@@ -1,5 +1,3 @@
-
-
 using Itv.Errors.Common;
 
 namespace Itv.Errors;

@@ -103,7 +103,7 @@ public class CitaValidatorTests {
         }
 
         [Test]
-        public void Validate_FechaInspeccionActualValida_RetornaSucces() {
+        public void Validate_FechaInspeccionActualValida_RetornaSuccess() {
             //Arrange
             var cita = new Cita {
                 Matricula = "1234BBB",
@@ -124,7 +124,7 @@ public class CitaValidatorTests {
         }
         
         [Test]
-        public void Validate_FechaInspeccion30DiasValida_RetornaSucces() {
+        public void Validate_FechaInspeccion30DiasValida_RetornaSuccess() {
             //Arrange
             var cita = new Cita {
                 Matricula = "1234BBB",

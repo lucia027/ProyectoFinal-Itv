@@ -31,14 +31,13 @@ public abstract record RepositoryError(string Message) : DomainError(Message) {
     
     public sealed record DeletionError()
         : RepositoryError($"Ha surgido un error en la eliminacion de la entidad.");
-    
 }
 
 public static class RepositoryErrors {
     public static DomainError IdNotFound(int id) {
         return new RepositoryError.IdNotFound(id);
     }
-
+    
     public static DomainError InvalidMatricula(string matricula) {
         return new RepositoryError.InvalidMatricula(matricula);
     }
@@ -61,11 +60,9 @@ public static class RepositoryErrors {
 
     public static DomainError UpdatingError() {
         return new RepositoryError.UpdatingError();
-
     }
     
     public static DomainError DeletionError() {
         return new RepositoryError.DeletionError();
-
     }
 }

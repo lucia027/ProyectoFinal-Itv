@@ -2,6 +2,9 @@ using System.Transactions;
 
 namespace Itv.Models;
 
+/// <summary>
+/// Representa a un informe en el sistema.
+/// </summary>
 public record Informe {
     public int TotalCitas { get; set; }
     public int TotalVehiculosMotorGasolina { get; set; }

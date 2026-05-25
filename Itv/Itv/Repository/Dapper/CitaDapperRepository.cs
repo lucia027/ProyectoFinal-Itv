@@ -52,18 +52,19 @@ public class CitaDapperRepository : ICitaRepository {
     }
 
     /// <inheritdoc cref="ICitaRepository.GetAll" />
-    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "") {
+    public IEnumerable<Cita> GetAll(int pagina = 1, int tamPagina = 5, bool isDeleteInclude = true, string campoBusqueda = "%%") {
         try {
+            campoBusqueda = $"%{campoBusqueda?.Trim() ?? ""}%";
             String sql = "";
             if (isDeleteInclude) {
                 sql = @"
                     SELECT * FROM Cita
-                    WHERE Matricula LIKE @CampoBusqueda 
-                    OR Marca LIkE @CampoBusqueda
-                    OR Modelo LIKE @CampoBusqueda
-                    OR Cilindrada LIKE @CampoBusqueda
-                    OR Motor LIKE @CampoBusqueda
-                    OR DniDueño LIKE @CampoBusqueda
+                    WHERE LOWER(Matricula) LIKE LOWER(@CampoBusqueda) 
+                    OR LOWER(Marca) LIkE LOWER(@CampoBusqueda)
+                    OR LOWER(Modelo) LIKE LOWER(@CampoBusqueda)
+                    OR LOWER(Cilindrada) LIKE LOWER(@CampoBusqueda)
+                    OR LOWER(Motor) LIKE LOWER(@CampoBusqueda)
+                    OR LOWER(DniDueño) LIKE LOWER(@CampoBusqueda)
                     ORDER BY Id LIMIT @TamPagina OFFSET @Offset
                 ";
             }
@@ -73,12 +74,12 @@ public class CitaDapperRepository : ICitaRepository {
                     SELECT * FROM Cita
                     WHERE IsDelete = 0
                     AND (
-                        Matricula LIKE @CampoBusqueda
-                        OR Marca LIkE @CampoBusqueda
-                        OR Modelo LIKE @CampoBusqueda
-                        OR Cilindrada LIKE @CampoBusqueda
-                        OR Motor LIKE @CampoBusqueda
-                        OR DniDueño LIKE @CampoBusqueda)
+                    LOWER(Matricula) LIKE LOWER(@CampoBusqueda) 
+                    OR LOWER(Marca) LIkE LOWER(@CampoBusqueda)
+                    OR LOWER(Modelo) LIKE LOWER(@CampoBusqueda)
+                    OR LOWER(Cilindrada) LIKE LOWER(@CampoBusqueda)
+                    OR LOWER(Motor) LIKE LOWER(@CampoBusqueda)
+                    OR LOWER(DniDueño) LIKE LOWER(@CampoBusqueda))
                     ORDER BY Id LIMIT @TamPagina OFFSET @Offset
                 ";
             }

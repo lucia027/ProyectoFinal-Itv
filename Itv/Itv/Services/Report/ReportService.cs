@@ -9,6 +9,9 @@ using Serilog;
 
 namespace Itv.Services.Report;
 
+/// <summary>
+/// Servicio que gestiona la generacion de informes.
+/// </summary>
 public class ReportService : IReportService {
     private readonly ILogger _logger = Log.ForContext<ReportService>();
     private readonly string _reportDirectory;

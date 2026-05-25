@@ -3,7 +3,7 @@
 namespace Itv.Models;
 
 /// <summary>
-/// Representa a un cita en el sistema.
+/// Representa a una cita en el sistema.
 /// </summary>
 public record Cita {
     public int Id { get; init; }

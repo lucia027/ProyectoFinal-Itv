@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Itv.Entity;
 
+/// <summary>
+/// Contexto para la base de datos de Entity Framwork Core.
+/// </summary>
 public class AppDbContext : DbContext{
 
     private readonly String _connectionString;
@@ -19,9 +22,4 @@ public class AppDbContext : DbContext{
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         if (!optionsBuilder.IsConfigured) optionsBuilder.UseSqlite(_connectionString);
     }
-
-    public void EnsureCreated() {
-        Database.EnsureCreated();
-    }
-
 }

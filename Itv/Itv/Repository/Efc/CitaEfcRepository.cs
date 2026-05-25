@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 namespace Itv.Repository.Efc;
 
+/// <summary>
+/// Repositorio en Entity Framework Core para gestionar las citas.
+/// </summary>
 public class CitaEfcRepository : ICitaRepository {
 
     private readonly ILogger _logger = Log.ForContext<CitaEfcRepository>();
@@ -66,8 +69,8 @@ public class CitaEfcRepository : ICitaRepository {
     public Result<Cita, DomainError> GetById(int id) {
         try {
             var entity = _context.Citas.FirstOrDefault(c => c.Id == id);
-            return Result.Success<Cita, DomainError>(entity.ToModel());
-        } catch (Exception e) {
+            return Result.Success<Cita, DomainError>(entity!.ToModel());
+        } catch (Exception) {
             _logger.Error($"Error al intentar encontrar la cita con el id: {id}.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.IdNotFound(id));
         }
@@ -98,7 +101,7 @@ public class CitaEfcRepository : ICitaRepository {
             if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
             return Result.Success<IEnumerable<Cita>, DomainError>(citas);   
             
-        } catch (Exception e) {
+        } catch (Exception) {
             _logger.Error($"Error al intentar encontrar la cita segun su fecha de inspeccion.");
             return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         }
@@ -126,7 +129,7 @@ public class CitaEfcRepository : ICitaRepository {
             if (!citas.Any()) return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
             return Result.Success<IEnumerable<Cita>, DomainError>(citas);   
             
-        } catch (Exception e) {
+        } catch (Exception) {
             _logger.Error($"Error al intentar encontrar la cita segun su tipo de motor.");
             return Result.Failure<IEnumerable<Cita>, DomainError>(RepositoryErrors.NotFoundCitasError());
         }
@@ -151,7 +154,7 @@ public class CitaEfcRepository : ICitaRepository {
         
             _logger.Debug("Cita creada correctamente.");
             return Result.Success<Cita, DomainError>(cita);
-        } catch (Exception e) {
+        } catch (Exception) {
             _logger.Error($"Error al intentar crear una nueva cita.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.CreationError());
         }
@@ -183,7 +186,7 @@ public class CitaEfcRepository : ICitaRepository {
             _context.SaveChanges();
     
             return Result.Success<Cita, DomainError>(entity);
-        } catch (Exception e) {
+        } catch (Exception) {
             _logger.Error($"Error al intentar actualizar una cita.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.UpdatingError());
         }
@@ -203,7 +206,7 @@ public class CitaEfcRepository : ICitaRepository {
             _context.SaveChanges();
             
             return Result.Success<Cita, DomainError>(eliminado.ToModel());
-        } catch (Exception e) {
+        } catch (Exception) {
             _logger.Error($"Error al intentar eliminar una cita.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.DeletionError());
         }
@@ -223,7 +226,7 @@ public class CitaEfcRepository : ICitaRepository {
             _context.SaveChanges();
             
             return Result.Success<Cita, DomainError>(eliminado.ToModel());
-        } catch (Exception e) {
+        } catch (Exception) {
             _logger.Error($"Error al intentar eliminar una cita.");
             return Result.Failure<Cita, DomainError>(RepositoryErrors.DeletionError());
         }
@@ -236,7 +239,7 @@ public class CitaEfcRepository : ICitaRepository {
             _context.SaveChanges();
             
             return true;
-        } catch (Exception e) {
+        } catch (Exception) {
             _logger.Error($"Error al intentar eliminar una cita.");
             return false;
         }    

@@ -6,7 +6,7 @@ namespace Itv.Repository.Common;
 /// <summary>
 /// Contrato generico Crud para el sistema.
 /// </summary>
-public interface ICrud_Repository<in TKey, TEntity> where TEntity : class {
+public interface ICrudRepository<in TKey, TEntity> where TEntity : class {
     
     /// <summary>
     /// Devuelve todas las entidades del almacen.
