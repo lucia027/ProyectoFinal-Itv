@@ -4,6 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Itv.Wpf.Views;
 
+/// <summary>
+/// Ventana principal de la aplicacion.
+/// </summary>
 public partial class MainWindow : Window {
     public MainWindow() {
         InitializeComponent();

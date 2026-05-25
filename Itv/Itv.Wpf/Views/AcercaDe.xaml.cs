@@ -4,21 +4,32 @@ using System.Windows.Navigation;
 
 namespace Itv.Wpf.Views;
 
+/// <summary>
+/// Ventana de "Acerca De" de la aplicacion.
+/// </summary>
 public partial class AcercaDeWindow : Window {
     public AcercaDeWindow() {
         InitializeComponent();
     }
 
-    private void Cerrar_Click(object sender, RoutedEventArgs e) {
+    /// <summary>
+    /// Cierra la ventana.
+    /// </summary>
+    private void OnCerrarClick(object sender, RoutedEventArgs e) {
         Close();
     }
 
-    private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
-        Process.Start(new ProcessStartInfo {
-            FileName = e.Uri.AbsoluteUri,
-            UseShellExecute = true
-        });
+    /// <summary>
+    /// Abre en enlace al repositorio en el navegador.
+    /// </summary>
+    private void OnGitHubClick(object sender, RequestNavigateEventArgs e) {
+        try {
+            Process.Start(new ProcessStartInfo {
+                FileName = e.Uri.AbsoluteUri,
+                UseShellExecute = true
+            });
 
-        e.Handled = true;
+            e.Handled = true;
+        } catch (Exception exception) { }
     }
 }

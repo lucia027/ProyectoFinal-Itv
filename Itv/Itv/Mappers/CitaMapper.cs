@@ -57,6 +57,11 @@ public static class CitaMapper {
         );
     }
 
+    /// <summary>
+    /// Convierte una CitaEntity a un Cita.
+    /// </summary>
+    /// <param name="cita">CitaEntity a convertir.</param>
+    /// <returns>Cita convertida.</returns>
     public static Cita ToModel(this CitaEntity entity) {
         return new Cita {
             Id = entity.Id,
@@ -73,7 +78,12 @@ public static class CitaMapper {
             IsDelete = entity.IsDelete
         };
     }
-
+    
+    /// <summary>
+    /// Convierte una Cita a un CitaEntity.
+    /// </summary>
+    /// <param name="cita">Cita a convertir.</param>
+    /// <returns>CitaEntity convertida.</returns>
     public static CitaEntity ToEntity(this Cita cita) {
         return new CitaEntity {
             Id = cita.Id,
@@ -91,6 +101,11 @@ public static class CitaMapper {
         };
     }
 
+    /// <summary>
+    /// Convierte una coleccion de CitaEntity a una coleccion de Cita.
+    /// </summary>
+    /// <param name="citas">Coleccion CitaEntity.</param>
+    /// <returns>Coleccion convertida.</returns>
     public static IEnumerable<Cita> ToModel(this IEnumerable<CitaEntity> citas) {
         return citas.Select(c => c.ToModel());
     }

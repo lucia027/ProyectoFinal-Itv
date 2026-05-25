@@ -11,7 +11,6 @@ public abstract record CitaError(string Message) : DomainError(Message) {
 
     public sealed record NotFoundCitasError()
         : RepositoryError($"No se han encontrado citas.");
-
 }
 
 /// <summary>

@@ -20,8 +20,6 @@ public class CitaAdoRepository : ICitaRepository {
     
     private readonly ILogger _logger = Log.ForContext<CitaAdoRepository>();
     private readonly string _connectionString;
-
-    public CitaAdoRepository() : this(Configuracion.DropData, Configuracion.SeedData) { }
     
     public CitaAdoRepository(bool dropData, bool seedData) {
         _logger.Debug("Iniciando el repositorio en ado.");

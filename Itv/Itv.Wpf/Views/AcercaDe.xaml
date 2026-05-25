@@ -121,7 +121,7 @@
 
                             <TextBlock Margin="0,5,0,0">
                                 <Hyperlink NavigateUri="https://github.com/lucia027/ProyectoFinal-Itv"
-                                           RequestNavigate="Hyperlink_RequestNavigate">
+                                           RequestNavigate="OnGitHubClick">
                                     github.com/lucia027/ProyectoFinal-Itv
                                 </Hyperlink>
                             </TextBlock>
@@ -131,7 +131,7 @@
                     <Button Content="Cerrar"
                             Style="{StaticResource CloseButton}"
                             Margin="0,6,0,0"
-                            Click="Cerrar_Click" />
+                            Click="OnCerrarClick" />
                 </StackPanel>
             </ScrollViewer>
         </Grid>

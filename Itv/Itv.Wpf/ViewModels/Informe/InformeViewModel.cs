@@ -1,24 +1,26 @@
-using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Itv.Services.Citas;
 using Itv.Services.Report;
+using Itv.Wpf.Dialog;
 using Microsoft.Win32;
-
+using Serilog;
 namespace Itv.Wpf.ViewModels.Informe;
 
-public partial class InformeViewModel : ObservableObject {
-    private readonly ICitaService _citaService;
-    private readonly IReportService _reportService;
+/// <summary>
+/// ViewModel que gestiona la generacion de informes.
+/// </summary>
+public partial class InformeViewModel(
+    ICitaService citaService,
+    IReportService reportService,
+    IDialogService dialogService
+    ) : ObservableObject {
 
-    public InformeViewModel(
-        ICitaService citaService,
-        IReportService reportService
-    ) {
-        _citaService = citaService;
-        _reportService = reportService;
-    }
-
+    private readonly ILogger _logger = Log.ForContext<InformeViewModel>();
+    private readonly ICitaService _citaService = citaService;
+    private readonly IReportService _reportService = reportService;
+    private readonly IDialogService _dialogService = dialogService;
+    
     [ObservableProperty]
     private bool _isGenerating;
 
@@ -26,7 +28,7 @@ public partial class InformeViewModel : ObservableObject {
     private bool _incluirEliminadas;
 
     [ObservableProperty]
-    private string _statusMessage = "Listo";
+    private string _statusMessage = "";
 
     [RelayCommand]
     private void GenerarInformeHtml() {
@@ -35,22 +37,11 @@ public partial class InformeViewModel : ObservableObject {
             StatusMessage = "Generando informe HTML...";
 
             var citas = _citaService.GetAll(1, int.MaxValue).ToList();
+            if (!IncluirEliminadas) citas = citas.Where(c => !c.IsDelete).ToList();
 
-            if (!IncluirEliminadas) {
-                citas = citas.Where(c => !c.IsDelete).ToList();
-            }
-
-            var htmlResult = _reportService.GenerarInformeHtml(citas);
-
-            if (htmlResult.IsFailure) {
-                MessageBox.Show(
-                    htmlResult.Error.Message,
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
-
-                StatusMessage = "Error al generar HTML";
+            var informeHtml = _reportService.GenerarInformeHtml(citas);
+            if (informeHtml.IsFailure) {
+                _dialogService.ShowError(informeHtml.Error.Message);
                 return;
             }
 
@@ -58,46 +49,20 @@ public partial class InformeViewModel : ObservableObject {
                 Filter = "HTML|*.html",
                 FileName = $"Informe_Citas_{DateTime.Now:yyyyMMdd_HHmmss}.html"
             };
-
-            if (saveDialog.ShowDialog() != true) {
-                StatusMessage = "Generación cancelada";
-                return;
+            
+            if (saveDialog.ShowDialog() == true) { 
+                var result = _reportService.GuardarInformeHtml(informeHtml.Value, saveDialog.FileName);
+                if (result.IsSuccess) {
+                    StatusMessage = "Informe HTML generado";
+                    _dialogService.ShowSuccess("Se ha generado correctamente el informe html.");
+                } else {
+                    _dialogService.ShowError(result.Error.Message);
+                }
             }
-
-            var saveResult = _reportService.GuardarInformeHtml(htmlResult.Value, saveDialog.FileName);
-
-            if (saveResult.IsSuccess) {
-                MessageBox.Show(
-                    "Informe HTML generado correctamente.",
-                    "Correcto",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                );
-
-                StatusMessage = "Informe HTML generado";
-            }
-            else {
-                MessageBox.Show(
-                    saveResult.Error.Message,
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
-
-                StatusMessage = "Error al guardar HTML";
-            }
-        }
-        catch (Exception ex) {
-            MessageBox.Show(
-                $"Error al generar informe HTML: {ex.Message}",
-                "Error",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error
-            );
-
-            StatusMessage = "Error al generar HTML";
-        }
-        finally {
+        } catch (Exception e) {
+            _logger.Error(e, "Error al generar informe en html");
+            StatusMessage = "Error al generar";
+        } finally {
             IsGenerating = false;
         }
     }
@@ -109,22 +74,11 @@ public partial class InformeViewModel : ObservableObject {
             StatusMessage = "Generando informe PDF...";
 
             var citas = _citaService.GetAll(1, int.MaxValue).ToList();
+            if (!IncluirEliminadas) citas = citas.Where(c => !c.IsDelete).ToList();
 
-            if (!IncluirEliminadas) {
-                citas = citas.Where(c => !c.IsDelete).ToList();
-            }
-
-            var htmlResult = _reportService.GenerarInformeHtml(citas);
-
-            if (htmlResult.IsFailure) {
-                MessageBox.Show(
-                    htmlResult.Error.Message,
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
-
-                StatusMessage = "Error al generar HTML base";
+            var informeHtml = _reportService.GenerarInformeHtml(citas);
+            if (informeHtml.IsFailure) {
+                _dialogService.ShowError(informeHtml.Error.Message);
                 return;
             }
 
@@ -133,45 +87,19 @@ public partial class InformeViewModel : ObservableObject {
                 FileName = $"Informe_Citas_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
             };
 
-            if (saveDialog.ShowDialog() != true) {
-                StatusMessage = "Generación cancelada";
-                return;
+            if (saveDialog.ShowDialog() == true) { 
+                var result = _reportService.GuardarInformePdf(informeHtml.Value, saveDialog.FileName);
+                if (result.IsSuccess) {
+                    StatusMessage = "Informe PDF generado";
+                    _dialogService.ShowSuccess("Se ha generado correctamente el informe pdf.");
+                } else {
+                    _dialogService.ShowError(result.Error.Message);
+                }
             }
-
-            var pdfResult = _reportService.GuardarInformePdf(htmlResult.Value, saveDialog.FileName);
-
-            if (pdfResult.IsSuccess) {
-                MessageBox.Show(
-                    "Informe PDF generado correctamente.",
-                    "Correcto",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                );
-
-                StatusMessage = "Informe PDF generado";
-            }
-            else {
-                MessageBox.Show(
-                    pdfResult.Error.Message,
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
-
-                StatusMessage = "Error al guardar PDF";
-            }
-        }
-        catch (Exception ex) {
-            MessageBox.Show(
-                $"Error al generar informe PDF: {ex.Message}",
-                "Error",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error
-            );
-
-            StatusMessage = "Error al generar PDF";
-        }
-        finally {
+        } catch (Exception e) {
+            _logger.Error(e, "Error al generar informe en pdf");
+            StatusMessage = "Error al generar";
+        } finally {
             IsGenerating = false;
         }
     }

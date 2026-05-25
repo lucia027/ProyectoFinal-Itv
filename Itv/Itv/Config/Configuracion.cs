@@ -80,4 +80,18 @@ public static class Configuracion {
         Configuration.GetValue<string>("Reports:Directory") ?? "reports");
 
     public static bool UseLogicalDelete => Configuration.GetValue("Repository:UseLogicalDelete", true);
+    
+    public static bool LogToFile => Configuration.GetValue("Logging:File:Enabled", true);
+
+    public static string LogDirectory => Path.Combine(
+        AppDomain.CurrentDomain.BaseDirectory,
+        Configuration.GetValue<string>("Logging:File:Directory") ?? "log");
+
+    public static int LogRetainDays => Configuration.GetValue("Logging:File:RetainDays", 5);
+
+    public static string LogLevel => Configuration.GetValue<string>("Logging:File:Level") ?? "Error";
+
+    public static string LogOutTemplate => Configuration.GetValue<string>("Logging:File:OutputTemplate")
+                                           ?? "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
+
 }

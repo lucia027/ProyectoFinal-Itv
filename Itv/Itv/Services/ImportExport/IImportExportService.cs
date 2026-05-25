@@ -29,7 +29,7 @@ public interface IImportExportService {
     Result<int, DomainError> ExportarDatosSistema(IEnumerable<Cita> items);
 
     /// <summary>
-    /// Importa las citas encontradas en el directorio especifico del sistema.
+    /// Importa las citas encontradas en el directorio específico del sistema.
     /// </summary>
     /// <param name="path">Ruta donde estara el archivo.</param>
     /// <returns>Result con un Enumerable de las citas importadas o un error</returns>

@@ -50,5 +50,5 @@ public record CitaEntity {
     [Column(TypeName = "datetime2")]
     public DateTime? UpdateAt { get; set; } 
     
-    public bool IsDelete { get; set; } =  false;
+    public bool IsDelete { get; set; } 
 }

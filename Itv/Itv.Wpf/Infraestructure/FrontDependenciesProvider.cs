@@ -1,3 +1,4 @@
+using Itv.Wpf.Dialog;
 using Itv.Wpf.ViewModels.Cita;
 using Itv.Wpf.ViewModels.ImportExport;
 using Itv.Wpf.ViewModels.Informe;
@@ -20,7 +21,6 @@ public static class FrontDependenciesProvider {
     public static IServiceProvider BuildServiceProvider() {
         Log.Information("Configurando servicios (Back + Front)...");
 
-        // Usar el DependenciesProvider del Back y extender con ViewModels del Front
         var serviceProvider = Itv.Infraestructure.DependenciesProvider.BuildServiceProvider(services => {
             RegisterViewModels(services);
             Log.Information("ViewModels registradas desde Front");
@@ -32,13 +32,13 @@ public static class FrontDependenciesProvider {
     }
 
     /// <summary>
-    /// Registra todos los ViewModels del Frontend como servicios transientes.
+    /// Registra todos los ViewModels del Front como servicios.
     /// </summary>
     private static void RegisterViewModels(IServiceCollection services) {
-        // ViewModel principal de la aplicación
         services.AddTransient<MainViewModel>();
         services.AddTransient<CitaViewModel>();
         services.AddTransient<InformeViewModel>();
         services.AddTransient<ImportExportViewModel>();
+        services.AddSingleton<IDialogService, DialogService>();
     }
 }

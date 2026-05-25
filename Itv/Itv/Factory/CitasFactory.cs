@@ -6,9 +6,8 @@ namespace Itv.Factory;
 /// Clase con el metodo Seed() con los datos por defecto de carga.
 /// </summary>
 public static class CitasFactory {
-
+    
     public static IEnumerable<Cita> Seed() {
-
         return new List<Cita> {
             new Cita { Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaMatriculacion = new DateTime(2018, 5, 10), FechaInspeccion = DateTime.Today.AddDays(-15) },
             new Cita { Matricula = "2345BCD", Marca = "Audi", Modelo = "A3", Cilindrada = 2000, Motor = Motor.Gasolina, DniDueño = "87654321X", FechaMatriculacion = new DateTime(2020, 1, 15), FechaInspeccion = DateTime.Today.AddDays(-14) },

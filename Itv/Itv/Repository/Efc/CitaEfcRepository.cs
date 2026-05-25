@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 namespace Itv.Repository.Efc;
 
+/// <summary>
+/// Repositorio en Entity Framework Core para gestionar las citas.
+/// </summary>
 public class CitaEfcRepository : ICitaRepository {
 
     private readonly ILogger _logger = Log.ForContext<CitaEfcRepository>();

@@ -10,6 +10,9 @@ using Itv.Wpf.ViewModels.FormData;
 
 namespace Itv.Wpf.ViewModels.Cita;
 
+/// <summary>
+/// ViewModel que gestiona el filtrado de citas y su gestion.
+/// </summary>
 public partial class CitaViewModel : ObservableObject {
     private readonly ICitaService _citaService;
 

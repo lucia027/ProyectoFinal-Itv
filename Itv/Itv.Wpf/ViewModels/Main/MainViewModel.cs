@@ -8,20 +8,15 @@ using System.Windows;
 
 namespace Itv.Wpf.ViewModels.Main;
 
-public partial class MainViewModel : ObservableObject {
-    public CitaViewModel CitaVm { get; }
-    public InformeViewModel InformeVm { get; }
-    public ImportExportViewModel ImportExportVm { get; }
-
-    public MainViewModel(
-        CitaViewModel citaVm,
-        InformeViewModel informeVm,
-        ImportExportViewModel importExportVm
-    ) {
-        CitaVm = citaVm;
-        InformeVm = informeVm;
-        ImportExportVm = importExportVm;
-    }
+public partial class MainViewModel(
+    CitaViewModel citaVm,
+    InformeViewModel informeVm,
+    ImportExportViewModel importExportVm
+    ) : ObservableObject {
+    
+    public CitaViewModel CitaVm { get; } = citaVm;
+    public InformeViewModel InformeVm { get; } = informeVm;
+    public ImportExportViewModel ImportExportVm { get; } = importExportVm;
 
     [ObservableProperty]
     private bool _isCitasVisible = true;
@@ -61,10 +56,8 @@ public partial class MainViewModel : ObservableObject {
 
     [RelayCommand]
     private void AbrirAcercaDe() {
-        var acercaDe = new AcercaDeWindow {
-            Owner = Application.Current.MainWindow
-        };
-
+        var acercaDe = new AcercaDeWindow();
+        acercaDe.Owner = Application.Current.MainWindow;
         acercaDe.ShowDialog();
     }
 

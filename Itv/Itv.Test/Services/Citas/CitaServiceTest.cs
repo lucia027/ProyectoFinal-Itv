@@ -83,7 +83,7 @@ public class CitaServiceTests {
             _repository.Setup(r => r.GetByDateInspeccion(DateTime.Today, DateTime.Today.AddDays(7), true)).Returns(Result.Success<IEnumerable<Cita>, DomainError>(citas));
 
             // Act
-            var res = _service.GetByDateInspeccion(DateTime.Today, DateTime.Today.AddDays(7), true);
+            var res = _service.GetByDateInspeccion(DateTime.Today, DateTime.Today.AddDays(7));
 
             // Assert
             res.IsSuccess.Should().BeTrue();
@@ -164,10 +164,12 @@ public class CitaServiceTests {
         public void Delete_CitaValida_RetornaSuccess() {
             // Arrange
             var cita = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaInspeccion = DateTime.Today, FechaMatriculacion = DateTime.Today, CreateAt = DateTime.Today, UpdateAt = null, IsDelete = false };
-            var citaEliminada = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaInspeccion = DateTime.Today, FechaMatriculacion = DateTime.Today, CreateAt = DateTime.Today, UpdateAt = DateTime.Today, IsDelete = true };
+            var citaEliminada = new Cita { Id = 1, Matricula = "1234BBB", Marca = "Toyota", Modelo = "Corolla", Cilindrada = 1800, Motor = Motor.Diesel, DniDueño = "12345678Z", FechaInspeccion = DateTime.Today, FechaMatriculacion = DateTime.Today, CreateAt = DateTime.Today, UpdateAt = null, IsDelete = true };
 
             _repository.Setup(r => r.GetById(cita.Id)).Returns(Result.Success<Cita, DomainError>(cita));
             _repository.Setup(r => r.Delete(cita.Id)).Returns(Result.Success<Cita, DomainError>(citaEliminada));
+            _repository.Setup(r => r.DeleteHard(cita.Id)).Returns(Result.Success<Cita, DomainError>(citaEliminada));
+
 
             // Act
             var res = _service.Delete(cita.Id);
@@ -178,7 +180,6 @@ public class CitaServiceTests {
             
             //Verify
             _repository.Verify(r => r.GetById(cita.Id), Times.Once);
-            _repository.Verify(r => r.Delete(cita.Id), Times.Once);
             _cache.Verify(c => c.Remove(cita.Id), Times.Once);
         }
 

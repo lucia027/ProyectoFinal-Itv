@@ -5,6 +5,10 @@ using Itv.Storage.Common;
 
 namespace Itv.Services.ImportExport;
 
+/// <summary>
+/// Servicio que gestiona los storages.
+/// </summary>
+/// <param name="storage"></param>
 public class ImportExportService(IStorage<Cita> storage) : IImportExportService {
     
     /// <inheritdoc cref="IImportExportService.ExportarDatos" />

@@ -6,11 +6,10 @@ using Itv.Models;
 namespace Itv.Repository.Common;
 
 /// <summary>
-/// <summary>
 /// Contrato que contextualiza la interfaz de ICitaRepository para int y Cita y que añade un borrado fisico,
 /// y un borrado total.
 /// </summary>
-public interface ICitaRepository : ICrud_Repository<int, Cita> {
+public interface ICitaRepository : ICrudRepository<int, Cita> {
     
     /// <summary>
     /// Elimina permanentemente una cita del almacen.

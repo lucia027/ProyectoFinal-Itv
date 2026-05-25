@@ -5,8 +5,8 @@ namespace Itv.Cache;
 /// <summary>
 /// Caché Lru con capacidad fija.
 /// </summary>
-/// <typeparam name="TKey"></typeparam>
-/// <typeparam name="TValue"></typeparam>
+/// <typeparam name="TKey">Tipo clave del objeto</typeparam>
+/// <typeparam name="TValue">Tipo objeto</typeparam>
 public class CacheLru<TKey, TValue> : ICache<TKey, TValue> where TKey: notnull {
 
     private readonly ILogger _logger = Log.ForContext<CacheLru<TKey, TValue>>();
