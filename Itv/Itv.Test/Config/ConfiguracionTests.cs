@@ -28,7 +28,7 @@ public class ConfiguracionTests {
             
             //Assert
             tipoAlmacenamiento.Should().NotBeNull();
-            tipoAlmacenamiento.Should().BeOneOf("json", "csv", "xml", "binary");
+            tipoAlmacenamiento.Should().BeOneOf("json", "csv", "xml", "bin");
         }
         
         [Test]
